@@ -14,7 +14,7 @@ module.exports = {
   globals: {
     Vue: true
   },
-  extends: 'airbnb-base',
+  extends: 'standard',
 
   // *.vue 파일 린팅에 필요
   plugins: [
@@ -37,14 +37,14 @@ module.exports = {
   'rules': {
 
     // import 구문 사용 시, .js, .vue 확장자 필요 없음
-    'import/extensions': ['error', 'always', {
-      'js': 'never',
-      'vue': 'never'
-    }],
+    // 'import/extensions': ['error', 'always', {
+    //   'js': 'never',
+    //   'vue': 'never'
+    // }],
     // 개발 의존성 모듈 옵션 허용
-    'import/no-extraneous-dependencies': ['error', {
-      'optionalDependencies': ['test/unit/index.js']
-    }],
+    // 'import/no-extraneous-dependencies': ['error', {
+    //   'optionalDependencies': ['test/unit/index.js']
+    // }],
 
     'no-console': 0,
     'no-unused-vars': 0,

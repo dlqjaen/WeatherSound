@@ -1,6 +1,6 @@
-# weather_sound
+# weather-sound-project
 
-> 날씨에따라 음악을 추천해주는 서비스
+> 날씨에 따른 음악 추천 서비스
 
 ## Build Setup
 
