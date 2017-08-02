@@ -1,0 +1,257 @@
+/* 초기화 */
+html{
+  box-sizing: border-box;
+  font-family: 'Khula', sans-serif;
+}
+body{
+  overflow: hidden;
+  margin: 0;
+  background: url('./sunny-01.jpg') no-repeat;
+  background-size: cover;
+  background-position: center;
+  color: white;
+}
+ul, nav{
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+em{
+  color: yellow;
+}
+progress{
+  cursor: pointer;
+}
+i{
+  cursor: pointer
+}
+button:hover{
+  opacity: 1;
+  transition: all 0.5s ease-in-out;
+}
+/* 숨긴영역 */
+.a11y-hidden{
+  position: absolute;
+  margin: -1px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+}
+
+/* 전체 감싸는 영역 */
+.wrapper{
+  width:100%;
+  height: 100vh;
+  background: rgba(0,0,0,0.3);
+}
+
+/* header영역 Menubar*/
+.header{
+  float: left;
+  width: 13%;
+  height: 90vh;
+  background: rgba(0,0,0,0.5);
+}
+.menu-list{
+  width: 84%;
+  margin-left: 8%;
+  border-bottom: 1px solid rgba(255,255,255,0.5);
+}
+.logo-list{
+  text-align: center;
+}
+.menu-list{
+  padding: 10% 0;
+}
+.logo{
+  width: 70%;
+}
+.login-btn{
+  display: block;
+  padding: 10% 0;
+  width: 100%;
+  cursor: pointer;
+}
+.login-list{
+  padding: 0;
+}
+
+/* main영역 Recomend-music*/
+.main{
+  overflow: auto;
+  text-align: center;
+  float: left;
+  width: 87%;
+  height: 90vh;
+}
+.today-mood{
+  margin-left: -13%;
+  font-size: 1.6rem;
+}
+.recomend-wrapper{
+  margin: 0 auto;
+}
+.music-recomend-list{
+  width: 17.6%;
+  margin: 0 0 2% 2%;
+  float: left;
+}
+.recomend-wrapper:last-child{
+  margin-right: 0;
+}
+.recomend-music-btn{
+  background: none;
+  font-size: 1rem;
+  text-align: center;
+  cursor: pointer;
+  opacity: 0.5;
+  border: none;
+  padding: 0;
+}
+.recomend-music-btn img{
+  display: inline-block;
+  width: 100%;
+}
+.recomend-music-info{
+  margin: 0;
+  padding: 0;
+}
+.recomend-music-title, .recomend-music-singger{
+  display: block;
+  color: white;
+  margin-top: 2%;
+}
+
+/* section영역 MusicPlayer */
+.music-player{
+  width: 100%;
+  height: 10vh;
+  background: rgba(0,0,0,0.5);
+  float: left;
+}
+.music-player::after{
+  content:'';
+  display:block;
+  clear:both;
+}
+.music-info{
+  width:25%;
+  float: left;
+}
+.music-info::after{
+  content:'';
+  display:block;
+  clear:both;
+}
+.album{
+  float: left;
+  margin: 1vh;
+  height: 8vh;
+}
+.album-text{
+  float: left;
+}
+.music-title, .music-singger{
+  display: block;
+}
+.music-singger{
+  color: gray;
+}
+.music-controlor{
+  display: inline-block;
+  height: 10vh;
+  width: 50%;
+  text-align: center;
+}
+.music-btn-box{
+  box-sizing: border-box;
+  height: 50%;
+  padding-top: 1%;
+  line-height: 50px;
+}
+.music-time{
+  padding-top: 1%;
+}
+.music-btn-box .fa{
+  vertical-align: middle;
+}
+.music-controlor i, .music-volum i{
+  font-size: 1.2rem;
+  padding: 1%;
+  margin-right: 2%;
+}
+.music-volum{
+  text-align: center;
+  width: 25%;
+  float: right;
+  line-height: 100px;
+  height: 10vh;
+}
+.music-volum i{
+  font-size: 1.2rem;
+  padding: 1%;
+  margin-right: 2%;
+}
+.music-time-line{
+  width: 70%;
+  margin: 0 2%;
+}
+.volum-size{
+  width: 30%;
+}
+/* 로그인 모달 창 */
+.login-modal{
+  font-size: 1.2rem;
+  text-align: center;
+  display: none;  
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  background: rgba(0,0,0,0.8);
+}
+.close{
+  font-size: 2rem;
+  position: absolute;
+  padding: 5px;
+  right: 30%;
+  top: 20%;
+}
+.sign-input{
+  font-size: 1rem;
+  color: white;
+  text-align: center;
+  background: none;
+  border: none;
+  border-bottom: 1px solid white;
+}
+.sign-button{
+  cursor: pointer;
+  border-radius: 5px;
+  padding: 7px 0;
+  border: none;
+  font-size: 1.2rem;
+  color: white;
+  width: 80%;
+  background: #e56b6b;
+}
+.input-box{
+  width: 25%;
+  padding: 50px 50px;
+  position: relative;
+  left: 50%;
+  top: 50%;
+  transform: translateY(-50%) translateX(-50%);
+}
+.input-box li{
+  margin-bottom: 5%;
+}
+.facebook{
+  background-color: rgb(59,89,152);
+}
+.facebook-logo{
+  margin-right: 10px;
+}
+.sign-up-list{
+   display: none; 
+}
