@@ -3,6 +3,9 @@ import Vue from 'vue';
 // 컴포넌트 로드
 import App from './App';
 
+// store 로드 
+import { store } from './components/store/store.js';
+
 // vue-router 모듈 로드
 import router from './router';
 
@@ -14,8 +17,8 @@ Vue.config.productionTip = false;
 
 // Vue 루트 인스턴스 생성 및 설정
 new Vue({
-  el: '#app',
-  router,
-  template: '<App/>',
-  components: { App }
+    el: '#app',
+    router,
+    template: '<App/>',
+    components: { App }
 });
