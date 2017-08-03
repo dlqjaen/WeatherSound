@@ -10,7 +10,7 @@
       .music-btn-box
         i.fa.fa-plus(tabindex='0', aria-hidden='true')
         i.fa.fa-step-backward(tabindex='0', aria-hidden='true')
-        i.fa.fa-play(tabindex='0', aria-hidden='true')
+        i.fa.fa-play(tabindex='0', aria-hidden='true' @click="play")
         i.fa.fa-step-forward(tabindex='0', aria-hidden='true')
         i.fa.fa-repeat(tabindex='0', aria-hidden='true')
       .music-time
@@ -23,7 +23,26 @@
 </template>
 
 <script>
+const musicPlayer = document.createElement('audio');
 export default {
+  name: 'MusicPlayer',
+  data: function () {
+    return {
+      music_info: [
+        {
+          title: '너에게 쓰는 편지',
+          artist: 'Mc몽',
+          src: 'https://doc-00-1s-docs.googleusercontent.com/docs/securesc/092q69t2ohrgde4e41oihepk7gf5u6a2/0us4g3g53119uepfc87pkg9hukq4ss31/1501740000000/15780926998673753947/15780926998673753947/0ByYLBJQe6C_EWVp2ekk3UE5QaDg?e=download'
+        }
+      ]
+    };
+  },
+  methods: {
+    play: function () {
+      musicPlayer.src = this.music_info[0].src;
+      musicPlayer.play();
+    }
+  }
 };
 </script>
 

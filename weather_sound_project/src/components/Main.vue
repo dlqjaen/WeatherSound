@@ -9,7 +9,7 @@
         a(href='#')
           img.logo(src='../assets/logo.svg', alt='WeatherSound Logo')
       li.menu-list
-        | Sunney
+        | Sunny
       li.menu-list.link-list
         label.login-btn(for='login', tabindex='0') Login
         button#login.a11y-hidden(type='bntton')
@@ -33,6 +33,8 @@ export default {
   data () {
     return {
     };
+  },
+  methods: {
   }
 };
 </script>
@@ -72,7 +74,6 @@ export default {
   width: 100%;
   cursor: pointer;
 }
-// 로그인 후 적용되는 css
 /* 로그인 후 메인메뉴 */
 #user-profile{
   padding: 0;
