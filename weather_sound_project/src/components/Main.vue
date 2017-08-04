@@ -7,12 +7,12 @@
         | WeatherSound 메뉴바
       li.menu-list.logo-list
         a(href='#')
-          img.logo(src='../assets/logo.svg', alt='WeatherSound Logo')
+          img.logo(src='../assets/logo.svg', alt='WeatherSound Home Link')
       li.menu-list
         | Sunny
       li.menu-list.link-list
         label.login-btn(for='login', tabindex='0') Login
-        button#login.a11y-hidden(type='bntton')
+        button.login.a11y-hidden.hide(type='bntton')
       li.menu-list.link-list.login-affter-list
         a.mylist-btn(href='#')
           | MyList
@@ -106,6 +106,6 @@ export default {
   border-top: 1px solid rgba(255,255,255,0.5);
 }
 .login-affter-list{
-   display: none; 
+  //  display: none; 
 }
 </style>

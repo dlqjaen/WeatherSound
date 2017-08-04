@@ -71,5 +71,7 @@ i{
   background: rgba(0,0,0,0.3);
   font-size: 1.6rem;
 }
-
+.hide{
+  display: none;
+}
 </style>
