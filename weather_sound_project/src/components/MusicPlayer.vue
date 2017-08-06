@@ -3,11 +3,7 @@
     //-  접근성을 고려한 타이틀
     h2.a11y-hidden MusicPlayer
     //- 곡 정보가 표시되는 영역
-    .music-info
-      img.album(src='../assets/music-album.png', alt='album')
-      p.album-text
-        span.music-title {{music_title}}
-        span.music-singger {{music_artist}}
+    MusicInfo
     //- 뮤직플레이어를 컨트롤하는 영역
     .music-controlor
       //- 뮤직플레이어 버튼들
@@ -37,14 +33,14 @@
 <script>
 // Vue 로드
 import Vue from 'vue';
-// axios 호출
-import axios from 'axios';
-// axios 사용준비
-Vue.use(axios);
+import MusicInfo from './MusicControlor/MusicInfo';
 // Dom에서 Audio객체를 생성
 const musicPlayer = document.createElement('audio');
 export default {
   name: 'MusicPlayer',
+  components: {
+    MusicInfo
+  },
   data: function () {
     return {
       // 임시 데이터 객체
@@ -52,23 +48,28 @@ export default {
         {
           title: '교생쌤',
           artist: 'NC.A',
-          src: 'https://doc-08-1s-docs.googleusercontent.com/docs/securesc/092q69t2ohrgde4e41oihepk7gf5u6a2/tg1a6q5u12jv6bjsnlmid7ak5ag4e8nc/1501833600000/15780926998673753947/15780926998673753947/0ByYLBJQe6C_EVjh5UXNUaFlXdFE?e=download'
+          src: 'https://firebasestorage.googleapis.com/v0/b/todo-68dcb.appspot.com/o/NC.A%20-%20%E1%84%80%E1%85%AD%E1%84%89%E1%85%A2%E1%86%BC%E1%84%8A%E1%85%A2%E1%86%B7.mp3.mp3?alt=media&token=2c9c0359-af7b-46e6-a8f9-585c67a9a6fc'
         },
         {
           title: 'Gone',
           artist: '다이나믹듀오',
-          src: 'https://doc-00-1s-docs.googleusercontent.com/docs/securesc/092q69t2ohrgde4e41oihepk7gf5u6a2/n2nvic4mbpf371mbj1rjq0b03ih3svd2/1501833600000/15780926998673753947/15780926998673753947/0ByYLBJQe6C_EYmdYcWprSGR6Rms?e=download'
+          src: 'https://firebasestorage.googleapis.com/v0/b/todo-68dcb.appspot.com/o/Dynamic%20Duo%20-%20Gone.mp3?alt=media&token=d1e02113-25c9-4d20-a5b9-8beb9c50bbfb'
         },
         {
           title: '몽환의 숲',
           artist: '키스틱 플로우',
-          src: 'https://doc-0k-1s-docs.googleusercontent.com/docs/securesc/092q69t2ohrgde4e41oihepk7gf5u6a2/d2tt3dbbmlp8hctj2kh6fnabc77f9fg7/1501833600000/15780926998673753947/15780926998673753947/0ByYLBJQe6C_ERE9ZaW5MdWlteGM?e=download'
+          src: 'https://firebasestorage.googleapis.com/v0/b/todo-68dcb.appspot.com/o/Kinetic%20Flow%20-%20%E1%84%86%E1%85%A9%E1%86%BC%E1%84%92%E1%85%AA%E1%86%AB%E1%84%8B%E1%85%B4%20%E1%84%89%E1%85%AE%E1%87%81.mp3?alt=media&token=9548eddf-9794-483f-9417-f8f8da897e53'
+        },
+        {
+          title: '너에게 쓰는 편지',
+          artist: 'MC몽',
+          src: 'https://firebasestorage.googleapis.com/v0/b/todo-68dcb.appspot.com/o/MC%E1%84%86%E1%85%A9%E1%86%BC-%E1%84%82%E1%85%A5%E1%84%8B%E1%85%A6%E1%84%80%E1%85%A6%20%E1%84%8A%E1%85%B3%E1%84%82%E1%85%B3%E1%86%AB%20%E1%84%91%E1%85%A7%E1%86%AB%E1%84%8C%E1%85%B5.mp3?alt=media&token=75daef23-3afa-4e8b-94b9-1501943d5b0d'
         }
       ],
       // 뮤직플레이어 곡 정보에서 곡 제목이 할당되는 속성
-      music_title: '',
+      // music_title: '',
       // 뮤직플레이어 곡 정보에서 곡 아티스트가 할당되는 속성
-      music_artist: '',
+      // music_artist: '',
       // data: null,
       // 재생 버튼에 할당되는 클래스명 pause아이콘과 play아이콘이 토글로 할당
       toggle_play: 'fa-play',
@@ -95,27 +96,28 @@ export default {
   },
   // 루트 엘리먼트에 객체들이 마운트 되는 시점
   mounted () {
-    // axios.get('example.json', this.data).then(function () {
-    //   console.log(this.data);
-    // });
     // 초기 뮤직플레이어에 첫 번째 곡을 셋팅
     musicPlayer.src = this.sun[0].src;
     // 뮤직플레이어에 현재 순서를 기억
     musicPlayer.index = 0;
     // 곡의 제목을 속성에 할당
-    this.music_title = this.sun[0].title;
+    this.$store.state.music_title = this.sun[0].title;
     // 곡의 아티스트를 속성에 할당
-    this.music_artist = this.sun[0].artist;
+    this.$store.state.music_artist = this.sun[0].artist;
     // 곡 재생이 끝났을 때 다음 곡으로 자동 재생되게 하는 이벤트
     musicPlayer.addEventListener('ended', this.nextMusic);
+    // 서버통신을 위한 axios 코드
+    // Vue.axios.get('example.json').then((response) => {
+    //   console.log(response.data);
+    // });
   },
   methods: {
     // 재생될 곡의 주소, 순서, 곡명, 곡아티스트를 뮤직플레이어에 할당 하는 함수
     musicSeting (index) {
       musicPlayer.src = this.sun[index].src;
       musicPlayer.index = index;
-      this.music_title = this.sun[index].title;
-      this.music_artist = this.sun[index].artist;
+      this.$store.state.music_title = this.sun[index].title;
+      this.$store.state.music_artist = this.sun[index].artist;
     },
     // 현재 곡의 진행 시간, 정도, 런닝타임을 속성에 할당하는 함수
     showPrograss () {
@@ -231,7 +233,7 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 // 뮤직플레이어 wrapper
 .music-player{
   width: 100%;
@@ -244,34 +246,6 @@ export default {
   content:'';
   display:block;
   clear:both;
-}
-// ----------------------- 곡 정보 표시 요소
-.music-info{
-  width:25%;
-  float: left;
-}
-// 자식요소의 float정렬을 감지
-.music-info::after{
-  content:'';
-  display:block;
-  clear:both;
-}
-// 곡 정보 중 커버앨범
-.album{
-  float: left;
-  margin: 1vh;
-  height: 8vh;
-}
-// 곡 정보 텍스트 wrapper
-.album-text{
-  float: left;
-}
-// 곡 명, 곡 아티스트 텍스트
-.music-title, .music-singger{
-  display: block;
-}
-.music-singger{
-  color: gray;
 }
 // ----------------------- 뮤직플레이어를 컨트롤하는 버튼과 진행 바 wrapper
 .music-controlor{

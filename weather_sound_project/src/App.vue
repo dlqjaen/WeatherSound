@@ -11,6 +11,14 @@ import MainHeader from './components/Main';
 import RecomendMusic from './components/RecomendMusic';
 import MusicPlayer from './components/MusicPlayer';
 import LoginModal from './components/LoginModal';
+// Vue 로드
+import Vue from 'vue';
+// axios 호출
+import axios from 'axios';
+// axios 사용준비
+import VueAxios from 'vue-axios';
+
+Vue.use(VueAxios, axios);
 export default {
   name: 'app',
   components: {
