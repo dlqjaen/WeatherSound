@@ -11,7 +11,7 @@
       li.menu-list.weather-info
         | Seoul / Sunny
       li.menu-list.link-list
-        label.login-btn(for='login', tabindex='0') Login
+        label.login-btn(for='login', tabindex='0' @click="showModal") Login
         button.login.a11y-hidden.hide(type='bntton')
       li.menu-list.link-list.login-affter-list
         a.mylist-btn(href='#')
@@ -28,13 +28,14 @@
 </template>
 
 <script>
+import {mapGetters} from 'vuex';
+
 export default {
   name: 'main_header',
-  data () {
-    return {
-    };
-  },
   methods: {
+    showModal () {
+      this.$store.commit('showModal');
+    }
   }
 };
 </script>

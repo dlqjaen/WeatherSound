@@ -2,20 +2,20 @@
   .music-info
     img.album(src='../../assets/music-album.png', alt='album')
     p.album-text
-      //- span.music-title {{musicTitle}}
-      //- span.music-singger {{musicArtist}}
+      span.music-title {{musicTitle}}
+      span.music-singger {{musicArtist}}
 </template>
 
 <script>
-// import {mapGetters} from 'vuex';
+import {mapGetters} from 'vuex';
 export default {
-  name: 'MusicInfo'
-  // computed: {
-  //   ...mapGetters([
-  //     'musicTitle',
-  //     'musicArtist'
-  //   ])
-  // }
+  name: 'MusicInfo',
+  computed: {
+    ...mapGetters([
+      'musicTitle',
+      'musicArtist'
+    ])
+  }
 };
 </script>
 <style lang="scss" scoped>

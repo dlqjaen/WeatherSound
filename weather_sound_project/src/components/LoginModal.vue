@@ -1,7 +1,7 @@
 <template lang="pug">
-  section.main.login-modal
+  section.main.login-modal(v-show="showModal")
     h2.a11y-hidden 로그인/회원가입 모달창
-    i.fa.fa-times.close(tabindex='0', aria-hidden='true')
+    i.fa.fa-times.close(tabindex='0', aria-hidden='true' @click="closeModal")
     form.input-box
       ul
         li
@@ -27,15 +27,26 @@
 </template>
 
 <script>
+import {mapGetters} from 'vuex';
+
 export default {
-  name: 'LoginModal'
+  name: 'LoginModal',
+  computed: {
+    ...mapGetters([
+      'showModal'
+    ])
+  },
+  methods: {
+    closeModal () {
+      this.$store.commit('closeModal');
+    }
+  }
 };
 </script>
 <style lang="scss" scoped>
 .login-modal{
   font-size: 1.6rem;
   text-align: center;
-  display: none;    
   width: 100%;
   height: 100%;
   position: absolute;

@@ -4,11 +4,14 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 // Vuex 사용준비
 Vue.use(Vuex);
+// Dom에서 Audio객체를 생성
+const musicPlayer = document.createElement('audio');
 
 export const store = new Vuex.Store({
   // strict: process.env.NODE_ENV !== 'production',
   state: {
     // -----------------------------------------------------------메인페이지 데이터
+    show_modal: false,
     // -----------------------------------------------------------로그인 데이터
     // -----------------------------------------------------------회원가입 데이터
     // -----------------------------------------------------------뮤직플레이어 데이터
@@ -24,6 +27,8 @@ export const store = new Vuex.Store({
     currentTime: '',
     // 곡의 현재 플레이 진행도가 보이도록 바의 움직임이 할당되는 속성 1 ~ 100
     prograss: 0,
+    min: 0,
+    sec: 0,
     // 볼륨의 크기가 할당되는 속성 1 ~ 100
     volum: 100,
     // 곡의 러닝타임이 할당되는 속성
@@ -62,11 +67,182 @@ export const store = new Vuex.Store({
     ]
   },
   getters: {
-    musicTitle () {
-      return this.$store.state.music_title;
+    musicTitle (state) {
+      return state.music_title;
     },
-    musicArtist () {
-      return this.$store.state.music_artist;
+    musicArtist (state) {
+      return state.music_artist;
+    },
+    toggleVolum (state) {
+      return state.toggle_volum;
+    },
+    volum (state) {
+      return state.volum;
+    },
+    activeAddBtn (state) {
+      return state.active_add_btn;
+    },
+    togglePlay (state) {
+      return state.toggle_play;
+    },
+    active (state) {
+      return state.active;
+    },
+    currentTime (state) {
+      return state.currentTime;
+    },
+    prograss (state) {
+      return state.prograss;
+    },
+    runningTime (state) {
+      return state.runningTime;
+    },
+    showModal (state) {
+      return state.show_modal;
     }
+  },
+  mutations: {
+  // -----------------------------MusicPlayer.vue------------------------------------
+    // 뮤직플레이어의 소리값을 0 또는 100으로 변경해주는 토글 함수 (소리업/음소거 아이콘도 변경)
+    volumeOff (state) {
+      if (state.toggle_volum !== 'fa-volume-off') {
+        state.toggle_volum = 'fa-volume-off';
+        musicPlayer.volume = 0;
+      } else if (state.toggle_volum === 'fa-volume-off') {
+        if (state.volum < 99) {
+          state.toggle_volum = 'fa-volume-down';
+        } else {
+          state.toggle_volum = 'fa-volume-up';
+        }
+        musicPlayer.volume = state.volum / 100;
+      }
+    },
+    // 볼륨을 설정해주는 함수
+    setVolume (state, e) {
+      state.volum = e.target.value;
+      musicPlayer.volume = e.target.value / 100;
+      if (state.volum < 1) {
+        state.toggle_volum = 'fa-volume-off';
+      } else if ((state.volum > 0) && (state.volum < 100)) {
+        state.toggle_volum = 'fa-volume-down';
+      } else if (state.volum > 99) {
+        state.toggle_volum = 'fa-volume-up';
+      }
+    },
+    // 현재 곡을 마이리스트에 추가해주는 함수(현재 아이콘 변화만 구현)
+    addToMyList (state) {
+      if (state.active_add_btn.transform === 'rotate(0)') {
+        state.active_add_btn.transform = 'rotate(45deg)';
+      } else {
+        state.active_add_btn.transform = 'rotate(0)';
+      }
+    },
+    // 뮤직플레이어를 재생/일시정지 하는 함수(재생/일시정지 아이콘도 변경) ---------------------------
+    play (state) {
+      if (state.toggle_play === 'fa-pause') {
+        state.toggle_play = 'fa-play';
+        musicPlayer.pause();
+      } else {
+        state.toggle_play = 'fa-pause';
+        musicPlayer.play();
+      }
+      this.showPrograss();
+    },
+    // 재생될 곡의 주소, 순서, 곡명, 곡아티스트를 뮤직플레이어에 할당 하는 함수
+    musicSeting (state, index) {
+      musicPlayer.src = state.sun[index].src;
+      musicPlayer.index = index;
+      state.music_title = state.sun[index].title;
+      state.music_artist = state.sun[index].artist;
+    },
+    // 현재 곡의 진행 시간, 정도, 런닝타임을 속성에 할당하는 함수
+    showPrograss (state) {
+      setInterval(() => {
+        state.currentTime = this.mutations.readableDuration(musicPlayer.currentTime);
+        state.prograss = (Math.floor(musicPlayer.currentTime) / Math.floor(musicPlayer.duration)) * 100;
+        state.runningTime = this.mutations.readableDuration(musicPlayer.duration);
+      }, 1000);
+    },
+    // 정수로된 숫자값을 넣으면 분, 초 단위로 나타내주는 함수
+    readableDuration (state, seconds) {
+      seconds = Math.floor(seconds);
+      state.min = Math.floor(seconds / 60);
+      state.min = state.min >= 10 ? state.min : '0' + state.min;
+      state.sec = Math.floor(seconds % 60);
+      state.sec = state.sec >= 10 ? state.sec : '0' + state.sec;
+      return state.min + ':' + state.sec;
+    },
+    // 다음 곡을 재생해주는 함수
+    nextMusic (state) {
+      for (let i = 0, l = state.sun.length; i < l; i++) {
+        if ((musicPlayer.index === i) && !(i === l - 1)) {
+          state.musicSeting(++i);
+          break;
+        } else if ((musicPlayer.index === i) && (i === l - 1)) {
+          state.musicSeting(0);
+          break;
+        }
+      }
+      state.toggle_play = 'fa-pause';
+      state.showPrograss();
+      musicPlayer.play();
+    },
+    // 이전 곡을 재생해주는 함수
+    prevMusic (state) {
+      for (let i = 0, l = state.sun.length; i < l; i++) {
+        let j = state.sun.length;
+        if (musicPlayer.index === i) {
+          if (i !== 0) {
+            state.musicSeting(--i);
+            break;
+          } else if (i === 0) {
+            state.musicSeting(--j);
+            break;
+          }
+        }
+      }
+      musicPlayer.play();
+      this.showPrograss();
+      state.toggle_play = 'fa-pause';
+    },
+    // 한 곡 반복재생을 설정해주는 함수
+    repeat (state) {
+      if (musicPlayer.loop === false) {
+        musicPlayer.loop = true;
+        state.active.color = '#3b99fc';
+      } else if (musicPlayer.loop === true) {
+        musicPlayer.loop = false;
+        state.active.color = '#ffffff';
+      }
+    },
+    // 곡의 진행 바 컨트롤 함수
+    setTime (state, e) {
+      state.prograss = e.target.value;
+      musicPlayer.currentTime = (musicPlayer.duration / 100 * e.target.value);
+    },
+    // -----------------------------Main.vue------------------------------------
+    showModal (state) {
+      state.show_modal = true;
+    },
+    closeModal (state) {
+      state.show_modal = false;
+    }
+  },
+  // 루트 엘리먼트에 객체들이 마운트 되는 시점
+  mounted (state) {
+    // 초기 뮤직플레이어에 첫 번째 곡을 셋팅
+    musicPlayer.src = state.sun[0].src;
+    // 뮤직플레이어에 현재 순서를 기억
+    musicPlayer.index = 0;
+    // 곡의 제목을 속성에 할당
+    state.music_title = state.sun[0].title;
+    // 곡의 아티스트를 속성에 할당
+    state.music_artist = state.sun[0].artist;
+    // 곡 재생이 끝났을 때 다음 곡으로 자동 재생되게 하는 이벤트
+    musicPlayer.addEventListener('ended', state.nextMusic);
+    // 서버통신을 위한 axios 코드
+    // Vue.axios.get('example.json').then((response) => {
+    //   console.log(response.data);
+    // });
   }
 });
