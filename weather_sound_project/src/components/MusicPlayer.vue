@@ -16,14 +16,14 @@ import Vue from 'vue';
 import MusicInfo from './MusicControlor/MusicInfo';
 import MusicControlor from './MusicControlor/MusicControlor';
 import MusicVolum from './MusicControlor/MusicVolum';
-// Dom에서 Audio객체를 생성
-const musicPlayer = document.createElement('audio');
-document.musicPlayer = musicPlayer;
 
 export default {
   name: 'MusicPlayer',
   components: {
     MusicInfo, MusicVolum, MusicControlor
+  },
+  mounted () {
+    this.$store.commit('init');
   }
 };
 </script>

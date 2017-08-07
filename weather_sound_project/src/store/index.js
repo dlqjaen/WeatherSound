@@ -6,7 +6,30 @@ import Vuex from 'vuex';
 Vue.use(Vuex);
 // Dom에서 Audio객체를 생성
 const musicPlayer = document.createElement('audio');
-
+    // 현재 곡의 진행 시간, 정도, 런닝타임을 속성에 할당하는 함수
+const showPrograss = function (state) {
+  setInterval(() => {
+    state.currentTime = readableDuration(state, musicPlayer.currentTime);
+    state.prograss = (Math.floor(musicPlayer.currentTime) / Math.floor(musicPlayer.duration)) * 100;
+    state.runningTime = readableDuration(state, musicPlayer.duration);
+  }, 1000);
+};
+// 정수로된 숫자값을 넣으면 분, 초 단위로 나타내주는 함수
+const readableDuration = function (state, seconds) {
+  seconds = Math.floor(seconds);
+  state.min = Math.floor(seconds / 60);
+  state.min = state.min >= 10 ? state.min : '0' + state.min;
+  state.sec = Math.floor(seconds % 60);
+  state.sec = state.sec >= 10 ? state.sec : '0' + state.sec;
+  return state.min + ':' + state.sec;
+};
+// 재생될 곡의 주소, 순서, 곡명, 곡아티스트를 뮤직플레이어에 할당 하는 함수
+const musicSeting = function (state, index) {
+  musicPlayer.src = state.sun[index].src;
+  musicPlayer.index = index;
+  state.music_title = state.sun[index].title;
+  state.music_artist = state.sun[index].artist;
+};
 export const store = new Vuex.Store({
   // strict: process.env.NODE_ENV !== 'production',
   state: {
@@ -103,6 +126,22 @@ export const store = new Vuex.Store({
   },
   mutations: {
   // -----------------------------MusicPlayer.vue------------------------------------
+    init (state) {
+      // 초기 뮤직플레이어에 첫 번째 곡을 셋팅
+      musicPlayer.src = state.sun[0].src;
+      // 뮤직플레이어에 현재 순서를 기억
+      musicPlayer.index = 0;
+      // 곡의 제목을 속성에 할당
+      state.music_title = state.sun[0].title;
+      // 곡의 아티스트를 속성에 할당
+      state.music_artist = state.sun[0].artist;
+      // 곡 재생이 끝났을 때 다음 곡으로 자동 재생되게 하는 이벤트
+      musicPlayer.addEventListener('ended', state.nextMusic);
+      // 서버통신을 위한 axios 코드
+      // Vue.axios.get('example.json').then((response) => {
+      //   console.log(response.data);
+      // });
+    },
     // 뮤직플레이어의 소리값을 0 또는 100으로 변경해주는 토글 함수 (소리업/음소거 아이콘도 변경)
     volumeOff (state) {
       if (state.toggle_volum !== 'fa-volume-off') {
@@ -146,45 +185,21 @@ export const store = new Vuex.Store({
         state.toggle_play = 'fa-pause';
         musicPlayer.play();
       }
-      this.showPrograss();
-    },
-    // 재생될 곡의 주소, 순서, 곡명, 곡아티스트를 뮤직플레이어에 할당 하는 함수
-    musicSeting (state, index) {
-      musicPlayer.src = state.sun[index].src;
-      musicPlayer.index = index;
-      state.music_title = state.sun[index].title;
-      state.music_artist = state.sun[index].artist;
-    },
-    // 현재 곡의 진행 시간, 정도, 런닝타임을 속성에 할당하는 함수
-    showPrograss (state) {
-      setInterval(() => {
-        state.currentTime = this.mutations.readableDuration(musicPlayer.currentTime);
-        state.prograss = (Math.floor(musicPlayer.currentTime) / Math.floor(musicPlayer.duration)) * 100;
-        state.runningTime = this.mutations.readableDuration(musicPlayer.duration);
-      }, 1000);
-    },
-    // 정수로된 숫자값을 넣으면 분, 초 단위로 나타내주는 함수
-    readableDuration (state, seconds) {
-      seconds = Math.floor(seconds);
-      state.min = Math.floor(seconds / 60);
-      state.min = state.min >= 10 ? state.min : '0' + state.min;
-      state.sec = Math.floor(seconds % 60);
-      state.sec = state.sec >= 10 ? state.sec : '0' + state.sec;
-      return state.min + ':' + state.sec;
+      showPrograss(state);
     },
     // 다음 곡을 재생해주는 함수
     nextMusic (state) {
       for (let i = 0, l = state.sun.length; i < l; i++) {
         if ((musicPlayer.index === i) && !(i === l - 1)) {
-          state.musicSeting(++i);
+          musicSeting(state, ++i);
           break;
         } else if ((musicPlayer.index === i) && (i === l - 1)) {
-          state.musicSeting(0);
+          musicSeting(state, 0);
           break;
         }
       }
       state.toggle_play = 'fa-pause';
-      state.showPrograss();
+      showPrograss(state);
       musicPlayer.play();
     },
     // 이전 곡을 재생해주는 함수
@@ -193,10 +208,10 @@ export const store = new Vuex.Store({
         let j = state.sun.length;
         if (musicPlayer.index === i) {
           if (i !== 0) {
-            state.musicSeting(--i);
+            musicSeting(state, --i);
             break;
           } else if (i === 0) {
-            state.musicSeting(--j);
+            musicSeting(state, --j);
             break;
           }
         }
@@ -227,22 +242,5 @@ export const store = new Vuex.Store({
     closeModal (state) {
       state.show_modal = false;
     }
-  },
-  // 루트 엘리먼트에 객체들이 마운트 되는 시점
-  mounted (state) {
-    // 초기 뮤직플레이어에 첫 번째 곡을 셋팅
-    musicPlayer.src = state.sun[0].src;
-    // 뮤직플레이어에 현재 순서를 기억
-    musicPlayer.index = 0;
-    // 곡의 제목을 속성에 할당
-    state.music_title = state.sun[0].title;
-    // 곡의 아티스트를 속성에 할당
-    state.music_artist = state.sun[0].artist;
-    // 곡 재생이 끝났을 때 다음 곡으로 자동 재생되게 하는 이벤트
-    musicPlayer.addEventListener('ended', state.nextMusic);
-    // 서버통신을 위한 axios 코드
-    // Vue.axios.get('example.json').then((response) => {
-    //   console.log(response.data);
-    // });
   }
 });
