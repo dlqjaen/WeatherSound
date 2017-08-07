@@ -9,7 +9,7 @@
         a(href='#')
           img.logo(src='../assets/logo.svg', alt='WeatherSound Home Link')
       li.menu-list.weather-info
-        | Seoul / Sunny
+        | {{getCity}} / {{getWeather}}
       li.menu-list.link-list
         label.login-btn(for='login', tabindex='0' @click="showModal") Login
         button.login.a11y-hidden.hide(type='bntton')
@@ -32,10 +32,22 @@ import {mapGetters} from 'vuex';
 
 export default {
   name: 'main_header',
+  computed: {
+    ...mapGetters([
+      'getCity',
+      'getWeather'
+    ])
+  },
   methods: {
     showModal () {
       this.$store.commit('showModal');
+    },
+    getCityAction () {
+      this.$store.dispatch('getCityAction');
     }
+  },
+  mounted () {
+    this.getCityAction();
   }
 };
 </script>
@@ -44,7 +56,8 @@ export default {
 /* header영역 Menubar*/
 .header{
   float: left;
-  width: 13%;
+  position: fixed;
+  width: 150px;
   height: 90vh;
   background: rgba(0,0,0,0.5);
 }

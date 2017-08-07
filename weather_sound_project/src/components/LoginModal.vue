@@ -1,25 +1,25 @@
 <template lang="pug">
   section.main.login-modal(v-show="showModal")
     h2.a11y-hidden 로그인/회원가입 모달창
-    i.fa.fa-times.close(tabindex='0', aria-hidden='true' @click="closeModal")
     form.input-box
+      i.fa.fa-times.close(tabindex='0', aria-hidden='true' @click="closeModal")
       ul
         li
           label(for='email') Email
           input#email.sign-input(type='email', :value="email" @input="inputText" name='id(email)', placeholder='이메일 입력창')
-        li.sign-up-list
+        li(v-show='signUpList')
           label(for='user-name') User Name
           input#user-name.sign-input(type='name', name='username', placeholder='닉네임 입력창')
         li
           label(for='password') Password
           input#password.sign-input(type='password', name='password', @input="inputPassword" :value="password" placeholder='비밀번호 입력창')
-        li.sign-up-list
+        li(v-show='signUpList')
           label(for='password-check') Password Check
-          input#password-check.sign-input(type='password', name='repPassword', @input="inputRepPassword" :value="repPassword" placeholder='비밀번호 입력확인창')
+          input#password-check.sign-input(type='password', name='repPassword', @input="inputRepPassword" :value="rePassWord" placeholder='비밀번호 입력확인창')
         li
           input.sign-button(type='submit', aria-label='로그인 버튼', value='Sign In' @click="checkPassword")
         li
-          button.sign-button(type='button', aria-label='회원가입 버튼' @click="validatePassword") Sign Up
+          button.sign-button(type='button', aria-label='회원가입 버튼' @click="signUpBtn") Sign Up
         li
           button.sign-button.facebook(type='button', aria-label='페이북으로 로그인 버튼')
             i.fa.fa-facebook-square.facebook-logo(aria-hidden='true')
@@ -32,68 +32,37 @@ import {mapGetters} from 'vuex';
 
 export default {
   name: 'LoginModal',
-  data: function () {
-    return {
-      password: '',
-      email: ''
-    };
-  },
   computed: {
     ...mapGetters([
-      'showModal'
+      'email',
+      'password',
+      'rePassWord',
+      'showModal',
+      'signUpList'
     ])
   },
   methods: {
-    stopAction: function (e) {
-      e.preventDefault();
-    },
-
-    checkPassword: function (e) {
-      // 정규표현식을 활용하여 문자, 숫자, 특수문자 사용해야 함.
-      var passwordCheck = /^.*(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/;
-      if (!passwordCheck.test(this.password)) {
-        alert('비밀번호는 문자, 숫자, 특수 문자를 조합하여 입력해주세요.');
-        this.stopAction(e);
-        return false;
-       // 비밀번호는 8자리에서 16자리 사이로 써야 함.
-      } else if (this.password.length < 8 || this.password.length > 16) {
-        alert('비밀번호는 8자리 이상, 16자리 이하로 입력해주세요');
-        this.stopAction(e);
-        return false;
-      }
-    },
-    // 비밀번호 중복 관련된 함수인데, 위 함수로 재사용 가능하기 때문에 빼도 됨
-    repPassword: function (e) {
-      var passwordCheck = /^.*(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/;
-      if (!passwordCheck.test(this.password)) {
-        alert('비밀번호는 문자, 숫자, 특수 문자의 조합으로 입력해주세요.');
-        this.stopAction(e);
-      } else if (this.password.length < 8 || this.password.length > 16) {
-        alert('비밀번호는 8자리 이상, 16자리 이하로 입력해주세요');
-        this.stopAction(e);
-        return;
-      }
-    },
-    // 회원가입 모달에서 입력한 비밀번호와 비밀번호 확인란이 동일하면 패스하고 아니면 경고창 띄움.
-    validatePassword: function (e) {
-      if (this.repPassword !== this.password) {
-        alert('비밀번호를 확인해주세요');
-        this.stopAction(e);
-      }
-    },
-    // 이메일, 패스워드가 vue에 보여질 수 있게 작성한 메서드, 재사용 가능하므로 합쳐야 함
-    inputText: function (e) {
-      this.email = e.target.value;
-    },
-
-    inputPassword: function (e) {
-      this.password = e.target.value;
-    },
-    inputRepPassword: function (e) {
-      this.repPassword = e.target.value;
+    showModal () {
+      this.$store.commit('showModal');
     },
     closeModal () {
       this.$store.commit('closeModal');
+    },
+    signUpBtn (e) {
+      this.$store.commit('signUpBtn', e);
+    },
+    checkPassword: function (e) {
+      this.$store.commit('checkPassword', e);
+    },
+    // 이메일, 패스워드가 vue에 보여질 수 있게 작성한 메서드, 재사용 가능하므로 합쳐야 함
+    inputText: function (e) {
+      this.$store.commit('inputText', e);
+    },
+    inputPassword: function (e) {
+      this.$store.commit('inputPassword', e);
+    },
+    inputRepPassword: function (e) {
+      this.$store.commit('inputRepPassword', e);
     }
   }
 };
@@ -101,6 +70,7 @@ export default {
 
 <style lang="scss" scoped>
 .login-modal{
+  z-index: 10000;
   font-size: 1.6rem;
   text-align: center;
   width: 100%;
@@ -112,10 +82,11 @@ export default {
   font-size: 3rem;
   position: absolute;
   padding: 5px;
-  right: 30%;
-  top: 20%;
+  right: 0;
+  top: 0;
 }
 .sign-input{
+  width: 60%;
   font-size: 1.4rem;
   color: white;
   text-align: center;
@@ -134,7 +105,7 @@ export default {
   background: #e56b6b;
 }
 .input-box{
-  width: 25%;
+  width: 50%;
   padding: 50px 50px;
   position: relative;
   left: 50%;
@@ -149,8 +120,5 @@ export default {
 }
 .facebook-logo{
   margin-right: 10px;
-}
-.sign-up-list{
-  display: none;   
 }
 </style>

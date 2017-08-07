@@ -28,6 +28,9 @@ export default {
 </script>
 
 <style lang="scss">
+// *{
+//   transition: all 0.5s ease-in-out;
+// }
 [v-cloack]{
   display: none;
 }
@@ -53,9 +56,6 @@ ul, nav{
   padding: 0;
   margin: 0;
   list-style: none;
-}
-em{
-  color: yellow;
 }
 progress{
   cursor: pointer;

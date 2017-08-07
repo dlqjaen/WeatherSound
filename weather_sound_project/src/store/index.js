@@ -2,11 +2,18 @@
 import Vue from 'vue';
 // Vuex 로드
 import Vuex from 'vuex';
-// Vuex 사용준비
-Vue.use(Vuex);
+// axios 호출
+import axios from 'axios';
+// axios 사용준비
+import VueAxios from 'vue-axios';
+
+Vue.use(Vuex, VueAxios, axios);
+const stopAction = function (e) {
+  e.preventDefault();
+};
 // Dom에서 Audio객체를 생성
 const musicPlayer = document.createElement('audio');
-    // 현재 곡의 진행 시간, 정도, 런닝타임을 속성에 할당하는 함수
+// 현재 곡의 진행 시간, 정도, 런닝타임을 속성에 할당하는 함수
 const showPrograss = function (state) {
   setInterval(() => {
     state.currentTime = readableDuration(state, musicPlayer.currentTime);
@@ -35,6 +42,10 @@ export const store = new Vuex.Store({
   state: {
     // -----------------------------------------------------------메인페이지 데이터
     show_modal: false,
+    email: '',
+    password: '',
+    re_password: '',
+    sign_up_list: false,
     // -----------------------------------------------------------로그인 데이터
     // -----------------------------------------------------------회원가입 데이터
     // -----------------------------------------------------------뮤직플레이어 데이터
@@ -87,9 +98,30 @@ export const store = new Vuex.Store({
         artist: 'MC몽',
         src: 'https://firebasestorage.googleapis.com/v0/b/todo-68dcb.appspot.com/o/MC%E1%84%86%E1%85%A9%E1%86%BC-%E1%84%82%E1%85%A5%E1%84%8B%E1%85%A6%E1%84%80%E1%85%A6%20%E1%84%8A%E1%85%B3%E1%84%82%E1%85%B3%E1%86%AB%20%E1%84%91%E1%85%A7%E1%86%AB%E1%84%8C%E1%85%B5.mp3?alt=media&token=75daef23-3afa-4e8b-94b9-1501943d5b0d'
       }
-    ]
+    ],
+    currentCity: null,
+    currentWeather: null
   },
   getters: {
+    // -----------------------------------------------------------메인페이지 getters
+    showModal (state) {
+      return state.show_modal;
+    },
+    // -----------------------------------------------------------로그인 getters
+    email (state) {
+      return state.email;
+    },
+    password (state) {
+      return state.password;
+    },
+    rePassWord (state) {
+      return state.re_password;
+    },
+    signUpList (state) {
+      return state.sign_up_list;
+    },
+    // -----------------------------------------------------------회원가입 getters
+    // -----------------------------------------------------------뮤직플레이어 getters
     musicTitle (state) {
       return state.music_title;
     },
@@ -120,12 +152,62 @@ export const store = new Vuex.Store({
     runningTime (state) {
       return state.runningTime;
     },
-    showModal (state) {
-      return state.show_modal;
+    getCity (state) {
+      return state.currentCity;
+    },
+    getWeather (state) {
+      return state.currentWeather;
     }
   },
   mutations: {
-  // -----------------------------MusicPlayer.vue------------------------------------
+    // -----------------------------Main.vue------------------------------------
+    showModal (state) {
+      state.show_modal = true;
+    },
+    closeModal (state) {
+      state.show_modal = false;
+    },
+    checkPassword (state, e) {
+      if (state.sign_up_list === false) {
+        // 정규표현식을 활용하여 문자, 숫자, 특수문자 사용해야 함.
+        var passwordCheck = /^.*(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/;
+        if (!passwordCheck.test(state.password)) {
+          alert('비밀번호는 문자, 숫자, 특수 문자를 조합하여 입력해주세요.');
+          stopAction(e);
+          return false;
+          // 비밀번호는 8자리에서 16자리 사이로 써야 함.
+        } else if (state.password.length < 8 || state.password.length > 16) {
+          alert('비밀번호는 8자리 이상, 16자리 이하로 입력해주세요');
+          stopAction(e);
+          return false;
+        }
+      } else {
+        stopAction(e);
+        state.sign_up_list = false;
+      }
+    },
+    signUpBtn (state, e) {
+      if (state.sign_up_list === false) {
+        state.sign_up_list = true;
+      } else {
+    // 회원가입 모달에서 입력한 비밀번호와 비밀번호 확인란이 동일하면 패스하고 아니면 경고창 띄움.
+        if (state.rePassword !== state.password) {
+          alert('비밀번호를 확인해주세요');
+          stopAction(e);
+        }
+      }
+    },
+    // 이메일, 패스워드가 vue에 보여질 수 있게 작성한 메서드, 재사용 가능하므로 합쳐야 함
+    inputText (state, e) {
+      state.email = e.target.value;
+    },
+    inputPassword (state, e) {
+      state.password = e.target.value;
+    },
+    inputRepPassword (state, e) {
+      state.repPassword = e.target.value;
+    },
+    // -----------------------------MusicPlayer.vue------------------------------------
     init (state) {
       // 초기 뮤직플레이어에 첫 번째 곡을 셋팅
       musicPlayer.src = state.sun[0].src;
@@ -135,12 +217,20 @@ export const store = new Vuex.Store({
       state.music_title = state.sun[0].title;
       // 곡의 아티스트를 속성에 할당
       state.music_artist = state.sun[0].artist;
-      // 곡 재생이 끝났을 때 다음 곡으로 자동 재생되게 하는 이벤트
-      musicPlayer.addEventListener('ended', state.nextMusic);
-      // 서버통신을 위한 axios 코드
-      // Vue.axios.get('example.json').then((response) => {
-      //   console.log(response.data);
-      // });
+      musicPlayer.addEventListener('ended', function () {
+        for (let i = 0, l = state.sun.length; i < l; i++) {
+          if ((musicPlayer.index === i) && !(i === l - 1)) {
+            musicSeting(state, ++i);
+            break;
+          } else if ((musicPlayer.index === i) && (i === l - 1)) {
+            musicSeting(state, 0);
+            break;
+          }
+        }
+        state.toggle_play = 'fa-pause';
+        showPrograss(state);
+        musicPlayer.play();
+      });
     },
     // 뮤직플레이어의 소리값을 0 또는 100으로 변경해주는 토글 함수 (소리업/음소거 아이콘도 변경)
     volumeOff (state) {
@@ -176,7 +266,7 @@ export const store = new Vuex.Store({
         state.active_add_btn.transform = 'rotate(0)';
       }
     },
-    // 뮤직플레이어를 재생/일시정지 하는 함수(재생/일시정지 아이콘도 변경) ---------------------------
+    // 뮤직플레이어를 재생/일시정지 하는 함수(재생/일시정지 아이콘도 변경)
     play (state) {
       if (state.toggle_play === 'fa-pause') {
         state.toggle_play = 'fa-play';
@@ -217,7 +307,7 @@ export const store = new Vuex.Store({
         }
       }
       musicPlayer.play();
-      this.showPrograss();
+      showPrograss(state);
       state.toggle_play = 'fa-pause';
     },
     // 한 곡 반복재생을 설정해주는 함수
@@ -235,12 +325,37 @@ export const store = new Vuex.Store({
       state.prograss = e.target.value;
       musicPlayer.currentTime = (musicPlayer.duration / 100 * e.target.value);
     },
-    // -----------------------------Main.vue------------------------------------
-    showModal (state) {
-      state.show_modal = true;
+    getCity (state, e) {
+      state.currentCity = e;
     },
-    closeModal (state) {
-      state.show_modal = false;
+    getWeather (state, e) {
+      state.currentWeather = e;
+    }
+  },
+  actions: {
+    getCityAction: function ({commit}) {
+    // 서버통신을 위한 axios 코드
+      Vue.axios.get('http://ip-api.com/json').then((response) => {
+        commit('getCity', response.data.city);
+        var lat = response.data.lat;
+        var lon = response.data.lon;
+        var address = 'http://api.openweathermap.org/data/2.5/weather?lat=' + lat + '&lon=' + lon + '&units=metric&APPID=f63c992320644b675405158f284ba653';
+        Vue.axios.get(address).then((response) => {
+          var weather = response.data.weather[0].icon.slice(0, -1);
+          if (weather === '01') {
+            weather = 'Sunny';
+          } else if (weather === '02' || '03' || '04') {
+            weather = 'Cloudy';
+          } else if (weather === '09' || '10' || '11') {
+            weather = 'Rainny';
+          } else if (weather === '13') {
+            weather = 'Snow';
+          } else if (weather === '50') {
+            weather = 'Mist';
+          }
+          commit('getWeather', weather);
+        });
+      });
     }
   }
 });

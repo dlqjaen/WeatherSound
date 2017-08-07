@@ -2,9 +2,6 @@
   .recomend-music
     section.main.recomend-song
       h2.a11y-hidden 날씨별 추천 음악
-      p.today-mood
-        | Today Mood is 
-        em Sad
       ul.recomend-wrapper
         li.music-recomend-list
           label.a11y-hidden(for='')
@@ -28,12 +25,9 @@ button:hover{
   overflow: auto;
   text-align: center;
   float: left;
+  margin-left: 150px;
   width: 87%;
   height: 90vh;
-}
-.today-mood{
-  margin-left: -13%;
-  font-size: 2.2rem;
 }
 .recomend-wrapper{
   margin: 0 auto;
@@ -45,7 +39,7 @@ button:hover{
 }
 .music-recomend-list{
   width: 17.6%;
-  margin: 0 0 2% 2%;
+  margin: 2%;
   float: left;
 }
 .recomend-wrapper:last-child{
