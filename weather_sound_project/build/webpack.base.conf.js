@@ -2,6 +2,7 @@ let path = require('path')
 let utils = require('./utils')
 let config = require('../config')
 let vueLoaderConfig = require('./vue-loader.conf')
+require('es6-promise').polyfill();
 
 function resolve (dir) {
   return path.join(__dirname, '..', dir)
