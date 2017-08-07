@@ -93,7 +93,7 @@ export default {
 .login-modal{
   font-size: 1.6rem;
   text-align: center;
-  // display: none;    
+  display: none;    
   width: 100%;
   height: 100%;
   position: absolute;
