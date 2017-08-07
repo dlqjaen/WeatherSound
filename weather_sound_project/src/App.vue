@@ -1,5 +1,5 @@
 <template lang="pug">
-  .wrapper
+  .wrapper(v-cloak)
     main-header
     recomend-music
     login-modal
@@ -11,6 +11,14 @@ import MainHeader from './components/Main';
 import RecomendMusic from './components/RecomendMusic';
 import MusicPlayer from './components/MusicPlayer';
 import LoginModal from './components/LoginModal';
+// Vue 로드
+import Vue from 'vue';
+// axios 호출
+import axios from 'axios';
+// axios 사용준비
+import VueAxios from 'vue-axios';
+
+Vue.use(VueAxios, axios);
 export default {
   name: 'app',
   components: {
@@ -20,6 +28,9 @@ export default {
 </script>
 
 <style lang="scss">
+[v-cloack]{
+  display: none;
+}
 html{
   font-size: 10px;
   box-sizing: border-box;
@@ -68,5 +79,7 @@ i{
   background: rgba(0,0,0,0.3);
   font-size: 1.6rem;
 }
-
+.hide{
+  display: none;
+}
 </style>

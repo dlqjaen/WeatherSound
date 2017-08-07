@@ -1,107 +1,86 @@
 <template lang="pug">
   aside.music-player
+    //-  접근성을 고려한 타이틀
     h2.a11y-hidden MusicPlayer
-    .music-info
-      img.album(src='../assets/music-album.png', alt='album')
-      p.album-text
-        span.music-title 너에게 쓰는 편지
-        span.music-singger MC몽
-    .music-controlor
-      .music-btn-box
-        i.fa.fa-plus(tabindex='0', aria-hidden='true')
-        i.fa.fa-step-backward(tabindex='0', aria-hidden='true')
-        i.fa.fa-play(tabindex='0', aria-hidden='true')
-        i.fa.fa-step-forward(tabindex='0', aria-hidden='true')
-        i.fa.fa-repeat(tabindex='0', aria-hidden='true')
-      .music-time
-        span.music-currnet-time 0:00
-        progress.music-time-line(value='0', max='100', tabindex='0')
-        span.music-max-time 3:00
-    .music-volum
-      i.fa.fa-volume-up(tabindex='0', aria-hidden='true')
-      progress.volum-size(value='100', max='100', tabindex='0')
+    //- 곡 정보가 표시되는 영역
+    MusicInfo
+    //- 뮤직플레이어를 컨트롤하는 영역
+    MusicControlor
+    //- 뮤직플레이어 볼륨 바
+    MusicVolum
 </template>
 
 <script>
+// Vue 로드
+import Vue from 'vue';
+import MusicInfo from './MusicControlor/MusicInfo';
+import MusicControlor from './MusicControlor/MusicControlor';
+import MusicVolum from './MusicControlor/MusicVolum';
+
 export default {
+  name: 'MusicPlayer',
+  components: {
+    MusicInfo, MusicVolum, MusicControlor
+  },
+  mounted () {
+    this.$store.commit('init');
+  }
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
+// 뮤직플레이어 wrapper
 .music-player{
   width: 100%;
   height: 10vh;
   background: rgba(0,0,0,0.5);
   float: left;
 }
+// 자식요소의 float정렬을 감지
 .music-player::after{
   content:'';
   display:block;
   clear:both;
 }
-.music-info{
-  width:25%;
-  float: left;
-}
-.music-info::after{
-  content:'';
-  display:block;
-  clear:both;
-}
-.album{
-  float: left;
-  margin: 1vh;
-  height: 8vh;
-}
-.album-text{
-  float: left;
-}
-.music-title, .music-singger{
-  display: block;
-}
-.music-singger{
-  color: gray;
-}
-.music-controlor{
-  display: inline-block;
-  height: 10vh;
-  width: 50%;
-  text-align: center;
-}
-.music-btn-box{
-  box-sizing: border-box;
-  height: 50%;
-  padding-top: 1%;
-  line-height: 50px;
-}
-.music-time{
-  padding-top: 1%;
-}
-.music-btn-box .fa{
-  vertical-align: middle;
-}
-.music-controlor i, .music-volum i{
+// 뮤직플레이어 버튼들
+.music-controlor-btn{
+  background: none;
+  border: none;
+  color: white;
   font-size: 1.6rem;
   padding: 1%;
   margin-right: 2%;
 }
-.music-volum{
-  text-align: center;
-  width: 25%;
-  float: right;
-  line-height: 100px;
-  height: 10vh;
+// ----------------------- 곡 진행 바와 볼륨 바 스타일 적용
+input[type='range'] {
+  border-radius: 5px 5px 5px 5px;
+  overflow: hidden;
+  cursor: pointer;
 }
-.music-volum i{
-  font-size: 1.8rem;
-  padding: 1%;
-  margin-right: 2%;
+input[type='range'],
+input[type='range']::-webkit-slider-runnable-track,
+input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none;
 }
-.music-time-line{
-  width: 70%;
-  margin: 0 2%;
+input[type='range']::-webkit-slider-runnable-track {
+  width: 200px;
+  height: 10px;
+  background: rgba(100,100,100,0.9);
 }
-.volum-size{
-  width: 30%;
+input[type='range']::-webkit-slider-thumb {
+  position: relative;
+  border-radius: 5px;
+  height: 10px;
+  width: 15px;
+  background: #fff;
+}
+input[type='range']::-webkit-slider-thumb::before {
+  position: absolute;
+  content: '';
+  height: 10px; /* equal to height of runnable track */
+  width: 500px; /* make this bigger than the widest range input element */
+  left: -502px; /* this should be -2px - width */
+  top: 8px; /* don't change this */
+  background: #777;
 }
 </style>

@@ -7,12 +7,12 @@
         | WeatherSound 메뉴바
       li.menu-list.logo-list
         a(href='#')
-          img.logo(src='../assets/logo.svg', alt='WeatherSound Logo')
-      li.menu-list
-        | Sunney
+          img.logo(src='../assets/logo.svg', alt='WeatherSound Home Link')
+      li.menu-list.weather-info
+        | Seoul / Sunny
       li.menu-list.link-list
-        label.login-btn(for='login', tabindex='0') Login
-        button#login.a11y-hidden(type='bntton')
+        label.login-btn(for='login', tabindex='0' @click="showModal") Login
+        button.login.a11y-hidden.hide(type='bntton')
       li.menu-list.link-list.login-affter-list
         a.mylist-btn(href='#')
           | MyList
@@ -28,11 +28,14 @@
 </template>
 
 <script>
+import {mapGetters} from 'vuex';
+
 export default {
   name: 'main_header',
-  data () {
-    return {
-    };
+  methods: {
+    showModal () {
+      this.$store.commit('showModal');
+    }
   }
 };
 </script>
@@ -51,7 +54,9 @@ export default {
   border-bottom: 1px solid rgba(255,255,255,0.5);
 }
 .logo-list{
+  padding-top: 10%;
   text-align: center;
+  border-bottom: none;
 }
 .logo{
   width: 70%;
@@ -60,11 +65,12 @@ export default {
   position: relative;
   height: 90vh;
 }
-.menu-bar li:not(.link-list){
-  padding: 10% 0;
-}
 .link-list{
   padding: 0;
+}
+.weather-info{
+  text-align: center;
+  padding-bottom: 10%;
 }
 .login-btn{
   display: block;
@@ -72,7 +78,6 @@ export default {
   width: 100%;
   cursor: pointer;
 }
-// 로그인 후 적용되는 css
 /* 로그인 후 메인메뉴 */
 #user-profile{
   padding: 0;
@@ -104,7 +109,10 @@ export default {
   margin-left: 8%;
   border-top: 1px solid rgba(255,255,255,0.5);
 }
+#user-profile{
+  padding: 10% 0;
+}
 .login-affter-list{
-   display: none; 
+  //  display: none; 
 }
 </style>
