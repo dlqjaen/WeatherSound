@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 import Main from '../components/Main';
-import Sign from '../components/sign';
+import LoginAfterMain from '../components/LoginAfterMain';
 import Share from '../components/sgin/Share';
 import MyList from '../components/sgin/MyList';
 
@@ -16,7 +16,7 @@ export default new Router({
       children: [
         {
           path: '/:id',
-          component: Sign,
+          component: LoginAfterMain,
           children: [
             { path: '/:id/share', component: Share },
             { path: '/:id/mylist', component: MyList }

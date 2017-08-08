@@ -42,12 +42,14 @@ export const store = new Vuex.Store({
   state: {
     // -----------------------------------------------------------메인페이지 데이터
     show_modal: false,
+    login_after_list: false,
+    // -----------------------------------------------------------로그인 데이터
     email: '',
     password: '',
-    re_password: '',
+    userName: '',
     sign_up_list: false,
-    // -----------------------------------------------------------로그인 데이터
     // -----------------------------------------------------------회원가입 데이터
+    re_password: '',
     // -----------------------------------------------------------뮤직플레이어 데이터
     // 뮤직플레이어 곡 정보에서 곡 제목이 할당되는 속성
     music_title: '',
@@ -107,6 +109,9 @@ export const store = new Vuex.Store({
     showModal (state) {
       return state.show_modal;
     },
+    loginAfterList (state) {
+      return state.login_after_list;
+    },
     // -----------------------------------------------------------로그인 getters
     email (state) {
       return state.email;
@@ -114,13 +119,16 @@ export const store = new Vuex.Store({
     password (state) {
       return state.password;
     },
-    rePassWord (state) {
-      return state.re_password;
-    },
     signUpList (state) {
       return state.sign_up_list;
     },
     // -----------------------------------------------------------회원가입 getters
+    rePassWord (state) {
+      return state.re_password;
+    },
+    userName (state) {
+      return state.userName;
+    },
     // -----------------------------------------------------------뮤직플레이어 getters
     musicTitle (state) {
       return state.music_title;
@@ -164,36 +172,46 @@ export const store = new Vuex.Store({
     showModal (state) {
       state.show_modal = true;
     },
+    // -----------------------------LoginAfterMain.vue------------------------------------
+    loginAfterList (state) {
+      state.login_after_list = true;
+    },
+    // -----------------------------LoginModal.vue------------------------------------
     closeModal (state) {
       state.show_modal = false;
     },
     checkPassword (state, e) {
+      stopAction(e);
       if (state.sign_up_list === false) {
+        if (state.email.trim() === '') {
+          alert('이메일을 입력해 주세요.');
+        }
         // 정규표현식을 활용하여 문자, 숫자, 특수문자 사용해야 함.
         var passwordCheck = /^.*(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/;
         if (!passwordCheck.test(state.password)) {
           alert('비밀번호는 문자, 숫자, 특수 문자를 조합하여 입력해주세요.');
-          stopAction(e);
-          return false;
           // 비밀번호는 8자리에서 16자리 사이로 써야 함.
         } else if (state.password.length < 8 || state.password.length > 16) {
           alert('비밀번호는 8자리 이상, 16자리 이하로 입력해주세요');
-          stopAction(e);
-          return false;
         }
       } else {
-        stopAction(e);
+        state.email = '';
+        state.userName = '';
+        state.password = '';
+        state.re_password = '';
         state.sign_up_list = false;
       }
     },
     signUpBtn (state, e) {
+      stopAction(e);
+      state.email = '';
+      state.password = '';
       if (state.sign_up_list === false) {
         state.sign_up_list = true;
       } else {
     // 회원가입 모달에서 입력한 비밀번호와 비밀번호 확인란이 동일하면 패스하고 아니면 경고창 띄움.
         if (state.rePassword !== state.password) {
           alert('비밀번호를 확인해주세요');
-          stopAction(e);
         }
       }
     },
@@ -342,6 +360,7 @@ export const store = new Vuex.Store({
         var address = 'http://api.openweathermap.org/data/2.5/weather?lat=' + lat + '&lon=' + lon + '&units=metric&APPID=f63c992320644b675405158f284ba653';
         Vue.axios.get(address).then((response) => {
           var weather = response.data.weather[0].icon.slice(0, -1);
+          console.log(weather);
           if (weather === '01') {
             weather = 'Sunny';
           } else if (weather === '02' || '03' || '04') {
@@ -357,5 +376,10 @@ export const store = new Vuex.Store({
         });
       });
     }
+    // fireBase: function ({commit}) {
+    //   Vue.axios.get('http://ip-api.com/json').then((response) => {
+    //     console.log(response);
+    //   });
+    // }
   }
 });

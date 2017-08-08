@@ -9,7 +9,7 @@
           input#email.sign-input(type='email', :value="email" @input="inputText" name='id(email)', placeholder='이메일 입력창')
         li(v-show='signUpList')
           label(for='user-name') User Name
-          input#user-name.sign-input(type='name', name='username', placeholder='닉네임 입력창')
+          input#user-name.sign-input(type='name', name='username', placeholder='닉네임 입력창', :value="userName", @input="inputText")
         li
           label(for='password') Password
           input#password.sign-input(type='password', name='password', @input="inputPassword" :value="password" placeholder='비밀번호 입력창')
@@ -38,13 +38,11 @@ export default {
       'password',
       'rePassWord',
       'showModal',
-      'signUpList'
+      'signUpList',
+      'userName'
     ])
   },
   methods: {
-    showModal () {
-      this.$store.commit('showModal');
-    },
     closeModal () {
       this.$store.commit('closeModal');
     },

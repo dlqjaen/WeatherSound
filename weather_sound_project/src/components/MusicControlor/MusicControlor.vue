@@ -15,7 +15,7 @@
     //- 뮤직플레이어 진행 바
     .music-time
       span.music-currnet-time {{currentTime}}
-      input.music-time-line(type="range" :value='prograss', max='100', tabindex='0' aria-label="곡 진행 상태바" @mouseup="setTime")
+      input.music-time-line(type="range" :value='prograss', max='100', tabindex='0' aria-label="곡 진행 상태바" @mousemove="setTime")
       span.music-max-time {{runningTime}}
 </template>
 
