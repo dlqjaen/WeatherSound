@@ -43,13 +43,20 @@ export const store = new Vuex.Store({
     // -----------------------------------------------------------메인페이지 데이터
     show_modal: false,
     login_after_list: false,
+    currentCity: null,
+    currentWeather: null,
+    geo: null,
+    background_img: null,
     // -----------------------------------------------------------로그인 데이터
     email: '',
     password: '',
     userName: '',
     sign_up_list: false,
+    login_check: false,
     // -----------------------------------------------------------회원가입 데이터
     re_password: '',
+    members: [],
+    sign_up_check: false,
     // -----------------------------------------------------------뮤직플레이어 데이터
     // 뮤직플레이어 곡 정보에서 곡 제목이 할당되는 속성
     music_title: '',
@@ -58,7 +65,7 @@ export const store = new Vuex.Store({
     // 재생 버튼에 할당되는 클래스명 pause아이콘과 play아이콘이 토글로 할당
     toggle_play: 'fa-play',
     // 볼륨 버튼에 할당되는 클래스명 음소거 아이콘과 소리아이콘이 토글로 할당
-    toggle_volum: 'fa-volume-up',
+    toggle_volume: 'fa-volume-up',
     // 곡의 현재 플레이 시간이 할당되는 속성
     currentTime: '',
     // 곡의 현재 플레이 진행도가 보이도록 바의 움직임이 할당되는 속성 1 ~ 100
@@ -66,7 +73,7 @@ export const store = new Vuex.Store({
     min: 0,
     sec: 0,
     // 볼륨의 크기가 할당되는 속성 1 ~ 100
-    volum: 100,
+    volume: 100,
     // 곡의 러닝타임이 할당되는 속성
     runningTime: '',
     // repeat 아이콘의 스타일이 토글로 할당되는 객체
@@ -100,9 +107,7 @@ export const store = new Vuex.Store({
         artist: 'MC몽',
         src: 'https://firebasestorage.googleapis.com/v0/b/todo-68dcb.appspot.com/o/MC%E1%84%86%E1%85%A9%E1%86%BC-%E1%84%82%E1%85%A5%E1%84%8B%E1%85%A6%E1%84%80%E1%85%A6%20%E1%84%8A%E1%85%B3%E1%84%82%E1%85%B3%E1%86%AB%20%E1%84%91%E1%85%A7%E1%86%AB%E1%84%8C%E1%85%B5.mp3?alt=media&token=75daef23-3afa-4e8b-94b9-1501943d5b0d'
       }
-    ],
-    currentCity: null,
-    currentWeather: null
+    ]
   },
   getters: {
     // -----------------------------------------------------------메인페이지 getters
@@ -111,6 +116,18 @@ export const store = new Vuex.Store({
     },
     loginAfterList (state) {
       return state.login_after_list;
+    },
+    getCity (state) {
+      return state.currentCity;
+    },
+    getWeather (state) {
+      return state.currentWeather;
+    },
+    getGeo (state) {
+      return state.geo;
+    },
+    backgroundImg (state) {
+      return state.background_img;
     },
     // -----------------------------------------------------------로그인 getters
     email (state) {
@@ -136,11 +153,11 @@ export const store = new Vuex.Store({
     musicArtist (state) {
       return state.music_artist;
     },
-    toggleVolum (state) {
-      return state.toggle_volum;
+    toggleVolume (state) {
+      return state.toggle_volume;
     },
-    volum (state) {
-      return state.volum;
+    volume (state) {
+      return state.volume;
     },
     activeAddBtn (state) {
       return state.active_add_btn;
@@ -159,18 +176,13 @@ export const store = new Vuex.Store({
     },
     runningTime (state) {
       return state.runningTime;
-    },
-    getCity (state) {
-      return state.currentCity;
-    },
-    getWeather (state) {
-      return state.currentWeather;
     }
   },
   mutations: {
     // -----------------------------Main.vue------------------------------------
     showModal (state) {
       state.show_modal = true;
+      state.sign_up_list = false;
     },
     // -----------------------------LoginAfterMain.vue------------------------------------
     loginAfterList (state) {
@@ -180,19 +192,23 @@ export const store = new Vuex.Store({
     closeModal (state) {
       state.show_modal = false;
     },
-    checkPassword (state, e) {
+    loginBtn (state, e) {
       stopAction(e);
       if (state.sign_up_list === false) {
+        var emailCheck = /[0-9a-zA-Z][_0-9a-zA-Z-]*@[_0-9a-zA-Z-]+(\.[_0-9a-zA-Z-]+){1,2}$/;
+        var passwordCheck = /^.*(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/;
         if (state.email.trim() === '') {
           alert('이메일을 입력해 주세요.');
-        }
+        } else if (!emailCheck.test(state.email)) {
+          alert('이메일은 영문,숫자로 @와 .이 있어야 합니다.');
+        } else if (!passwordCheck.test(state.password)) {
         // 정규표현식을 활용하여 문자, 숫자, 특수문자 사용해야 함.
-        var passwordCheck = /^.*(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/;
-        if (!passwordCheck.test(state.password)) {
           alert('비밀번호는 문자, 숫자, 특수 문자를 조합하여 입력해주세요.');
           // 비밀번호는 8자리에서 16자리 사이로 써야 함.
         } else if (state.password.length < 8 || state.password.length > 16) {
           alert('비밀번호는 8자리 이상, 16자리 이하로 입력해주세요');
+        } else {
+          state.login_check = true;
         }
       } else {
         state.email = '';
@@ -204,14 +220,33 @@ export const store = new Vuex.Store({
     },
     signUpBtn (state, e) {
       stopAction(e);
-      state.email = '';
-      state.password = '';
+      var passwordCheck = /^.*(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/;
       if (state.sign_up_list === false) {
         state.sign_up_list = true;
       } else {
-    // 회원가입 모달에서 입력한 비밀번호와 비밀번호 확인란이 동일하면 패스하고 아니면 경고창 띄움.
-        if (state.rePassword !== state.password) {
+        if (state.email.trim() === '') {
+          alert('이메일을 입력해 주세요.');
+        } else if (state.userName.trim() === '') {
+          alert('닉네임을 입력해 주세요.');
+        } else if (state.password.trim() === '') {
+          alert('비밀번호를 입력해주세요');
+        } else if (state.re_password !== state.password) {
+          // 회원가입 모달에서 입력한 비밀번호와 비밀번호 확인란이 동일하면 패스하고 아니면 경고창 띄움.
           alert('비밀번호를 확인해주세요');
+        } else if (!passwordCheck.test(state.password)) {
+          alert('비밀번호는 문자, 숫자, 특수 문자를 조합하여 입력해주세요.');
+          // 비밀번호는 8자리에서 16자리 사이로 써야 함.
+        } else if (state.password.length < 8 || state.password.length > 16) {
+          alert('비밀번호는 8자리 이상, 16자리 이하로 입력해주세요');
+        } else {
+          for (var i = 0, l = state.members.length; i < l; i++) {
+            if (state.email === state.members[i].email) {
+              alert('이미 회원가입된 이메일 입니다.');
+              return;
+            }
+          }
+          console.log(state.email, state.members[10].email);
+          state.sign_up_check = true;
         }
       }
     },
@@ -219,11 +254,14 @@ export const store = new Vuex.Store({
     inputText (state, e) {
       state.email = e.target.value;
     },
+    inputUserName (state, e) {
+      state.userName = e.target.value;
+    },
     inputPassword (state, e) {
       state.password = e.target.value;
     },
-    inputRepPassword (state, e) {
-      state.repPassword = e.target.value;
+    inputRePassword (state, e) {
+      state.re_password = e.target.value;
     },
     // -----------------------------MusicPlayer.vue------------------------------------
     init (state) {
@@ -252,28 +290,28 @@ export const store = new Vuex.Store({
     },
     // 뮤직플레이어의 소리값을 0 또는 100으로 변경해주는 토글 함수 (소리업/음소거 아이콘도 변경)
     volumeOff (state) {
-      if (state.toggle_volum !== 'fa-volume-off') {
-        state.toggle_volum = 'fa-volume-off';
+      if (state.toggle_volume !== 'fa-volume-off') {
+        state.toggle_volume = 'fa-volume-off';
         musicPlayer.volume = 0;
-      } else if (state.toggle_volum === 'fa-volume-off') {
-        if (state.volum < 99) {
-          state.toggle_volum = 'fa-volume-down';
+      } else if (state.toggle_volume === 'fa-volume-off') {
+        if (state.volume < 99) {
+          state.toggle_volume = 'fa-volume-down';
         } else {
-          state.toggle_volum = 'fa-volume-up';
+          state.toggle_volume = 'fa-volume-up';
         }
-        musicPlayer.volume = state.volum / 100;
+        musicPlayer.volume = state.volume / 100;
       }
     },
     // 볼륨을 설정해주는 함수
     setVolume (state, e) {
-      state.volum = e.target.value;
-      musicPlayer.volume = e.target.value / 100;
-      if (state.volum < 1) {
-        state.toggle_volum = 'fa-volume-off';
-      } else if ((state.volum > 0) && (state.volum < 100)) {
-        state.toggle_volum = 'fa-volume-down';
-      } else if (state.volum > 99) {
-        state.toggle_volum = 'fa-volume-up';
+      state.voluem = e.target.value;
+      musicPlayer.volumee = e.target.value / 100;
+      if (state.volume < 1) {
+        state.toggle_volume = 'fa-volume-off';
+      } else if ((state.volume > 0) && (state.volume < 100)) {
+        state.toggle_volume = 'fa-volume-down';
+      } else if (state.volume > 99) {
+        state.toggle_volume = 'fa-volume-up';
       }
     },
     // 현재 곡을 마이리스트에 추가해주는 함수(현재 아이콘 변화만 구현)
@@ -343,43 +381,117 @@ export const store = new Vuex.Store({
       state.prograss = e.target.value;
       musicPlayer.currentTime = (musicPlayer.duration / 100 * e.target.value);
     },
-    getCity (state, e) {
+    setCity (state, e) {
       state.currentCity = e;
     },
-    getWeather (state, e) {
+    setWeather (state, e) {
       state.currentWeather = e;
+    },
+    setGeo (state, e) {
+      state.geo = e;
     }
   },
   actions: {
     getCityAction: function ({commit}) {
-    // 서버통신을 위한 axios 코드
-      Vue.axios.get('http://ip-api.com/json').then((response) => {
-        commit('getCity', response.data.city);
-        var lat = response.data.lat;
-        var lon = response.data.lon;
-        var address = 'http://api.openweathermap.org/data/2.5/weather?lat=' + lat + '&lon=' + lon + '&units=metric&APPID=f63c992320644b675405158f284ba653';
-        Vue.axios.get(address).then((response) => {
-          var weather = response.data.weather[0].icon.slice(0, -1);
-          console.log(weather);
-          if (weather === '01') {
-            weather = 'Sunny';
-          } else if (weather === '02' || '03' || '04') {
-            weather = 'Cloudy';
-          } else if (weather === '09' || '10' || '11') {
-            weather = 'Rainny';
-          } else if (weather === '13') {
-            weather = 'Snow';
-          } else if (weather === '50') {
-            weather = 'Mist';
-          }
-          commit('getWeather', weather);
+      // 서버통신을 위한 axios 코드
+      Vue.axios.get('http://ip-api.com/json')
+      .then((response) => {
+        commit('setCity', response.data.city);
+        commit('setGeo', {
+          lat: response.data.lat,
+          lon: response.data.lon
         });
       });
+    },
+    getWeatherAction: function (store) {
+      var address = 'http://api.openweathermap.org/data/2.5/weather?lat=' + store.state.geo.lat + '&lon=' + store.state.geo.lon + '&units=metric&APPID=f63c992320644b675405158f284ba653';
+      Vue.axios.get(address).then((response) => {
+        var weather = response.data.weather[0].icon.slice(0, -1);
+        if (weather === '01') {
+          weather = 'Sunny';
+        } else if (weather === '02' || '03' || '04') {
+          weather = 'Cloudy';
+        } else if (weather === '09' || '10' || '11') {
+          weather = 'Rainny';
+        } else if (weather === '13') {
+          weather = 'Snow';
+        } else if (weather === '50') {
+          weather = 'Mist';
+        }
+        console.log(weather);
+        store.commit('setWeather', weather);
+      });
+    },
+    fireBase: function ({commit}) {
+      Vue.axios.get('https://weather-sound.com/api/member/signup').then((response) => {
+        console.log(response);
+      });
+    },
+    backgroundImg: function (store) {
+      Vue.axios.get('https://api.unsplash.com/photos/random/?client_id=7c9e74548c6a6e5faa509c665e9e0f9da156e9695d4552d2c115b59743208024', {
+        params: {
+          query: store.state.currentWeather,
+          count: 1
+        }
+      }).then((response) => {
+        for (var i = 0, l = response.data.length; i < l; i++) {
+          if (response.data[i].width > response.data[i].height) {
+            store.state.background_img = {
+              'background-image': 'url("' + response.data[i].links.download + '")',
+              'background-size': 'cover',
+              'background-repeat': 'no-repeat',
+              'background-position': 'center'
+            };
+            break;
+          }
+        }
+        console.log(store.state.background_img.background);
+      });
+    },
+    signUpPost: function (store, e) {
+      store.commit('signUpBtn', e);
+      if (store.state.sign_up_check) {
+        Vue.axios.post('https://weather-sound.com/api/member/signup/', {
+          'email': store.state.email,
+          'nickname': store.state.userName,
+          'password1': store.state.password,
+          'password2': store.state.re_password
+        }).then((response) => {
+          store.state.email = '';
+          store.state.password = '';
+          store.state.userName = '';
+          store.state.re_password = '';
+          store.dispatch('signUpGet');
+          store.state.show_modal = false;
+        });
+      }
+    },
+    signInPost: function (store, e) {
+      store.commit('loginBtn', e);
+      console.log(store.state.login_check);
+      if (store.state.login_check) {
+        Vue.axios.post('https://weather-sound.com/api/member/login/', {
+          'email': store.state.email,
+          'password': store.state.password
+        }).then((response) => {
+          console.log(response);
+          store.state.email = '';
+          store.state.password = '';
+          store.state.show_modal = false;
+          store.state.login_after_list = true;
+        });
+      }
+    },
+    signUpGet: function (store) {
+      Vue.axios.get('https://weather-sound.com/api/member/signup/').then((response) => {
+        for (var i = 0, l = response.data.results.length; i < l; i++) {
+          store.state.members.push({
+            email: response.data.results[i].email,
+            username: response.data.results[i].username
+          });
+        }
+        console.log(store.state.members);
+      });
     }
-    // fireBase: function ({commit}) {
-    //   Vue.axios.get('http://ip-api.com/json').then((response) => {
-    //     console.log(response);
-    //   });
-    // }
   }
 });

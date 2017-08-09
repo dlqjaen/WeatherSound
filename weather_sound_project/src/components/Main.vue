@@ -11,7 +11,7 @@
       li.menu-list.weather-info
         | {{getCity}} / {{getWeather}}
       li.menu-list.link-list
-        label.login-btn(for='login', tabindex='0' @click="showModal") Login
+        label.login-btn(for='login', tabindex='0' @click="showModal" v-show="!loginAfterList") Login
         button.login.a11y-hidden.hide(type='bntton')
       LoginAfterMain
 </template>
@@ -28,7 +28,8 @@ export default {
   computed: {
     ...mapGetters([
       'getCity',
-      'getWeather'
+      'getWeather',
+      'loginAfterList'
     ])
   },
   methods: {
@@ -37,10 +38,24 @@ export default {
     },
     getCityAction () {
       this.$store.dispatch('getCityAction');
+    },
+    getWeatherAction () {
+      this.$store.dispatch('getWeatherAction');
+    },
+    backgroundImg () {
+      this.$store.dispatch('backgroundImg');
+    },
+    signUpGet () {
+      this.$store.dispatch('signUpGet');
     }
   },
-  mounted () {
+  beforeMount () {
     this.getCityAction();
+    this.signUpGet();
+  },
+  beforeUpdate () {
+    this.getWeatherAction();
+    // this.backgroundImg();
   }
 };
 </script>

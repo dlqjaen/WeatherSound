@@ -9,21 +9,22 @@
           input#email.sign-input(type='email', :value="email" @input="inputText" name='id(email)', placeholder='이메일 입력창')
         li(v-show='signUpList')
           label(for='user-name') User Name
-          input#user-name.sign-input(type='name', name='username', placeholder='닉네임 입력창', :value="userName", @input="inputText")
+          input#user-name.sign-input(type='name', name='username', placeholder='닉네임 입력창', :value="userName", @input="inputUserName")
         li
           label(for='password') Password
           input#password.sign-input(type='password', name='password', @input="inputPassword" :value="password" placeholder='비밀번호 입력창')
         li(v-show='signUpList')
           label(for='password-check') Password Check
-          input#password-check.sign-input(type='password', name='repPassword', @input="inputRepPassword" :value="rePassWord" placeholder='비밀번호 입력확인창')
+          input#password-check.sign-input(type='password', name='repPassword', @input="inputRePassword" :value="rePassWord" placeholder='비밀번호 입력확인창')
         li
-          input.sign-button(type='submit', aria-label='로그인 버튼', value='Sign In' @click="checkPassword")
+          input.sign-button(type='submit', aria-label='로그인 버튼', value='Sign In' @click="signInPost")
         li
-          button.sign-button(type='button', aria-label='회원가입 버튼' @click="signUpBtn") Sign Up
-        li
-          button.sign-button.facebook(type='button', aria-label='페이북으로 로그인 버튼')
-            i.fa.fa-facebook-square.facebook-logo(aria-hidden='true')
-            | Facebook
+          input.sign-button(type='submit', aria-label='회원가입 버튼', value="Sign Up" @click="signUpPost")
+        .fb-login-button(data-max-rows="1" data-size="large" data-button-type="login_with" data-show-faces="false" data-auto-logout-link="false" data-use-continue-as="false" aria-label="페이스북 로그인")
+          //- <fb:login-button class="sign-button facebook" type='button' aria-label='페이북으로 로그인 버튼' scope="public_profile,email" onlogin="checkLoginState();">
+          //-   i.fa.fa-facebook-square.facebook-logo(aria-hidden='true')
+          //-   | Facebook
+          //- </fb:login-button>
 </template>
 
 
@@ -46,21 +47,24 @@ export default {
     closeModal () {
       this.$store.commit('closeModal');
     },
-    signUpBtn (e) {
-      this.$store.commit('signUpBtn', e);
+    signUpPost (e) {
+      this.$store.dispatch('signUpPost', e);
     },
-    checkPassword: function (e) {
-      this.$store.commit('checkPassword', e);
+    signInPost (e) {
+      this.$store.dispatch('signInPost', e);
+    },
+    inputUserName (e) {
+      this.$store.commit('inputUserName', e);
     },
     // 이메일, 패스워드가 vue에 보여질 수 있게 작성한 메서드, 재사용 가능하므로 합쳐야 함
-    inputText: function (e) {
+    inputText (e) {
       this.$store.commit('inputText', e);
     },
-    inputPassword: function (e) {
+    inputPassword (e) {
       this.$store.commit('inputPassword', e);
     },
-    inputRepPassword: function (e) {
-      this.$store.commit('inputRepPassword', e);
+    inputRePassword (e) {
+      this.$store.commit('inputRePassword', e);
     }
   }
 };
@@ -95,11 +99,11 @@ export default {
 .sign-button{
   cursor: pointer;
   border-radius: 5px;
-  padding: 7px 0;
   border: none;
   font-size: 1.6rem;
   color: white;
-  width: 80%;
+  width: 224px;
+  height: 40px;
   background: #e56b6b;
 }
 .input-box{
@@ -111,12 +115,6 @@ export default {
   transform: translateY(-50%) translateX(-50%);
 }
 .input-box li{
-  margin-bottom: 5%;
-}
-.facebook{
-  background-color: rgb(59,89,152);
-}
-.facebook-logo{
-  margin-right: 10px;
+  margin-bottom: 20px;
 }
 </style>

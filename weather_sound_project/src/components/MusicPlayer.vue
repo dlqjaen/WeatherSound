@@ -7,7 +7,7 @@
     //- 뮤직플레이어를 컨트롤하는 영역
     MusicControlor
     //- 뮤직플레이어 볼륨 바
-    MusicVolum
+    MusicVolume
 </template>
 
 <script>
@@ -15,12 +15,12 @@
 import Vue from 'vue';
 import MusicInfo from './MusicControlor/MusicInfo';
 import MusicControlor from './MusicControlor/MusicControlor';
-import MusicVolum from './MusicControlor/MusicVolum';
+import MusicVolume from './MusicControlor/MusicVolume';
 
 export default {
   name: 'MusicPlayer',
   components: {
-    MusicInfo, MusicVolum, MusicControlor
+    MusicInfo, MusicVolume, MusicControlor
   },
   mounted () {
     this.$store.commit('init');

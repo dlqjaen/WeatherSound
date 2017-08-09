@@ -1,5 +1,5 @@
 <template lang="pug">
-  .wrapper(v-cloak)
+  .wrapper(v-cloak, :style="backgroundImg")
     main-header
     recomend-music
     login-modal
@@ -17,12 +17,18 @@ import Vue from 'vue';
 import axios from 'axios';
 // axios 사용준비
 import VueAxios from 'vue-axios';
+import {mapGetters} from 'vuex';
 
 Vue.use(VueAxios, axios);
 export default {
   name: 'app',
   components: {
     MainHeader, RecomendMusic, MusicPlayer, LoginModal
+  },
+  computed: {
+    ...mapGetters([
+      'backgroundImg'
+    ])
   }
 };
 </script>
@@ -31,7 +37,7 @@ export default {
 // *{
 //   transition: all 0.5s ease-in-out;
 // }
-[v-cloack]{
+[v-cloak]{
   display: none;
 }
 html{
@@ -42,9 +48,6 @@ html{
 body{
   overflow: hidden;
   margin: 0;
-  background: url('./assets/sunny-01.jpg') no-repeat;
-  background-size: cover;
-  background-position: center;
   color: white;
 }
 a{
