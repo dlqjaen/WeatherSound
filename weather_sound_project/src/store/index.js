@@ -31,11 +31,16 @@ const readableDuration = function (state, seconds) {
   return state.min + ':' + state.sec;
 };
 // 재생될 곡의 주소, 순서, 곡명, 곡아티스트를 뮤직플레이어에 할당 하는 함수
-const musicSeting = function (state, index) {
-  musicPlayer.src = state.sun[index].src;
+const musicSeting = function (state, index, init = false) {
+  musicPlayer.src = state.music_data[index].source_music;
   musicPlayer.index = index;
-  state.music_title = state.sun[index].title;
-  state.music_artist = state.sun[index].artist;
+  state.music_img = state.music_data[index].img_music;
+  state.music_title = state.music_data[index].name_music;
+  state.music_artist = state.music_data[index].name_artist;
+  if (!init) {
+    state.toggle_play = 'fa-pause';
+    musicPlayer.play();
+  }
 };
 export const store = new Vuex.Store({
   // strict: process.env.NODE_ENV !== 'production',
@@ -55,13 +60,14 @@ export const store = new Vuex.Store({
     login_check: false,
     // -----------------------------------------------------------회원가입 데이터
     re_password: '',
-    members: [],
+    // members: [],
     sign_up_check: false,
     // -----------------------------------------------------------뮤직플레이어 데이터
     // 뮤직플레이어 곡 정보에서 곡 제목이 할당되는 속성
     music_title: '',
     // 뮤직플레이어 곡 정보에서 곡 아티스트가 할당되는 속성
     music_artist: '',
+    music_img: '',
     // 재생 버튼에 할당되는 클래스명 pause아이콘과 play아이콘이 토글로 할당
     toggle_play: 'fa-play',
     // 볼륨 버튼에 할당되는 클래스명 음소거 아이콘과 소리아이콘이 토글로 할당
@@ -76,6 +82,7 @@ export const store = new Vuex.Store({
     volume: 100,
     // 곡의 러닝타임이 할당되는 속성
     runningTime: '',
+    // repeat_label: '한 곡 반복 듣기 설정버튼: 클릭시 설정함',
     // repeat 아이콘의 스타일이 토글로 할당되는 객체
     active: {
       color: '#ffffff'
@@ -85,6 +92,8 @@ export const store = new Vuex.Store({
       transform: 'rotate(0)',
       transition: 'all 0.2s ease-in-out'
     },
+    music_data: [],
+    next_music_api: '',
     // 임시 데이터 객체
     sun: [
       {
@@ -147,6 +156,12 @@ export const store = new Vuex.Store({
       return state.userName;
     },
     // -----------------------------------------------------------뮤직플레이어 getters
+    getMusic (state) {
+      return state.music_data;
+    },
+    musicImg (state) {
+      return state.music_img;
+    },
     musicTitle (state) {
       return state.music_title;
     },
@@ -165,6 +180,9 @@ export const store = new Vuex.Store({
     togglePlay (state) {
       return state.toggle_play;
     },
+    // repeatLabel (state) {
+    //   return state.repeat_label;
+    // },
     active (state) {
       return state.active;
     },
@@ -183,6 +201,9 @@ export const store = new Vuex.Store({
     showModal (state) {
       state.show_modal = true;
       state.sign_up_list = false;
+    },
+    setBackgroundData (state, setValue) {
+      state.background_img = setValue;
     },
     // -----------------------------LoginAfterMain.vue------------------------------------
     loginAfterList (state) {
@@ -223,7 +244,7 @@ export const store = new Vuex.Store({
       var passwordCheck = /^.*(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/;
       if (state.sign_up_list === false) {
         state.sign_up_list = true;
-      } else {
+      } else if (state.sign_up_list === true) {
         if (state.email.trim() === '') {
           alert('이메일을 입력해 주세요.');
         } else if (state.userName.trim() === '') {
@@ -245,7 +266,6 @@ export const store = new Vuex.Store({
               return;
             }
           }
-          console.log(state.email, state.members[10].email);
           state.sign_up_check = true;
         }
       }
@@ -265,16 +285,8 @@ export const store = new Vuex.Store({
     },
     // -----------------------------MusicPlayer.vue------------------------------------
     init (state) {
-      // 초기 뮤직플레이어에 첫 번째 곡을 셋팅
-      musicPlayer.src = state.sun[0].src;
-      // 뮤직플레이어에 현재 순서를 기억
-      musicPlayer.index = 0;
-      // 곡의 제목을 속성에 할당
-      state.music_title = state.sun[0].title;
-      // 곡의 아티스트를 속성에 할당
-      state.music_artist = state.sun[0].artist;
       musicPlayer.addEventListener('ended', function () {
-        for (let i = 0, l = state.sun.length; i < l; i++) {
+        for (let i = 0, l = state.music_data.length; i < l; i++) {
           if ((musicPlayer.index === i) && !(i === l - 1)) {
             musicSeting(state, ++i);
             break;
@@ -283,9 +295,7 @@ export const store = new Vuex.Store({
             break;
           }
         }
-        state.toggle_play = 'fa-pause';
         showPrograss(state);
-        musicPlayer.play();
       });
     },
     // 뮤직플레이어의 소리값을 0 또는 100으로 변경해주는 토글 함수 (소리업/음소거 아이콘도 변경)
@@ -304,8 +314,8 @@ export const store = new Vuex.Store({
     },
     // 볼륨을 설정해주는 함수
     setVolume (state, e) {
-      state.voluem = e.target.value;
-      musicPlayer.volumee = e.target.value / 100;
+      state.volume = e.target.value;
+      musicPlayer.volume = e.target.value / 100;
       if (state.volume < 1) {
         state.toggle_volume = 'fa-volume-off';
       } else if ((state.volume > 0) && (state.volume < 100)) {
@@ -313,6 +323,26 @@ export const store = new Vuex.Store({
       } else if (state.volume > 99) {
         state.toggle_volume = 'fa-volume-up';
       }
+    },
+    volumeKeyValueControlor (state, e) {
+      if (e.keyCode === 37) {
+        state.volume = state.volume - 5;
+      } else if (e.keyCode === 39) {
+        state.volume = state.volume + 5;
+      }
+      if (state.volume < 0) {
+        state.volume = 0;
+      } else if (state.volume > 100) {
+        state.volume = 100;
+      }
+      if (state.volume < 1) {
+        state.toggle_volume = 'fa-volume-off';
+      } else if ((state.volume > 0) && (state.volume < 100)) {
+        state.toggle_volume = 'fa-volume-down';
+      } else if (state.volume > 99) {
+        state.toggle_volume = 'fa-volume-up';
+      }
+      musicPlayer.volume = state.volume / 100;
     },
     // 현재 곡을 마이리스트에 추가해주는 함수(현재 아이콘 변화만 구현)
     addToMyList (state) {
@@ -335,7 +365,7 @@ export const store = new Vuex.Store({
     },
     // 다음 곡을 재생해주는 함수
     nextMusic (state) {
-      for (let i = 0, l = state.sun.length; i < l; i++) {
+      for (let i = 0, l = state.music_data.length; i < l; i++) {
         if ((musicPlayer.index === i) && !(i === l - 1)) {
           musicSeting(state, ++i);
           break;
@@ -344,14 +374,12 @@ export const store = new Vuex.Store({
           break;
         }
       }
-      state.toggle_play = 'fa-pause';
       showPrograss(state);
-      musicPlayer.play();
     },
     // 이전 곡을 재생해주는 함수
     prevMusic (state) {
-      for (let i = 0, l = state.sun.length; i < l; i++) {
-        let j = state.sun.length;
+      for (let i = 0, l = state.music_data.length; i < l; i++) {
+        let j = state.music_data.length;
         if (musicPlayer.index === i) {
           if (i !== 0) {
             musicSeting(state, --i);
@@ -362,15 +390,14 @@ export const store = new Vuex.Store({
           }
         }
       }
-      musicPlayer.play();
       showPrograss(state);
-      state.toggle_play = 'fa-pause';
     },
     // 한 곡 반복재생을 설정해주는 함수
     repeat (state) {
       if (musicPlayer.loop === false) {
         musicPlayer.loop = true;
         state.active.color = '#3b99fc';
+        // state.repeat_label = '한 곡 반복 듣기 설정버튼: 클릭시 설정 해제함';
       } else if (musicPlayer.loop === true) {
         musicPlayer.loop = false;
         state.active.color = '#ffffff';
@@ -381,6 +408,19 @@ export const store = new Vuex.Store({
       state.prograss = e.target.value;
       musicPlayer.currentTime = (musicPlayer.duration / 100 * e.target.value);
     },
+    musicRunningKeyControlor (state, e) {
+      if (e.keyCode === 37) {
+        state.prograss = state.prograss - 5;
+      } else if (e.keyCode === 39) {
+        state.prograss = state.prograss + 5;
+      }
+      if (state.prograss < 0) {
+        state.prograss = 0;
+      } else if (state.prograss > 100) {
+        state.prograss = 100;
+      }
+      musicPlayer.currentTime = (musicPlayer.duration / 100 * state.prograss);
+    },
     setCity (state, e) {
       state.currentCity = e;
     },
@@ -389,6 +429,20 @@ export const store = new Vuex.Store({
     },
     setGeo (state, e) {
       state.geo = e;
+    },
+    pushMusic (state, e) {
+      for (var i = 0, l = e.results.length; i < l; i++) {
+        store.state.music_data.push(e.results[i]);
+      };
+    },
+    signAfterInit (state) {
+      state.email = '';
+      state.password = '';
+      state.userName = '';
+      state.re_password = '';
+      // dispatch('signUpGet');
+      state.show_modal = false;
+      state.login_after_list = true;
     }
   },
   actions: {
@@ -409,43 +463,41 @@ export const store = new Vuex.Store({
         var weather = response.data.weather[0].icon.slice(0, -1);
         if (weather === '01') {
           weather = 'Sunny';
-        } else if (weather === '02' || '03' || '04') {
+        } else if (weather === '02' || weather === '03' || weather === '04') {
           weather = 'Cloudy';
-        } else if (weather === '09' || '10' || '11') {
-          weather = 'Rainny';
+        } else if (weather === '09' || weather === '10' || weather === '11') {
+          weather = 'Rainy';
         } else if (weather === '13') {
-          weather = 'Snow';
+          weather = 'Snowy';
         } else if (weather === '50') {
-          weather = 'Mist';
+          weather = 'Foggy';
         }
-        console.log(weather);
         store.commit('setWeather', weather);
       });
     },
-    fireBase: function ({commit}) {
-      Vue.axios.get('https://weather-sound.com/api/member/signup').then((response) => {
-        console.log(response);
-      });
-    },
+    // fireBase: function ({commit}) {
+    //   Vue.axios.get('https://weather-sound.com/api/member/signup').then((response) => {
+    //     console.log(response);
+    //   });
+    // },
     backgroundImg: function (store) {
       Vue.axios.get('https://api.unsplash.com/photos/random/?client_id=7c9e74548c6a6e5faa509c665e9e0f9da156e9695d4552d2c115b59743208024', {
         params: {
           query: store.state.currentWeather,
-          count: 1
+          count: 1,
+          w: 1024,
+          h: 700
         }
       }).then((response) => {
-        for (var i = 0, l = response.data.length; i < l; i++) {
-          if (response.data[i].width > response.data[i].height) {
-            store.state.background_img = {
-              'background-image': 'url("' + response.data[i].links.download + '")',
-              'background-size': 'cover',
-              'background-repeat': 'no-repeat',
-              'background-position': 'center'
-            };
-            break;
-          }
-        }
-        console.log(store.state.background_img.background);
+        store.commit('setBackgroundData', {
+          'background-image': 'url("' + response.data[0].links.download + '")',
+          'background-size': 'cover',
+          'background-repeat': 'no-repeat',
+          'background-position': 'center'
+        });
+      })
+      .catch(() => {
+        console.log('배경이미지가 또 뻑났어!!!!!!');
       });
     },
     signUpPost: function (store, e) {
@@ -457,41 +509,78 @@ export const store = new Vuex.Store({
           'password1': store.state.password,
           'password2': store.state.re_password
         }).then((response) => {
-          store.state.email = '';
-          store.state.password = '';
-          store.state.userName = '';
-          store.state.re_password = '';
-          store.dispatch('signUpGet');
-          store.state.show_modal = false;
+          store.commit('signAfterInit');
+        })
+        .catch(() => {
+          alert('이미 가입되어있는 회원입니다.');
         });
       }
     },
     signInPost: function (store, e) {
       store.commit('loginBtn', e);
-      console.log(store.state.login_check);
       if (store.state.login_check) {
         Vue.axios.post('https://weather-sound.com/api/member/login/', {
           'email': store.state.email,
           'password': store.state.password
         }).then((response) => {
           console.log(response);
-          store.state.email = '';
-          store.state.password = '';
-          store.state.show_modal = false;
-          store.state.login_after_list = true;
+          store.commit('signAfterInit');
+        }).catch(() => {
+          alert('일치하는 회원이 없습니다. 다시 확인해 주세요.');
         });
       }
     },
-    signUpGet: function (store) {
-      Vue.axios.get('https://weather-sound.com/api/member/signup/').then((response) => {
-        for (var i = 0, l = response.data.results.length; i < l; i++) {
-          store.state.members.push({
-            email: response.data.results[i].email,
-            username: response.data.results[i].username
+    // signUpGet: function (store) {
+    //   Vue.axios.get('https://weather-sound.com/api/member/signup/').then((response) => {
+    //     console.log(response);
+    //     for (var i = 0, l = response.data.results.length; i < l; i++) {
+    //       store.state.members.push({
+    //         email: response.data.results[i].email,
+    //         username: response.data.results[i].username,
+    //         pk: response.data.results[i].pk
+    //       });
+    //     }
+    //     for (var e = 2, a = Math.ceil(response.data.count / 12) + 1; e < a; e++) {
+    //       Vue.axios.get('https://weather-sound.com/api/member/signup/?page=' + e).then((response) => {
+    //         for (var i = 0, l = response.data.results.length; i < l; i++) {
+    //           store.state.members.push({
+    //             email: response.data.results[i].email,
+    //             username: response.data.results[i].username,
+    //             pk: response.data.results[i].pk
+    //           });
+    //         }
+    //       });
+    //     }
+    //   });
+    // },
+    musicGet: function (store) {
+      Vue.axios.get('https://weather-sound.com/api/music/').then((response) => {
+        store.commit('pushMusic', response.data);
+        for (var e = 2; e < 10; e++) {
+          Vue.axios.get('https://weather-sound.com/api/music//?page=' + e).then((response) => {
+            store.commit('pushMusic', response.data);
+            console.log('성공');
           });
-        }
-        console.log(store.state.members);
+        };
+        musicSeting(store.state, 0, true);
       });
+    },
+    selectMusic: function (store, index) {
+      musicSeting(store.state, index);
+      showPrograss(store.state);
     }
   }
+  // actions: {
+  //   // firebase에 등록되어 있는 모든 데이터들 가지고 와서 mutations로 commit합니다.
+  //   getFirebaseDatabase (store, context) {
+  //     firebase.database.ref('/').on('value', snapshot => {
+  //       context.commit('getDatabase', snapshot.val())
+  //     })
+  //   }
+  // },
+  // mutations: {
+  //   getDatabase (state, payload) {
+  //     console.log(payload)
+  //   }
+  // }
 });

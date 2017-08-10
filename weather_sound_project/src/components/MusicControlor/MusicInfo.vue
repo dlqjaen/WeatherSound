@@ -1,6 +1,6 @@
 <template lang="pug">
   .music-info
-    img.album(src='../../assets/music-album.png', alt='album')
+    img.album(:src='musicImg', alt='현재재생곡 앨범커버')
     p.album-text
       span.music-title {{musicTitle}}
       span.music-singger {{musicArtist}}
@@ -13,7 +13,8 @@ export default {
   computed: {
     ...mapGetters([
       'musicTitle',
-      'musicArtist'
+      'musicArtist',
+      'musicImg'
     ])
   }
 };

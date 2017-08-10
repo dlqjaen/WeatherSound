@@ -2,19 +2,21 @@
   section.main.login-modal(v-show="showModal")
     h2.a11y-hidden 로그인/회원가입 모달창
     form.input-box
-      i.fa.fa-times.close(tabindex='0', aria-hidden='true' @click="closeModal")
+      label.a11y-hidden(for="login-modal-close")
+      button#login-modal-close.close(type="button" @click="closeModal")
+        i.fa.fa-times(aria-hidden='true')
       ul
         li
-          label(for='email') Email
+          label.a11y-hidden(for='email') Email
           input#email.sign-input(type='email', :value="email" @input="inputText" name='id(email)', placeholder='이메일 입력창')
         li(v-show='signUpList')
-          label(for='user-name') User Name
-          input#user-name.sign-input(type='name', name='username', placeholder='닉네임 입력창', :value="userName", @input="inputUserName")
+          label.a11y-hidden(for='user-name') User Name
+          input#user-name.sign-input(type='nickname', name='username', placeholder='닉네임 입력창', :value="userName", @input="inputUserName")
         li
-          label(for='password') Password
+          label.a11y-hidden(for='password') Password
           input#password.sign-input(type='password', name='password', @input="inputPassword" :value="password" placeholder='비밀번호 입력창')
         li(v-show='signUpList')
-          label(for='password-check') Password Check
+          label.a11y-hidden(for='password-check') Password Check
           input#password-check.sign-input(type='password', name='repPassword', @input="inputRePassword" :value="rePassWord" placeholder='비밀번호 입력확인창')
         li
           input.sign-button(type='submit', aria-label='로그인 버튼', value='Sign In' @click="signInPost")
@@ -72,6 +74,7 @@ export default {
 
 <style lang="scss" scoped>
 .login-modal{
+  top: 0;
   z-index: 10000;
   font-size: 1.6rem;
   text-align: center;
@@ -81,6 +84,9 @@ export default {
   background: rgba(0,0,0,0.8);
 }
 .close{
+  background: none;
+  color: white;
+  border: none;
   font-size: 3rem;
   position: absolute;
   padding: 5px;
@@ -88,13 +94,14 @@ export default {
   top: 0;
 }
 .sign-input{
-  width: 60%;
+  width: 224px;
+  height: 40px;
   font-size: 1.4rem;
-  color: white;
+  border: 1px solid rgba(255,255,255, 0.2);
   text-align: center;
   background: none;
-  border: none;
-  border-bottom: 1px solid white;
+  border-radius: 5px;
+  color: white;
 }
 .sign-button{
   cursor: pointer;

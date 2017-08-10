@@ -2,7 +2,7 @@
   .music-volume
     button.music-controlor-btn(@click="volumeOff")
       i.fa(aria-hidden='true' :class="toggleVolume")
-    input.volume-size(type="range" :value='volume' min="0" max='100', aria-label="볼륨 조절바" @mouseup="setVolume")
+    input.volume-size(type="range" :value='volume' min="0" max='100', aria-label="볼륨 조절바" @mouseup="setVolume" @keydown="volumeKeyValueControlor")
 </template>
 
 <script>
@@ -21,6 +21,9 @@ export default {
     },
     setVolume (e) {
       this.$store.commit('setVolume', e);
+    },
+    volumeKeyValueControlor (e) {
+      this.$store.commit('volumeKeyValueControlor', e);
     }
   }
 };

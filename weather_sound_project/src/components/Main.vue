@@ -9,7 +9,7 @@
         a(href='#')
           img.logo(src='../assets/logo.svg', alt='WeatherSound Home Link')
       li.menu-list.weather-info
-        | {{getCity}} / {{getWeather}}
+        p {{getCity}} / {{getWeather}}
       li.menu-list.link-list
         label.login-btn(for='login', tabindex='0' @click="showModal" v-show="!loginAfterList") Login
         button.login.a11y-hidden.hide(type='bntton')
@@ -45,13 +45,17 @@ export default {
     backgroundImg () {
       this.$store.dispatch('backgroundImg');
     },
-    signUpGet () {
-      this.$store.dispatch('signUpGet');
+    // signUpGet () {
+    //   this.$store.dispatch('signUpGet');
+    // },
+    musicGet () {
+      this.$store.dispatch('musicGet');
     }
   },
   beforeMount () {
     this.getCityAction();
-    this.signUpGet();
+    // this.signUpGet();
+    this.musicGet();
   },
   beforeUpdate () {
     this.getWeatherAction();
