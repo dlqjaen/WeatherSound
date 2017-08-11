@@ -47,7 +47,6 @@ export default {
   border: none;
   color: white;
   vertical-align: middle;
-  text-align: left;
   font-size: 1.4rem;
   white-space: nowrap;
   overflow: hidden;

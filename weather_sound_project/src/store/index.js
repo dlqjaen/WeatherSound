@@ -55,6 +55,33 @@ export const store = new Vuex.Store({
     img_profile: null,
     selectUserImg: '',
     showPopup: false,
+    random_background: {
+      sunny: [
+        'https://www.meghantelpner.com/wp-content/uploads/2013/07/2596-sunshine-1920x1080-nature-wallpaper.jpg',
+        'https://i.ytimg.com/vi/BQxBh-Oen1w/maxresdefault.jpg',
+        'https://previews.123rf.com/images/serrnovik/serrnovik1505/serrnovik150500002/39965397-Sunny-beach-with-white-sand-Cancun-Mexico-Stock-Photo.jpg'
+      ],
+      cloudy: [
+        'http://orig05.deviantart.net/db62/f/2012/006/9/b/cloudy_mountains_no_3_by_neonen-d4lh2jx.jpg',
+        'http://wallpapers-hd.eu/wp-content/uploads/2015/02/m303-14-1920x1080.jpg',
+        'http://awesomwallpaper.com/img2/E4A0459FEC59BD8E/cloudy-sky-trees.jpg'
+      ],
+      rainy: [
+        'https://s-media-cache-ak0.pinimg.com/originals/97/24/af/9724af499d514757aba41069eca633f9.jpg',
+        'http://cdn.wallpapersafari.com/20/84/WOE1ok.jpg',
+        'http://www.wallpapermania.eu/download/2015-11/8510/Rainy-day-beautiful-wallpaper-umbrella-in-the-water_1920x1080.jpg'
+      ],
+      snowy: [
+        'https://cdn.suwalls.com/wallpapers/artistic/snowy-trees-16322-1920x1080.jpg',
+        'https://s-media-cache-ak0.pinimg.com/originals/fc/fe/f8/fcfef8d496ff62850d642db024e9e93e.jpg',
+        'https://assets.mutelife.com/wp-content/uploads/2013/03/snowy-vermont-01.jpg'
+      ],
+      foggy: [
+        'http://cdn.wallpapersafari.com/50/11/zWH0KC.jpg',
+        'http://cdn.wallpapersafari.com/80/65/GA1R9s.jpg',
+        'https://i.ytimg.com/vi/gHSeRfGhYS0/maxresdefault.jpg'
+      ]
+    },
     // -----------------------------------------------------------로그인 데이터
     email: '',
     password: '',
@@ -106,29 +133,6 @@ export const store = new Vuex.Store({
       color: '#ffffff'
     },
     music_data: []
-    // 임시 데이터 객체
-    // sun: [
-    //   {
-    //     title: '교생쌤',
-    //     artist: 'NC.A',
-    //     src: 'https://firebasestorage.googleapis.com/v0/b/todo-68dcb.appspot.com/o/NC.A%20-%20%E1%84%80%E1%85%AD%E1%84%89%E1%85%A2%E1%86%BC%E1%84%8A%E1%85%A2%E1%86%B7.mp3.mp3?alt=media&token=2c9c0359-af7b-46e6-a8f9-585c67a9a6fc'
-    //   },
-    //   {
-    //     title: 'Gone',
-    //     artist: '다이나믹듀오',
-    //     src: 'https://firebasestorage.googleapis.com/v0/b/todo-68dcb.appspot.com/o/Dynamic%20Duo%20-%20Gone.mp3?alt=media&token=d1e02113-25c9-4d20-a5b9-8beb9c50bbfb'
-    //   },
-    //   {
-    //     title: '몽환의 숲',
-    //     artist: '키스틱 플로우',
-    //     src: 'https://firebasestorage.googleapis.com/v0/b/todo-68dcb.appspot.com/o/Kinetic%20Flow%20-%20%E1%84%86%E1%85%A9%E1%86%BC%E1%84%92%E1%85%AA%E1%86%AB%E1%84%8B%E1%85%B4%20%E1%84%89%E1%85%AE%E1%87%81.mp3?alt=media&token=9548eddf-9794-483f-9417-f8f8da897e53'
-    //   },
-    //   {
-    //     title: '너에게 쓰는 편지',
-    //     artist: 'MC몽',
-    //     src: 'https://firebasestorage.googleapis.com/v0/b/todo-68dcb.appspot.com/o/MC%E1%84%86%E1%85%A9%E1%86%BC-%E1%84%82%E1%85%A5%E1%84%8B%E1%85%A6%E1%84%80%E1%85%A6%20%E1%84%8A%E1%85%B3%E1%84%82%E1%85%B3%E1%86%AB%20%E1%84%91%E1%85%A7%E1%86%AB%E1%84%8C%E1%85%B5.mp3?alt=media&token=75daef23-3afa-4e8b-94b9-1501943d5b0d'
-    //   }
-    // ]
   },
   getters: {
     // -----------------------------------------------------------메인페이지 getters
@@ -224,7 +228,25 @@ export const store = new Vuex.Store({
       state.sign_up_list = false;
     },
     setBackgroundData (state, setValue) {
-      state.background_img = setValue;
+      var randomNumber = Math.floor(Math.random() * 3);
+      switch (setValue) {
+      case 'Sunny':
+        state.background_img = {'background-image': 'url("' + store.state.random_background.sunny[randomNumber] + '")'};
+        break;
+      case 'Cloudy':
+        state.background_img = {'background-image': 'url("' + store.state.random_background.cloudy[randomNumber] + '")'};
+        break;
+      case 'Rainy':
+        state.background_img = {'background-image': 'url("' + store.state.random_background.rainy[randomNumber] + '")'};
+        break;
+      case 'Snowy':
+        state.background_img = {'background-image': 'url("' + store.state.random_background.snowy[randomNumber] + '")'};
+        break;
+      case 'Foggy':
+        state.background_img = {'background-image': 'url("' + store.state.random_background.foggy[randomNumber] + '")'};
+        break;
+      }
+      console.log(state.background_img);
     },
     closePopup (state) {
       state.showPopup = false;
@@ -279,6 +301,8 @@ export const store = new Vuex.Store({
       var passwordCheck = /^.*(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/;
       if (state.sign_up_list === false) {
         state.sign_up_list = true;
+        state.email = '';
+        state.password = '';
       } else if (state.sign_up_list === true) {
         if (state.email.trim() === '') {
           alert('이메일을 입력해 주세요.');
@@ -466,14 +490,24 @@ export const store = new Vuex.Store({
         store.state.music_data.push(e.results[i]);
       };
     },
-    signAfterInit (state) {
+    signAfterInit (state, login) {
       state.email = '';
       state.password = '';
       state.userName = '';
       state.re_password = '';
-      // dispatch('signUpGet');
+      state.currentPassword = '';
       state.show_modal = false;
-      state.login_after_list = true;
+      if (login) {
+        state.login_after_list = true;
+      } else {
+        state.login_after_list = false;
+        state.user_data = {
+          userInfo: {
+            username: '유저닉네임',
+            img_profile: 'https://s3.ap-northeast-2.amazonaws.com/weather-sound-test-s3-bucket/media/member/basic_profile.png'
+          }
+        };
+      }
     },
     saveUserData (state, e) {
       state.user_data = e;
@@ -507,6 +541,7 @@ export const store = new Vuex.Store({
           weather = 'Foggy';
         }
         store.commit('setWeather', weather);
+        store.commit('setBackgroundData', weather);
       });
     },
     // fireBase: function ({commit}) {
@@ -514,32 +549,32 @@ export const store = new Vuex.Store({
     //     console.log(response);
     //   });
     // },
-    backgroundImg: function (store) {
-      Vue.axios.get('https://api.unsplash.com/photos/random/?client_id=7c9e74548c6a6e5faa509c665e9e0f9da156e9695d4552d2c115b59743208024', {
-        params: {
-          query: store.state.currentWeather,
-          count: 1,
-          w: 1024,
-          h: 700
-        }
-      }).then((response) => {
-        store.commit('setBackgroundData', {
-          'background-image': 'url("' + response.data[0].links.download + '")',
-          'background-size': 'cover',
-          'background-repeat': 'no-repeat',
-          'background-position': 'center'
-        });
-      })
-      .catch(() => {
-        console.log('배경이미지가 또 뻑났어!!!!!!');
-      });
-    },
+    // backgroundImg: function (store) {
+    //   Vue.axios.get('https://api.unsplash.com/photos/random/?client_id=7c9e74548c6a6e5faa509c665e9e0f9da156e9695d4552d2c115b59743208024', {
+    //     params: {
+    //       query: store.state.currentWeather,
+    //       count: 1,
+    //       w: 1024,
+    //       h: 700
+    //     }
+    //   }).then((response) => {
+    //     store.commit('setBackgroundData', {
+    //       'background-image': 'url("' + response.data[0].links.download + '")',
+    //       'background-size': 'cover',
+    //       'background-repeat': 'no-repeat',
+    //       'background-position': 'center'
+    //     });
+    //   })
+    //   .catch(() => {
+    //     console.log('배경이미지가 또 뻑났어!!!!!!');
+    //   });
+    // },
     signUpPost: function (store, e) {
       store.commit('signUpBtn', e);
       if (store.state.sign_up_check) {
         Vue.axios.post('https://weather-sound.com/api/member/signup/', {
           'email': store.state.email,
-          'nickname': store.state.userName,
+          'username': store.state.userName,
           'password1': store.state.password,
           'password2': store.state.re_password
         }).then((response) => {
@@ -549,7 +584,7 @@ export const store = new Vuex.Store({
           }).then((response) => {
             store.commit('saveUserData', response.data);
           });
-          store.commit('signAfterInit');
+          store.commit('signAfterInit', true);
         })
         .catch(() => {
           alert('이미 가입되어있는 회원입니다. 이메일과 닉네임을 변경해주세요.');
@@ -565,35 +600,12 @@ export const store = new Vuex.Store({
         }).then((response) => {
           console.log(response);
           store.commit('saveUserData', response.data);
-          store.commit('signAfterInit');
+          store.commit('signAfterInit', true);
         }).catch(() => {
           alert('일치하는 회원이 없습니다. 다시 확인해 주세요.');
         });
       }
     },
-    // signUpGet: function (store) {
-    //   Vue.axios.get('https://weather-sound.com/api/member/signup/').then((response) => {
-    //     console.log(response);
-    //     for (var i = 0, l = response.data.results.length; i < l; i++) {
-    //       store.state.members.push({
-    //         email: response.data.results[i].email,
-    //         username: response.data.results[i].username,
-    //         pk: response.data.results[i].pk
-    //       });
-    //     }
-    //     for (var e = 2, a = Math.ceil(response.data.count / 12) + 1; e < a; e++) {
-    //       Vue.axios.get('https://weather-sound.com/api/member/signup/?page=' + e).then((response) => {
-    //         for (var i = 0, l = response.data.results.length; i < l; i++) {
-    //           store.state.members.push({
-    //             email: response.data.results[i].email,
-    //             username: response.data.results[i].username,
-    //             pk: response.data.results[i].pk
-    //           });
-    //         }
-    //       });
-    //     }
-    //   });
-    // },
     musicGet: function (store) {
       Vue.axios.get('https://weather-sound.com/api/music/').then((response) => {
         store.commit('pushMusic', response.data);
@@ -642,20 +654,9 @@ export const store = new Vuex.Store({
         }
       }).then((response) => {
         console.log('통신보안!', response);
+        store.commit('closePopup');
+        store.commit('signAfterInit');
       });
     }
   }
-  // actions: {
-  //   // firebase에 등록되어 있는 모든 데이터들 가지고 와서 mutations로 commit합니다.
-  //   getFirebaseDatabase (store, context) {
-  //     firebase.database.ref('/').on('value', snapshot => {
-  //       context.commit('getDatabase', snapshot.val())
-  //     })
-  //   }
-  // },
-  // mutations: {
-  //   getDatabase (state, payload) {
-  //     console.log(payload)
-  //   }
-  // }
 });

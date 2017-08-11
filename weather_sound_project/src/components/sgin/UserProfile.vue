@@ -2,32 +2,32 @@
 //- 팝업창
 section.user-profile.edit-popup(v-show="showPopup")
   h2.a11y-hidden 로그인/회원가입 모달창
+  button.close(type="button" @click="closePopup" aria-label="사용자정보 수정창 닫기")
+    i.fa.fa-times(aria-hidden="true")
   .user-profile-edit-wrapper
     .userprofile-update
       label.user-img-change-btn(for="user-img-change")
         img.current-user-img(:src='userInfo.img_profile', alt='현재 사용자사진')
-      input.a11y-hidden(id="user-img-change" type="file" @change="saveUserImage")
+      input.user_img_input(id="user-img-change" type="file" @change="saveUserImage")
     .profile-edit-input-box
       form.input-box
         ul.edit-userinfo
           li
             p.user-email Email : {{userInfo.email}}
           li
-            label.a11y-hidden(for='username') User name
-            input#user-name.edit-input(:placeholder="'기존 닉네임: '+userInfo.username" type="username", :value="userName", @input="inputUserName" name="username")
+            label.a11y-hidden(for='username-profile') 새로운 유저닉네임 입력창 기존 닉네임: {{userInfo.username}}
+            input.edit-input(:placeholder="'기존 닉네임: '+userInfo.username" type="username", :value="userName", @input="inputUserName" id="username-profile")
           li
-            label.a11y-hidden(for='currentpassword') currentpassword
-            input#currentpassword.edit-input(placeholder="현재 비밀번호" type="password" name="currentpassword" :value="currentPassword" @input="inputCurrentPassword")
+            label.a11y-hidden(for='currentpassword-profile') 현재 비밀번호
+            input.edit-input(placeholder="현재 비밀번호" type="password" id="currentpassword-profile", :value="currentPassword" @input="inputCurrentPassword")
           li
-            label.a11y-hidden(for='newpassword') newpassword
-            input#new-password.edit-input(placeholder="새로운 비밀번호" type="password" @input="inputPassword", :value="password" name="newpassword")
+            label.a11y-hidden(for='newpassword-profile') 새로운 비밀번호
+            input.edit-input(placeholder="새로운 비밀번호" type="password" @input="inputPassword", :value="password" id="newpassword-profile")
           li
-            label.a11y-hidden(for='newpassword-confirm') newpassword-confirm
-            input#newpassword-confirm.edit-input(placeholder="새 비밀번호 확인" type="password" @input="inputRePassword", :value="rePassWord" name="newpassword-confirm")
-        button.profile-update-btn.complete(type="submit" aria-label='개인정보 수정완료 버튼' @click="editComplete") DONE
-        button.profile-update-btn.logout-btn(type='submit' aria-label='로그아웃 버튼' @click="logOut") Logout
-    button(href="").close
-      i.fa.fa-times.close(@click="closePopup" aria-hidden="true")
+            label.a11y-hidden(for='newpassword-confirm-profile') 새 비밀번호 재확인 입력
+            input.edit-input(placeholder="새 비밀번호 확인" type="password" @input="inputRePassword", :value="rePassWord" id="newpassword-confirm-profile")
+        button.profile-update-btn.complete(type="submit" aria-label='개인정보 수정완료 버튼' @click="editComplete") 수정완료
+        button.profile-update-btn.logout-btn(type='submit' aria-label='로그아웃 버튼' @click="logOut") 로그아웃
 </template>
 
 <script>
@@ -74,7 +74,7 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .user-profile {
   transition: all 0.5s ease-in-out;
   background: rgba(0, 0, 0, 0.9);
@@ -123,8 +123,9 @@ li {
   border: none;
   color: white;
   position: absolute;
-  right: 0;
-  top: 0;
+  padding: 5px;
+  right: 10px;
+  top: 10px;
 }
 .profile-update-btn {
   margin-top: 10px;
@@ -139,6 +140,9 @@ li {
 }
 .complete{
   margin-right: 30px;
+}
+.user_img_input{
+  display: none;
 }
 
 

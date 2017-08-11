@@ -83,6 +83,9 @@ i{
   height: 100vh;
   background: rgba(0,0,0,0.3);
   font-size: 1.6rem;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
 }
 .hide{
   display: none;

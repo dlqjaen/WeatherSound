@@ -10,7 +10,7 @@
         i.fa(aria-hidden='true' :class="togglePlay")
       button.music-controlor-btn(aria-label="다음 곡 재생" @click="nextMusic")
         i.fa.fa-step-forward(aria-hidden='true')
-      button.music-controlor-btn(aira-label="한 곡 반복재생" @click="repeat")
+      button.music-controlor-btn(aria-label="한 곡 반복재생" @click="repeat")
         i.fa.fa-repeat(aria-hidden='true' :style="active")
     //- 뮤직플레이어 진행 바
     .music-time

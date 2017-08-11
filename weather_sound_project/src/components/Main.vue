@@ -10,9 +10,9 @@
           img.logo(src='../assets/logo.svg', alt='WeatherSound Home Link')
       li.menu-list.weather-info
         p {{getCity}} / {{getWeather}}
-      li.menu-list.link-list
-        label.login-btn(for='login', tabindex='0' @click="showModal" v-show="!loginAfterList") Login
-        button.login.a11y-hidden.hide(type='bntton')
+      li.menu-list.link-list(v-show="!loginAfterList")
+        label.login-btn(for='login', tabindex='0' @click="showModal") Login
+        button.login.a11y-hidden.hide(type='bntton' id="login")
       LoginAfterMain
 </template>
 
@@ -42,24 +42,16 @@ export default {
     getWeatherAction () {
       this.$store.dispatch('getWeatherAction');
     },
-    backgroundImg () {
-      this.$store.dispatch('backgroundImg');
-    },
-    // signUpGet () {
-    //   this.$store.dispatch('signUpGet');
-    // },
     musicGet () {
       this.$store.dispatch('musicGet');
     }
   },
   beforeMount () {
     this.getCityAction();
-    // this.signUpGet();
     this.musicGet();
   },
   beforeUpdate () {
     this.getWeatherAction();
-    this.backgroundImg();
   }
 };
 </script>
@@ -95,7 +87,7 @@ export default {
 }
 .weather-info{
   text-align: center;
-  padding-bottom: 10%;
+  border: none;
 }
 .login-btn{
   display: block;

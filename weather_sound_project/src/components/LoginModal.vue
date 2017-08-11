@@ -2,7 +2,7 @@
   section.main.login-modal(v-show="showModal")
     h2.a11y-hidden 로그인/회원가입 모달창
     form.input-box
-      label.a11y-hidden(for="login-modal-close")
+      label.a11y-hidden(for="login-modal-close") 로그인 / 회원가입창 닫기버튼
       button#login-modal-close.close(type="button" @click="closeModal")
         i.fa.fa-times(aria-hidden='true')
       ul
