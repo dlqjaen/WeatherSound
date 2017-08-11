@@ -91,4 +91,7 @@ export default {
 .music-btn-box .fa{
   vertical-align: middle;
 }
+.music-controlor-btn{
+  cursor: pointer;
+}
 </style>

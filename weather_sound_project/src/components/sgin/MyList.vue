@@ -1,5 +1,5 @@
 <template lang="pug">
-  .sign-in-main
+  section.sign-in-main
     div eslint 너무 싫어!!!!!
 </template>
 

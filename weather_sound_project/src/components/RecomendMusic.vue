@@ -49,10 +49,10 @@ export default {
   height: 200px;
 }
 .recomend-music-btn{
+  padding: 5px;
   border-radius: 10px;
   max-width: 200px;
   max-height: 200px;
-  margin: 3px;
   position: relative;
   overflow: hidden;
   background: none;
@@ -60,10 +60,11 @@ export default {
   text-align: center;
   cursor: pointer;
   border: none;
-  opacity: 0.5;
+  opacity: 0.6;
 }
 .recomend-music-btn img{
   width: 100%;
+  border-radius: 10px;
   height: auto;
 }
 .recomend-music-info{

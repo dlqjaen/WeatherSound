@@ -52,6 +52,9 @@ export const store = new Vuex.Store({
     currentWeather: null,
     geo: null,
     background_img: null,
+    img_profile: null,
+    selectUserImg: '',
+    showPopup: false,
     // -----------------------------------------------------------로그인 데이터
     email: '',
     password: '',
@@ -59,9 +62,18 @@ export const store = new Vuex.Store({
     sign_up_list: false,
     login_check: false,
     // -----------------------------------------------------------회원가입 데이터
+    // 프로필수정 - 현재 비밀번호
+    input_current_password: '',
     re_password: '',
     // members: [],
     sign_up_check: false,
+    user_data: {
+      userInfo:
+      {
+        username: '유저닉네임',
+        img_profile: 'https://s3.ap-northeast-2.amazonaws.com/weather-sound-test-s3-bucket/media/member/basic_profile.png'
+      }
+    },
     // -----------------------------------------------------------뮤직플레이어 데이터
     // 뮤직플레이어 곡 정보에서 곡 제목이 할당되는 속성
     music_title: '',
@@ -90,33 +102,33 @@ export const store = new Vuex.Store({
     // 마이리스트에 현재 곡 추가 버튼을 클릭할 시 변하는 토글 움직임을 할당하는 객체
     active_add_btn: {
       transform: 'rotate(0)',
-      transition: 'all 0.2s ease-in-out'
+      transition: 'all 0.2s ease-in-out',
+      color: '#ffffff'
     },
-    music_data: [],
-    next_music_api: '',
+    music_data: []
     // 임시 데이터 객체
-    sun: [
-      {
-        title: '교생쌤',
-        artist: 'NC.A',
-        src: 'https://firebasestorage.googleapis.com/v0/b/todo-68dcb.appspot.com/o/NC.A%20-%20%E1%84%80%E1%85%AD%E1%84%89%E1%85%A2%E1%86%BC%E1%84%8A%E1%85%A2%E1%86%B7.mp3.mp3?alt=media&token=2c9c0359-af7b-46e6-a8f9-585c67a9a6fc'
-      },
-      {
-        title: 'Gone',
-        artist: '다이나믹듀오',
-        src: 'https://firebasestorage.googleapis.com/v0/b/todo-68dcb.appspot.com/o/Dynamic%20Duo%20-%20Gone.mp3?alt=media&token=d1e02113-25c9-4d20-a5b9-8beb9c50bbfb'
-      },
-      {
-        title: '몽환의 숲',
-        artist: '키스틱 플로우',
-        src: 'https://firebasestorage.googleapis.com/v0/b/todo-68dcb.appspot.com/o/Kinetic%20Flow%20-%20%E1%84%86%E1%85%A9%E1%86%BC%E1%84%92%E1%85%AA%E1%86%AB%E1%84%8B%E1%85%B4%20%E1%84%89%E1%85%AE%E1%87%81.mp3?alt=media&token=9548eddf-9794-483f-9417-f8f8da897e53'
-      },
-      {
-        title: '너에게 쓰는 편지',
-        artist: 'MC몽',
-        src: 'https://firebasestorage.googleapis.com/v0/b/todo-68dcb.appspot.com/o/MC%E1%84%86%E1%85%A9%E1%86%BC-%E1%84%82%E1%85%A5%E1%84%8B%E1%85%A6%E1%84%80%E1%85%A6%20%E1%84%8A%E1%85%B3%E1%84%82%E1%85%B3%E1%86%AB%20%E1%84%91%E1%85%A7%E1%86%AB%E1%84%8C%E1%85%B5.mp3?alt=media&token=75daef23-3afa-4e8b-94b9-1501943d5b0d'
-      }
-    ]
+    // sun: [
+    //   {
+    //     title: '교생쌤',
+    //     artist: 'NC.A',
+    //     src: 'https://firebasestorage.googleapis.com/v0/b/todo-68dcb.appspot.com/o/NC.A%20-%20%E1%84%80%E1%85%AD%E1%84%89%E1%85%A2%E1%86%BC%E1%84%8A%E1%85%A2%E1%86%B7.mp3.mp3?alt=media&token=2c9c0359-af7b-46e6-a8f9-585c67a9a6fc'
+    //   },
+    //   {
+    //     title: 'Gone',
+    //     artist: '다이나믹듀오',
+    //     src: 'https://firebasestorage.googleapis.com/v0/b/todo-68dcb.appspot.com/o/Dynamic%20Duo%20-%20Gone.mp3?alt=media&token=d1e02113-25c9-4d20-a5b9-8beb9c50bbfb'
+    //   },
+    //   {
+    //     title: '몽환의 숲',
+    //     artist: '키스틱 플로우',
+    //     src: 'https://firebasestorage.googleapis.com/v0/b/todo-68dcb.appspot.com/o/Kinetic%20Flow%20-%20%E1%84%86%E1%85%A9%E1%86%BC%E1%84%92%E1%85%AA%E1%86%AB%E1%84%8B%E1%85%B4%20%E1%84%89%E1%85%AE%E1%87%81.mp3?alt=media&token=9548eddf-9794-483f-9417-f8f8da897e53'
+    //   },
+    //   {
+    //     title: '너에게 쓰는 편지',
+    //     artist: 'MC몽',
+    //     src: 'https://firebasestorage.googleapis.com/v0/b/todo-68dcb.appspot.com/o/MC%E1%84%86%E1%85%A9%E1%86%BC-%E1%84%82%E1%85%A5%E1%84%8B%E1%85%A6%E1%84%80%E1%85%A6%20%E1%84%8A%E1%85%B3%E1%84%82%E1%85%B3%E1%86%AB%20%E1%84%91%E1%85%A7%E1%86%AB%E1%84%8C%E1%85%B5.mp3?alt=media&token=75daef23-3afa-4e8b-94b9-1501943d5b0d'
+    //   }
+    // ]
   },
   getters: {
     // -----------------------------------------------------------메인페이지 getters
@@ -138,6 +150,9 @@ export const store = new Vuex.Store({
     backgroundImg (state) {
       return state.background_img;
     },
+    currentPassword (state) {
+      return state.input_current_password;
+    },
     // -----------------------------------------------------------로그인 getters
     email (state) {
       return state.email;
@@ -147,6 +162,9 @@ export const store = new Vuex.Store({
     },
     signUpList (state) {
       return state.sign_up_list;
+    },
+    userInfo (state) {
+      return state.user_data.userInfo;
     },
     // -----------------------------------------------------------회원가입 getters
     rePassWord (state) {
@@ -194,6 +212,9 @@ export const store = new Vuex.Store({
     },
     runningTime (state) {
       return state.runningTime;
+    },
+    showPopup (state) {
+      return state.showPopup;
     }
   },
   mutations: {
@@ -205,9 +226,23 @@ export const store = new Vuex.Store({
     setBackgroundData (state, setValue) {
       state.background_img = setValue;
     },
+    closePopup (state) {
+      state.showPopup = false;
+    },
+    showPopup (state) {
+      state.showPopup = true;
+    },
     // -----------------------------LoginAfterMain.vue------------------------------------
     loginAfterList (state) {
       state.login_after_list = true;
+    },
+    saveUserImage (state, e) {
+      // state.user_data.userInfo.img_profile = e.target.value;
+      state.img_profile = e.target.files['0'];
+      // editUserProfile.img_profile;
+    },
+    inputCurrentPassword (state, e) {
+      state.input_current_password = e.target.value;
     },
     // -----------------------------LoginModal.vue------------------------------------
     closeModal (state) {
@@ -260,12 +295,6 @@ export const store = new Vuex.Store({
         } else if (state.password.length < 8 || state.password.length > 16) {
           alert('비밀번호는 8자리 이상, 16자리 이하로 입력해주세요');
         } else {
-          for (var i = 0, l = state.members.length; i < l; i++) {
-            if (state.email === state.members[i].email) {
-              alert('이미 회원가입된 이메일 입니다.');
-              return;
-            }
-          }
           state.sign_up_check = true;
         }
       }
@@ -348,8 +377,10 @@ export const store = new Vuex.Store({
     addToMyList (state) {
       if (state.active_add_btn.transform === 'rotate(0)') {
         state.active_add_btn.transform = 'rotate(45deg)';
+        state.active_add_btn.color = '#3b99fc';
       } else {
         state.active_add_btn.transform = 'rotate(0)';
+        state.active_add_btn.color = '#ffffff';
       }
     },
     // 뮤직플레이어를 재생/일시정지 하는 함수(재생/일시정지 아이콘도 변경)
@@ -443,6 +474,9 @@ export const store = new Vuex.Store({
       // dispatch('signUpGet');
       state.show_modal = false;
       state.login_after_list = true;
+    },
+    saveUserData (state, e) {
+      state.user_data = e;
     }
   },
   actions: {
@@ -509,10 +543,16 @@ export const store = new Vuex.Store({
           'password1': store.state.password,
           'password2': store.state.re_password
         }).then((response) => {
+          Vue.axios.post('https://weather-sound.com/api/member/login/', {
+            'email': store.state.email,
+            'password': store.state.password
+          }).then((response) => {
+            store.commit('saveUserData', response.data);
+          });
           store.commit('signAfterInit');
         })
         .catch(() => {
-          alert('이미 가입되어있는 회원입니다.');
+          alert('이미 가입되어있는 회원입니다. 이메일과 닉네임을 변경해주세요.');
         });
       }
     },
@@ -524,6 +564,7 @@ export const store = new Vuex.Store({
           'password': store.state.password
         }).then((response) => {
           console.log(response);
+          store.commit('saveUserData', response.data);
           store.commit('signAfterInit');
         }).catch(() => {
           alert('일치하는 회원이 없습니다. 다시 확인해 주세요.');
@@ -559,7 +600,6 @@ export const store = new Vuex.Store({
         for (var e = 2; e < 10; e++) {
           Vue.axios.get('https://weather-sound.com/api/music//?page=' + e).then((response) => {
             store.commit('pushMusic', response.data);
-            console.log('성공');
           });
         };
         musicSeting(store.state, 0, true);
@@ -568,6 +608,41 @@ export const store = new Vuex.Store({
     selectMusic: function (store, index) {
       musicSeting(store.state, index);
       showPrograss(store.state);
+    },
+    editComplete: function (store) {
+      var passwordCheck = /^.*(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/;
+      if (!passwordCheck.test(store.state.password)) {
+      // 정규표현식을 활용하여 문자, 숫자, 특수문자 사용해야 함.
+        alert('비밀번호는 문자, 숫자, 특수 문자를 조합하여 입력해주세요.');
+        // 비밀번호는 8자리에서 16자리 사이로 써야 함.
+      } else if (store.state.password.length < 8 || store.state.password.length > 16) {
+        alert('비밀번호는 8자리 이상, 16자리 이하로 입력해주세요');
+      } else if (store.state.re_password !== store.state.password) {
+        // 회원가입 모달에서 입력한 비밀번호와 비밀번호 확인란이 동일하면 패스하고 아니면 경고창 띄움.
+        alert('비밀번호를 확인해주세요');
+      } else {
+        Vue.axios.post('https://weather-sound.com//api/member/' + store.state.user_data.userInfo.pk + '/edit/', {
+          'username': store.state.userName,
+          'img_profile': store.state.img_profile,
+          'password': store.state.input_current_password,
+          'new_password1': store.state.password,
+          'new_password2': store.state.re_password
+        }).then((response) => {
+          console.log('수정성공!!');
+          store.commit('closePopup');
+        }).catch(() => {
+          alert('현재 비빌번호가 맞지 않습니다. 다시 확인해주세요.');
+        });
+      }
+    },
+    logOut: function (store) {
+      Vue.axios.get('https://weather-sound.com/api/member/logout/', {
+        headers: {
+          Authorization: 'Token ' + store.state.user_data.token
+        }
+      }).then((response) => {
+        console.log('통신보안!', response);
+      });
     }
   }
   // actions: {

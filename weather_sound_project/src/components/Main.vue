@@ -59,7 +59,7 @@ export default {
   },
   beforeUpdate () {
     this.getWeatherAction();
-    // this.backgroundImg();
+    this.backgroundImg();
   }
 };
 </script>

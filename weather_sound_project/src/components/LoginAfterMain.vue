@@ -7,10 +7,10 @@
       a.share-btn(href='#')
         | Share
     li.profile-list.login-affter-list
-      label.a11y-hidden(for='user-profile') 유저닉네임
-      button#user-profile(type='button')
-        img.user-picture(src='../assets/user-profile.png', alt='user-profile')
-        span 유저닉네임
+      label.a11y-hidden(for='user-profile')
+      button#user-profile(type='button' @click="showPopup")
+        img.user-picture(:src='userInfo.img_profile', alt='현재 사용자사진')
+        span {{userInfo.username}}
 </template>
 
 <script>
@@ -19,8 +19,14 @@ export default {
   name: 'LoginAfterMain',
   computed: {
     ...mapGetters([
-      'loginAfterList'
+      'loginAfterList',
+      'userInfo'
     ])
+  },
+  methods: {
+    showPopup () {
+      this.$store.commit('showPopup');
+    }
   }
 };
 </script>

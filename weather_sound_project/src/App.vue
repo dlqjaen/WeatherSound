@@ -4,6 +4,7 @@
     recomend-music
     login-modal
     music-player
+    UserProfile
 </template>
 
 <script>
@@ -11,6 +12,7 @@ import MainHeader from './components/Main';
 import RecomendMusic from './components/RecomendMusic';
 import MusicPlayer from './components/MusicPlayer';
 import LoginModal from './components/LoginModal';
+import UserProfile from './components/sgin/UserProfile';
 // Vue 로드
 import Vue from 'vue';
 // axios 호출
@@ -23,7 +25,7 @@ Vue.use(VueAxios, axios);
 export default {
   name: 'app',
   components: {
-    MainHeader, RecomendMusic, MusicPlayer, LoginModal
+    MainHeader, RecomendMusic, MusicPlayer, LoginModal, UserProfile
   },
   computed: {
     ...mapGetters([
