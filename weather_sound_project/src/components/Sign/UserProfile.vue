@@ -13,9 +13,9 @@ section.user-profile.edit-popup(v-show="showPopup")
       form.input-box
         ul.edit-userinfo
           li
-            p.user-email Email : {{userInfo.email}}
+            p.user-email Email : {{userInfo.username}}
           li
-            label.a11y-hidden(for='username-profile') 새로운 유저닉네임 입력창 기존 닉네임: {{userInfo.username}}
+            label.a11y-hidden(for='username-profile') 새로운 유저닉네임 입력창 기존 닉네임: {{userInfo.nickname}}
             input.edit-input(:placeholder="'기존 닉네임: '+userInfo.username" type="username", :value="userName", @input="inputUserName" id="username-profile")
           li
             label.a11y-hidden(for='currentpassword-profile') 현재 비밀번호

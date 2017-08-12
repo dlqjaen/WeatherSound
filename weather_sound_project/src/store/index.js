@@ -8,13 +8,13 @@ import axios from 'axios';
 import VueAxios from 'vue-axios';
 
 Vue.use(Vuex, VueAxios, axios);
-const stopAction = function (e) {
+const stopAction = (e) => {
   e.preventDefault();
 };
 // Dom에서 Audio객체를 생성
 const musicPlayer = document.createElement('audio');
 // 현재 곡의 진행 시간, 정도, 런닝타임을 속성에 할당하는 함수
-const showPrograss = function (state) {
+const showPrograss = (state) => {
   setInterval(() => {
     state.currentTime = readableDuration(state, musicPlayer.currentTime);
     state.prograss = (Math.floor(musicPlayer.currentTime) / Math.floor(musicPlayer.duration)) * 100;
@@ -22,7 +22,7 @@ const showPrograss = function (state) {
   }, 1000);
 };
 // 정수로된 숫자값을 넣으면 분, 초 단위로 나타내주는 함수
-const readableDuration = function (state, seconds) {
+const readableDuration = (state, seconds) => {
   seconds = Math.floor(seconds);
   state.min = Math.floor(seconds / 60);
   state.min = state.min >= 10 ? state.min : '0' + state.min;
@@ -31,7 +31,7 @@ const readableDuration = function (state, seconds) {
   return state.min + ':' + state.sec;
 };
 // 재생될 곡의 주소, 순서, 곡명, 곡아티스트를 뮤직플레이어에 할당 하는 함수
-const musicSeting = function (state, index, init = false) {
+const musicSeting = (state, index, init = false) => {
   musicPlayer.src = state.music_data[index].source_music;
   musicPlayer.index = index;
   state.music_img = state.music_data[index].img_music;
@@ -57,28 +57,28 @@ export const store = new Vuex.Store({
     showPopup: false,
     random_background: {
       sunny: [
-        'https://www.meghantelpner.com/wp-content/uploads/2013/07/2596-sunshine-1920x1080-nature-wallpaper.jpg',
-        'https://i.ytimg.com/vi/BQxBh-Oen1w/maxresdefault.jpg',
-        'https://previews.123rf.com/images/serrnovik/serrnovik1505/serrnovik150500002/39965397-Sunny-beach-with-white-sand-Cancun-Mexico-Stock-Photo.jpg'
+        'https://s-media-cache-ak0.pinimg.com/originals/cf/04/4c/cf044cd15b0ac8595e50bdf05e9e0842.jpg',
+        'https://d2v9y0dukr6mq2.cloudfront.net/video/thumbnail/4ATR6Ce6giltbo8pp/beautiful-flowers-in-field-on-sunset-background-sunny-outdoor-bright-evening-autumn-theme-background-closeup-full-hd-video_r3bdu7-f__F0000.png',
+        'https://i.ytimg.com/vi/BQxBh-Oen1w/maxresdefault.jpg'
       ],
       cloudy: [
-        'http://orig05.deviantart.net/db62/f/2012/006/9/b/cloudy_mountains_no_3_by_neonen-d4lh2jx.jpg',
-        'http://wallpapers-hd.eu/wp-content/uploads/2015/02/m303-14-1920x1080.jpg',
-        'http://awesomwallpaper.com/img2/E4A0459FEC59BD8E/cloudy-sky-trees.jpg'
+        'https://orig05.deviantart.net/db62/f/2012/006/9/b/cloudy_mountains_no_3_by_neonen-d4lh2jx.jpg',
+        'https://static.pexels.com/photos/2083/city-clouds-cloudy-ray-of-sunshine.jpg',
+        'http://awesomwallpaper.com/img2/4592802E83E6F2C9/full-nature.jpg'
       ],
       rainy: [
         'https://s-media-cache-ak0.pinimg.com/originals/97/24/af/9724af499d514757aba41069eca633f9.jpg',
-        'http://cdn.wallpapersafari.com/20/84/WOE1ok.jpg',
-        'http://www.wallpapermania.eu/download/2015-11/8510/Rainy-day-beautiful-wallpaper-umbrella-in-the-water_1920x1080.jpg'
+        'https://cdn.wallpapersafari.com/20/84/WOE1ok.jpg',
+        'http://www.wallpaperbetter.com/wallpaper/516/76/948/rainy-fall-day-1080P-wallpaper.jpg'
       ],
       snowy: [
-        'https://cdn.suwalls.com/wallpapers/artistic/snowy-trees-16322-1920x1080.jpg',
+        'https://s-media-cache-ak0.pinimg.com/originals/3d/8a/7f/3d8a7f3c9380cabe3847d6c2b4c115a9.jpg',
         'https://s-media-cache-ak0.pinimg.com/originals/fc/fe/f8/fcfef8d496ff62850d642db024e9e93e.jpg',
         'https://assets.mutelife.com/wp-content/uploads/2013/03/snowy-vermont-01.jpg'
       ],
       foggy: [
-        'http://cdn.wallpapersafari.com/50/11/zWH0KC.jpg',
-        'http://cdn.wallpapersafari.com/80/65/GA1R9s.jpg',
+        'https://cdn.wallpapersafari.com/50/11/zWH0KC.jpg',
+        'https://cdn.wallpapersafari.com/80/65/GA1R9s.jpg',
         'https://i.ytimg.com/vi/gHSeRfGhYS0/maxresdefault.jpg'
       ]
     },
@@ -97,7 +97,7 @@ export const store = new Vuex.Store({
     user_data: {
       userInfo:
       {
-        username: '유저닉네임',
+        nickname: '유저닉네임',
         img_profile: 'https://s3.ap-northeast-2.amazonaws.com/weather-sound-test-s3-bucket/media/member/basic_profile.png'
       }
     },
@@ -228,7 +228,7 @@ export const store = new Vuex.Store({
       state.sign_up_list = false;
     },
     setBackgroundData (state, setValue) {
-      var randomNumber = Math.floor(Math.random() * 3);
+      let randomNumber = Math.floor(Math.random() * 3);
       switch (setValue) {
       case 'Sunny':
         state.background_img = {'background-image': 'url("' + store.state.random_background.sunny[randomNumber] + '")'};
@@ -259,9 +259,7 @@ export const store = new Vuex.Store({
       state.login_after_list = true;
     },
     saveUserImage (state, e) {
-      // state.user_data.userInfo.img_profile = e.target.value;
       state.img_profile = e.target.files['0'];
-      // editUserProfile.img_profile;
     },
     inputCurrentPassword (state, e) {
       state.input_current_password = e.target.value;
@@ -273,8 +271,8 @@ export const store = new Vuex.Store({
     loginBtn (state, e) {
       stopAction(e);
       if (state.sign_up_list === false) {
-        var emailCheck = /[0-9a-zA-Z][_0-9a-zA-Z-]*@[_0-9a-zA-Z-]+(\.[_0-9a-zA-Z-]+){1,2}$/;
-        var passwordCheck = /^.*(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/;
+        let emailCheck = /[0-9a-zA-Z][_0-9a-zA-Z-]*@[_0-9a-zA-Z-]+(\.[_0-9a-zA-Z-]+){1,2}$/;
+        let passwordCheck = /^.*(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/;
         if (state.email.trim() === '') {
           alert('이메일을 입력해 주세요.');
         } else if (!emailCheck.test(state.email)) {
@@ -298,7 +296,7 @@ export const store = new Vuex.Store({
     },
     signUpBtn (state, e) {
       stopAction(e);
-      var passwordCheck = /^.*(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/;
+      let passwordCheck = /^.*(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/;
       if (state.sign_up_list === false) {
         state.sign_up_list = true;
         state.email = '';
@@ -338,7 +336,7 @@ export const store = new Vuex.Store({
     },
     // -----------------------------MusicPlayer.vue------------------------------------
     init (state) {
-      musicPlayer.addEventListener('ended', function () {
+      musicPlayer.addEventListener('ended', () => {
         for (let i = 0, l = state.music_data.length; i < l; i++) {
           if ((musicPlayer.index === i) && !(i === l - 1)) {
             musicSeting(state, ++i);
@@ -486,7 +484,7 @@ export const store = new Vuex.Store({
       state.geo = e;
     },
     pushMusic (state, e) {
-      for (var i = 0, l = e.results.length; i < l; i++) {
+      for (let i = 0, l = e.results.length; i < l; i++) {
         store.state.music_data.push(e.results[i]);
       };
     },
@@ -503,7 +501,7 @@ export const store = new Vuex.Store({
         state.login_after_list = false;
         state.user_data = {
           userInfo: {
-            username: '유저닉네임',
+            nickname: '유저닉네임',
             img_profile: 'https://s3.ap-northeast-2.amazonaws.com/weather-sound-test-s3-bucket/media/member/basic_profile.png'
           }
         };
@@ -514,7 +512,7 @@ export const store = new Vuex.Store({
     }
   },
   actions: {
-    getCityAction: function ({commit}) {
+    getCityAction: ({commit}) => {
       // 서버통신을 위한 axios 코드
       Vue.axios.get('http://ip-api.com/json')
       .then((response) => {
@@ -525,10 +523,10 @@ export const store = new Vuex.Store({
         });
       });
     },
-    getWeatherAction: function (store) {
-      var address = 'http://api.openweathermap.org/data/2.5/weather?lat=' + store.state.geo.lat + '&lon=' + store.state.geo.lon + '&units=metric&APPID=f63c992320644b675405158f284ba653';
+    getWeatherAction: (store) => {
+      let address = 'http://api.openweathermap.org/data/2.5/weather?lat=' + store.state.geo.lat + '&lon=' + store.state.geo.lon + '&units=metric&APPID=f63c992320644b675405158f284ba653';
       Vue.axios.get(address).then((response) => {
-        var weather = response.data.weather[0].icon.slice(0, -1);
+        let weather = response.data.weather[0].icon.slice(0, -1);
         if (weather === '01') {
           weather = 'Sunny';
         } else if (weather === '02' || weather === '03' || weather === '04') {
@@ -544,42 +542,17 @@ export const store = new Vuex.Store({
         store.commit('setBackgroundData', weather);
       });
     },
-    // fireBase: function ({commit}) {
-    //   Vue.axios.get('https://weather-sound.com/api/member/signup').then((response) => {
-    //     console.log(response);
-    //   });
-    // },
-    // backgroundImg: function (store) {
-    //   Vue.axios.get('https://api.unsplash.com/photos/random/?client_id=7c9e74548c6a6e5faa509c665e9e0f9da156e9695d4552d2c115b59743208024', {
-    //     params: {
-    //       query: store.state.currentWeather,
-    //       count: 1,
-    //       w: 1024,
-    //       h: 700
-    //     }
-    //   }).then((response) => {
-    //     store.commit('setBackgroundData', {
-    //       'background-image': 'url("' + response.data[0].links.download + '")',
-    //       'background-size': 'cover',
-    //       'background-repeat': 'no-repeat',
-    //       'background-position': 'center'
-    //     });
-    //   })
-    //   .catch(() => {
-    //     console.log('배경이미지가 또 뻑났어!!!!!!');
-    //   });
-    // },
-    signUpPost: function (store, e) {
+    signUpPost: (store, e) => {
       store.commit('signUpBtn', e);
       if (store.state.sign_up_check) {
         Vue.axios.post('https://weather-sound.com/api/member/signup/', {
-          'email': store.state.email,
-          'username': store.state.userName,
+          'username': store.state.email,
+          'nickname': store.state.userName,
           'password1': store.state.password,
           'password2': store.state.re_password
         }).then((response) => {
           Vue.axios.post('https://weather-sound.com/api/member/login/', {
-            'email': store.state.email,
+            'username': store.state.email,
             'password': store.state.password
           }).then((response) => {
             store.commit('saveUserData', response.data);
@@ -591,11 +564,11 @@ export const store = new Vuex.Store({
         });
       }
     },
-    signInPost: function (store, e) {
+    signInPost: (store, e) => {
       store.commit('loginBtn', e);
       if (store.state.login_check) {
         Vue.axios.post('https://weather-sound.com/api/member/login/', {
-          'email': store.state.email,
+          'username': store.state.email,
           'password': store.state.password
         }).then((response) => {
           console.log(response);
@@ -606,10 +579,10 @@ export const store = new Vuex.Store({
         });
       }
     },
-    musicGet: function (store) {
+    musicGet: (store) => {
       Vue.axios.get('https://weather-sound.com/api/music/').then((response) => {
         store.commit('pushMusic', response.data);
-        for (var e = 2; e < 10; e++) {
+        for (let e = 2; e < 10; e++) {
           Vue.axios.get('https://weather-sound.com/api/music//?page=' + e).then((response) => {
             store.commit('pushMusic', response.data);
           });
@@ -617,12 +590,12 @@ export const store = new Vuex.Store({
         musicSeting(store.state, 0, true);
       });
     },
-    selectMusic: function (store, index) {
+    selectMusic: (store, index) => {
       musicSeting(store.state, index);
       showPrograss(store.state);
     },
-    editComplete: function (store) {
-      var passwordCheck = /^.*(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/;
+    editComplete: (store) => {
+      let passwordCheck = /^.*(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/;
       if (!passwordCheck.test(store.state.password)) {
       // 정규표현식을 활용하여 문자, 숫자, 특수문자 사용해야 함.
         alert('비밀번호는 문자, 숫자, 특수 문자를 조합하여 입력해주세요.');
@@ -634,7 +607,7 @@ export const store = new Vuex.Store({
         alert('비밀번호를 확인해주세요');
       } else {
         Vue.axios.post('https://weather-sound.com//api/member/' + store.state.user_data.userInfo.pk + '/edit/', {
-          'username': store.state.userName,
+          'nickname': store.state.userName,
           'img_profile': store.state.img_profile,
           'password': store.state.input_current_password,
           'new_password1': store.state.password,
@@ -647,7 +620,7 @@ export const store = new Vuex.Store({
         });
       }
     },
-    logOut: function (store) {
+    logOut: (store) => {
       Vue.axios.get('https://weather-sound.com/api/member/logout/', {
         headers: {
           Authorization: 'Token ' + store.state.user_data.token

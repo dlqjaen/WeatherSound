@@ -33,16 +33,20 @@ export default {
 }
 // 곡 정보 중 커버앨범
 .album{
+  margin: 10px;
   float: left;
-  margin: 1vh;
   height: 8vh;
 }
 // 곡 정보 텍스트 wrapper
 .album-text{
+  width: 40%;
   float: left;
 }
 // 곡 명, 곡 아티스트 텍스트
 .music-title, .music-singger{
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   display: block;
 }
 .music-singger{

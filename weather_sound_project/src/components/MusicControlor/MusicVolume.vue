@@ -45,6 +45,7 @@ export default {
 }
 // 볼륨 조절 바
 .volume-size{
-  width: 30%;
+  width: 75px;
+  margin-right: 30px;
 }
 </style>

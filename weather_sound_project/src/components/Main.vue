@@ -69,6 +69,10 @@ export default {
   width: 84%;
   margin-left: 8%;
   border-bottom: 1px solid rgba(255,255,255,0.5);
+  transition: all 0.5s ease-in-out;
+}
+.menu-list:hover{
+
 }
 .logo-list{
   padding-top: 10%;

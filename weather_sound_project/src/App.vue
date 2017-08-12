@@ -12,7 +12,7 @@ import MainHeader from './components/Main';
 import RecomendMusic from './components/RecomendMusic';
 import MusicPlayer from './components/MusicPlayer';
 import LoginModal from './components/LoginModal';
-import UserProfile from './components/sgin/UserProfile';
+import UserProfile from './components/Sign/UserProfile';
 // Vue 로드
 import Vue from 'vue';
 // axios 호출
@@ -22,6 +22,7 @@ import VueAxios from 'vue-axios';
 import {mapGetters} from 'vuex';
 
 Vue.use(VueAxios, axios);
+// setInterval(Vue)
 export default {
   name: 'app',
   components: {

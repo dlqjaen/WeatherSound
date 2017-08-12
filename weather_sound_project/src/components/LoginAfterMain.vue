@@ -10,7 +10,7 @@
       label.a11y-hidden(for='user-profile')
       button#user-profile(type='button' @click="showPopup")
         img.user-picture(:src='userInfo.img_profile', alt='현재 사용자사진')
-        span {{userInfo.username}}
+        span {{userInfo.nickname}}
 </template>
 
 <script>
