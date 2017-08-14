@@ -73,6 +73,7 @@ i{
 .a11y-hidden{
   position: absolute;
   margin: -1px;
+  top: -9999px;
   width: 1px;
   height: 1px;
   overflow: hidden;
@@ -87,8 +88,5 @@ i{
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
-}
-.hide{
-  display: none;
 }
 </style>

@@ -1,8 +1,8 @@
 <template lang="pug">
   .music-volume
-    button.music-controlor-btn(@click="volumeOff" aria-label="볼륨 음소거 / 소리켜기")
+    button.music-controlor-btn(@click="volumeOff" aria-label="볼륨 음소거 / 소리켜기", :aria-pressed="volumeActiveCheck")
       i.fa(aria-hidden='true' :class="toggleVolume")
-    input.volume-size(type="range" :value='volume' min="0" max='100', aria-label="볼륨 조절바" @mouseup="setVolume" @keydown="volumeKeyValueControlor")
+    input.volume-size(type="range" :value='volume' min="0" max='100',aria-label="볼륨 조절바" @mouseup="setVolume" @keydown="volumeKeyValueControlor")
 </template>
 
 <script>
@@ -12,7 +12,8 @@ export default {
   computed: {
     ...mapGetters([
       'toggleVolume',
-      'volume'
+      'volume',
+      'volumeActiveCheck'
     ])
   },
   methods: {

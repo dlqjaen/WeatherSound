@@ -53,8 +53,13 @@ export const store = new Vuex.Store({
     geo: null,
     background_img: null,
     img_profile: null,
+    facebookLogin: true,
     selectUserImg: '',
     showPopup: false,
+    submit_toggle_btn: {
+      login: 'submit',
+      signUp: 'button'
+    },
     random_background: {
       sunny: [
         'https://s-media-cache-ak0.pinimg.com/originals/cf/04/4c/cf044cd15b0ac8595e50bdf05e9e0842.jpg',
@@ -85,6 +90,7 @@ export const store = new Vuex.Store({
     // -----------------------------------------------------------로그인 데이터
     email: '',
     password: '',
+    password_remember: '',
     userName: '',
     sign_up_list: false,
     login_check: false,
@@ -111,6 +117,7 @@ export const store = new Vuex.Store({
     toggle_play: 'fa-play',
     // 볼륨 버튼에 할당되는 클래스명 음소거 아이콘과 소리아이콘이 토글로 할당
     toggle_volume: 'fa-volume-up',
+    volume_active_check: false,
     // 곡의 현재 플레이 시간이 할당되는 속성
     currentTime: '',
     // 곡의 현재 플레이 진행도가 보이도록 바의 움직임이 할당되는 속성 1 ~ 100
@@ -170,7 +177,16 @@ export const store = new Vuex.Store({
     userInfo (state) {
       return state.user_data.userInfo;
     },
+    submitToggleBtn (state) {
+      return state.submit_toggle_btn;
+    },
     // -----------------------------------------------------------회원가입 getters
+    loginTab (state) {
+      return state.loginTab;
+    },
+    facebookLogin (state) {
+      return state.facebookLogin;
+    },
     rePassWord (state) {
       return state.re_password;
     },
@@ -192,6 +208,9 @@ export const store = new Vuex.Store({
     },
     toggleVolume (state) {
       return state.toggle_volume;
+    },
+    volumeActiveCheck (state) {
+      return state.volume_active_check;
     },
     volume (state) {
       return state.volume;
@@ -226,6 +245,8 @@ export const store = new Vuex.Store({
     showModal (state) {
       state.show_modal = true;
       state.sign_up_list = false;
+      let select = document.querySelector('#email');
+      select.focus();
     },
     setBackgroundData (state, setValue) {
       let randomNumber = Math.floor(Math.random() * 3);
@@ -260,6 +281,13 @@ export const store = new Vuex.Store({
     },
     saveUserImage (state, e) {
       state.img_profile = e.target.files['0'];
+      console.log(state.img_profile);
+      console.log(state.img_profile.name);
+      let reader = new FileReader();
+      reader.readAsDataURL(state.img_profile);
+      reader.onload = (f) => {
+        state.user_data.userInfo.img_profile = f.srcElement.result;
+      };
     },
     inputCurrentPassword (state, e) {
       state.input_current_password = e.target.value;
@@ -292,6 +320,11 @@ export const store = new Vuex.Store({
         state.password = '';
         state.re_password = '';
         state.sign_up_list = false;
+        state.submit_toggle_btn = {
+          login: 'submit',
+          signUp: 'button'
+        };
+        state.facebookLogin = true;
       }
     },
     signUpBtn (state, e) {
@@ -301,6 +334,11 @@ export const store = new Vuex.Store({
         state.sign_up_list = true;
         state.email = '';
         state.password = '';
+        state.submit_toggle_btn = {
+          login: 'button',
+          signUp: 'submit'
+        };
+        state.facebookLogin = false;
       } else if (state.sign_up_list === true) {
         if (state.email.trim() === '') {
           alert('이메일을 입력해 주세요.');
@@ -354,6 +392,7 @@ export const store = new Vuex.Store({
       if (state.toggle_volume !== 'fa-volume-off') {
         state.toggle_volume = 'fa-volume-off';
         musicPlayer.volume = 0;
+        state.volume_active_check = true;
       } else if (state.toggle_volume === 'fa-volume-off') {
         if (state.volume < 99) {
           state.toggle_volume = 'fa-volume-down';
@@ -361,6 +400,7 @@ export const store = new Vuex.Store({
           state.toggle_volume = 'fa-volume-up';
         }
         musicPlayer.volume = state.volume / 100;
+        state.volume_active_check = false;
       }
     },
     // 볼륨을 설정해주는 함수
@@ -493,7 +533,7 @@ export const store = new Vuex.Store({
       state.password = '';
       state.userName = '';
       state.re_password = '';
-      state.currentPassword = '';
+      state.input_current_password = '';
       state.show_modal = false;
       if (login) {
         state.login_after_list = true;
@@ -509,6 +549,11 @@ export const store = new Vuex.Store({
     },
     saveUserData (state, e) {
       state.user_data = e;
+      store.state.password_remember = store.state.password;
+    },
+    putImg (state, e) {
+      e = e || state.img_profile;
+      return e;
     }
   },
   actions: {
@@ -594,30 +639,53 @@ export const store = new Vuex.Store({
       musicSeting(store.state, index);
       showPrograss(store.state);
     },
-    editComplete: (store) => {
+    editComplete: (store, e) => {
+      stopAction(e);
       let passwordCheck = /^.*(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/;
-      if (!passwordCheck.test(store.state.password)) {
-      // 정규표현식을 활용하여 문자, 숫자, 특수문자 사용해야 함.
-        alert('비밀번호는 문자, 숫자, 특수 문자를 조합하여 입력해주세요.');
-        // 비밀번호는 8자리에서 16자리 사이로 써야 함.
-      } else if (store.state.password.length < 8 || store.state.password.length > 16) {
-        alert('비밀번호는 8자리 이상, 16자리 이하로 입력해주세요');
-      } else if (store.state.re_password !== store.state.password) {
-        // 회원가입 모달에서 입력한 비밀번호와 비밀번호 확인란이 동일하면 패스하고 아니면 경고창 띄움.
-        alert('비밀번호를 확인해주세요');
+      if (store.state.input_current_password === '') {
+        alert('현재 비밀번호를 입력해주세요.');
       } else {
-        Vue.axios.post('https://weather-sound.com//api/member/' + store.state.user_data.userInfo.pk + '/edit/', {
-          'nickname': store.state.userName,
-          'img_profile': store.state.img_profile,
-          'password': store.state.input_current_password,
-          'new_password1': store.state.password,
-          'new_password2': store.state.re_password
-        }).then((response) => {
-          console.log('수정성공!!');
-          store.commit('closePopup');
-        }).catch(() => {
-          alert('현재 비빌번호가 맞지 않습니다. 다시 확인해주세요.');
-        });
+        if (store.state.userName.trim() === '') {
+          store.state.userName = store.state.user_data.userInfo.nickname;
+        }
+        if (store.state.password.trim() === '') {
+          store.state.password = store.state.password_remember;
+          store.state.re_password = store.state.password_remember;
+        }
+        if (!passwordCheck.test(store.state.password)) {
+          // 정규표현식을 활용하여 문자, 숫자, 특수문자 사용해야 함.
+          alert('비밀번호는 문자, 숫자, 특수 문자를 조합하여 입력해주세요.');
+          // 비밀번호는 8자리에서 16자리 사이로 써야 함.
+        } else if (store.state.password.length < 8 || store.state.password.length > 16) {
+          alert('비밀번호는 8자리 이상, 16자리 이하로 입력해주세요');
+        } else if (store.state.re_password !== store.state.password) {
+          // 회원가입 모달에서 입력한 비밀번호와 비밀번호 확인란이 동일하면 패스하고 아니면 경고창 띄움.
+          alert('새로운 비밀번호가와 비밀번호 확인이 일치하지 않습니다. 비밀번호를 확인해주세요');
+        } else {
+          Vue.axios.put('https://weather-sound.com/api/member/profile/' + store.state.user_data.userInfo.pk + '/edit/', {
+            'nickname': store.state.userName,
+            'img_profile': store.commit('putImg', store.state.img_profile),
+            'password': store.state.input_current_password,
+            'new_password1': store.state.password,
+            'new_password2': store.state.re_password
+          }, {
+            headers: {
+              Authorization: 'Token ' + store.state.user_data.token
+            }
+          }).then((response) => {
+            Vue.axios.post('https://weather-sound.com/api/member/login/', {
+              'username': store.state.user_data.userInfo.username,
+              'password': store.state.password
+            }).then((response) => {
+              console.log(response);
+              store.commit('saveUserData', response.data);
+              store.commit('signAfterInit', true);
+            });
+            store.commit('closePopup');
+          }).catch(() => {
+            alert('현재 비빌번호가 맞지 않습니다. 다시 확인해주세요.');
+          });
+        }
       }
     },
     logOut: (store) => {
@@ -626,7 +694,6 @@ export const store = new Vuex.Store({
           Authorization: 'Token ' + store.state.user_data.token
         }
       }).then((response) => {
-        console.log('통신보안!', response);
         store.commit('closePopup');
         store.commit('signAfterInit');
       });

@@ -1,6 +1,7 @@
 <template lang="pug">
   section.main.recomend-song
-    h2.a11y-hidden 날씨별 추천 음악
+    h2.a11y-hidden(tabindex="0") {{getWeather}} 추천 음악들
+    input.a11y-hidden(type="button" aria-label="뮤직플레이어로 바로가기" @click="")
     ul.recomend-wrapper
       li.music-recomend-list(v-for="(music, index) in getMusic")
         label.a11y-hidden(:for='music.name_music')
@@ -9,6 +10,7 @@
             span.recomend-music-title {{music.name_music}}
             span.recomend-music-singger {{music.name_artist}}
           img(:src='music.img_music', alt='앨범커버')
+    input.a11y-hidden(type="button" aria-label="메인메뉴로 바로가기" @click="")
 </template>
   
 <script>
@@ -17,7 +19,8 @@ export default {
   name: 'RecomendMusic',
   computed: {
     ...mapGetters([
-      'getMusic'
+      'getMusic',
+      'getWeather'
     ])
   },
   methods: {

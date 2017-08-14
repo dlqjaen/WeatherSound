@@ -1,9 +1,9 @@
 <template lang="pug">
   .music-info
-    img.album(:src='musicImg', alt='현재재생곡 앨범커버')
-    p.album-text
-      span.music-title {{musicTitle}}
-      span.music-singger {{musicArtist}}
+    img.album(:src='musicImg', :alt='musicTitle+"의 앨범커버"' tabindex="0")
+    p.album-text(tabindex="0")
+      span.music-title(:aria-label="'현재곡: '+musicTitle") {{musicTitle}}
+      span.music-singger(:aria-label="', 현재곡 가수: '+musicArtist") {{musicArtist}}
 </template>
 
 <script>

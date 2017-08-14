@@ -8,11 +8,11 @@
       li.menu-list.logo-list
         a(href='#')
           img.logo(src='../assets/logo.svg', alt='WeatherSound Home Link')
-      li.menu-list.weather-info
+      li.menu-list.weather-info(tabindex='0')
         p {{getCity}} / {{getWeather}}
       li.menu-list.link-list(v-show="!loginAfterList")
-        label.login-btn(for='login', tabindex='0' @click="showModal") Login
-        button.login.a11y-hidden.hide(type='bntton' id="login")
+        button.login-btn.login(type='bntton' id="login" aria-label="로그인" @click="showModal")
+          | Login
       LoginAfterMain
 </template>
 
@@ -94,9 +94,13 @@ export default {
   border: none;
 }
 .login-btn{
-  display: block;
+  font-size: 1.6rem;
+  cursor: pointer;
+  text-align: left;
+  background: none;
+  border: none;
+  color: white;
   padding: 10% 0;
   width: 100%;
-  cursor: pointer;
 }
 </style>

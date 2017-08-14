@@ -2,10 +2,10 @@
   .login-after(v-show='loginAfterList')
     li.menu-list.link-list
       a.mylist-btn(href='#')
-        | MyList
-    li.menu-list.link-list
-      a.share-btn(href='#')
-        | Share
+        | My List
+    //- li.menu-list.link-list
+    //-   a.share-btn(href='#')
+    //-     | 공유게시판
     li.profile-list.login-affter-list
       label.a11y-hidden(for='user-profile')
       button#user-profile(type='button' @click="showPopup")

@@ -2,8 +2,6 @@
 //- 팝업창
 section.user-profile.edit-popup(v-show="showPopup")
   h2.a11y-hidden 로그인/회원가입 모달창
-  button.close(type="button" @click="closePopup" aria-label="사용자정보 수정창 닫기")
-    i.fa.fa-times(aria-hidden="true")
   .user-profile-edit-wrapper
     .userprofile-update
       label.user-img-change-btn(for="user-img-change")
@@ -16,18 +14,22 @@ section.user-profile.edit-popup(v-show="showPopup")
             p.user-email Email : {{userInfo.username}}
           li
             label.a11y-hidden(for='username-profile') 새로운 유저닉네임 입력창 기존 닉네임: {{userInfo.nickname}}
-            input.edit-input(:placeholder="'기존 닉네임: '+userInfo.username" type="username", :value="userName", @input="inputUserName" id="username-profile")
+            input.edit-input(:placeholder="'기존 닉네임: '+userInfo.username" type="username", :value="userName", @input="inputUserName" id="username-profile" title="새로운 닉네임")
           li
             label.a11y-hidden(for='currentpassword-profile') 현재 비밀번호
-            input.edit-input(placeholder="현재 비밀번호" type="password" id="currentpassword-profile", :value="currentPassword" @input="inputCurrentPassword")
+            input.edit-input(placeholder="현재 비밀번호" type="password" title="현재 비밀번호" id="currentpassword-profile", :value="currentPassword" @input="inputCurrentPassword")
           li
             label.a11y-hidden(for='newpassword-profile') 새로운 비밀번호
-            input.edit-input(placeholder="새로운 비밀번호" type="password" @input="inputPassword", :value="password" id="newpassword-profile")
+            input.edit-input(placeholder="새로운 비밀번호" type="password" @input="inputPassword", title="새로운 비밀번호" :value="password" id="newpassword-profile" aria-describedby="password-helper")
+            span#password-edit-helper.a11y-hidden
+              | 문자, 숫자, 특수문자가 포함되어 있어야 하며 8 ~ 15 자리 이내여야 합니다.
           li
             label.a11y-hidden(for='newpassword-confirm-profile') 새 비밀번호 재확인 입력
-            input.edit-input(placeholder="새 비밀번호 확인" type="password" @input="inputRePassword", :value="rePassWord" id="newpassword-confirm-profile")
+            input.edit-input(placeholder="새 비밀번호 확인" type="password" @input="inputRePassword", :value="rePassWord" id="newpassword-confirm-profile" title="새 비밀번호 확인")
         button.profile-update-btn.complete(type="submit" aria-label='개인정보 수정완료 버튼' @click="editComplete") 수정완료
         button.profile-update-btn.logout-btn(type='submit' aria-label='로그아웃 버튼' @click="logOut") 로그아웃
+      button.close(type="button" @click="closePopup" aria-label="사용자정보 수정창 닫기")
+        i.fa.fa-times(aria-hidden="true")
 </template>
 
 <script>
@@ -67,8 +69,8 @@ export default {
     inputCurrentPassword (e) {
       this.$store.commit('inputCurrentPassword', e);
     },
-    editComplete () {
-      this.$store.dispatch('editComplete');
+    editComplete (e) {
+      this.$store.dispatch('editComplete', e);
     }
   }
 };
@@ -124,8 +126,8 @@ li {
   color: white;
   position: absolute;
   padding: 5px;
-  right: 10px;
-  top: 10px;
+  right: -100px;
+  top: -50px;
 }
 .profile-update-btn {
   margin-top: 10px;

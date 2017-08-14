@@ -2,8 +2,8 @@ import Vue from 'vue';
 import Router from 'vue-router';
 import Main from '../components/Main';
 import LoginAfterMain from '../components/LoginAfterMain';
-import Share from '../components/sgin/Share';
-import MyList from '../components/sgin/MyList';
+import Share from '../components/Sign/Share';
+import MyList from '../components/Sign/MyList';
 
 Vue.use(Router);
 
