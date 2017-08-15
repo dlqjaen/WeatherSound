@@ -6,8 +6,9 @@ import Vuex from 'vuex';
 import axios from 'axios';
 // axios 사용준비
 import VueAxios from 'vue-axios';
-
+// Vuex, VueAxios, axios 사용준비
 Vue.use(Vuex, VueAxios, axios);
+// 이벤트 기본동작을 중지시키는 함수
 const stopAction = (e) => {
   e.preventDefault();
 };
@@ -34,32 +35,37 @@ const readableDuration = (state, seconds) => {
 const musicSeting = (state, index, init = false) => {
   musicPlayer.src = state.music_data[index].source_music;
   musicPlayer.index = index;
-  state.music_img = state.music_data[index].img_music;
-  state.music_title = state.music_data[index].name_music;
-  state.music_artist = state.music_data[index].name_artist;
+  state.musicInfo = {
+    music_img: state.music_data[index].img_music,
+    music_title: state.music_data[index].name_music,
+    music_artist: state.music_data[index].name_artist
+  };
   if (!init) {
     state.toggle_play = 'fa-pause';
     musicPlayer.play();
   }
 };
+const dataClear = (state) => {
+  state.email = '';
+  state.userName = '';
+  state.password = '';
+  state.re_password = '';
+};
 export const store = new Vuex.Store({
   // strict: process.env.NODE_ENV !== 'production',
   state: {
     // -----------------------------------------------------------메인페이지 데이터
-    show_modal: false,
-    login_after_list: false,
+    // 현재 위치의 도시를 할당
     currentCity: null,
+    // 현재 위치의 날씨를 할당
     currentWeather: null,
+    // 현재 위치의 위도, 경도를 객체로 할당
     geo: null,
+    // 배경 이미지를 할당
     background_img: null,
-    img_profile: null,
+    // 페이스북 로그인 버튼을 로그인에서 보이고 회원가입에서 안보이게 토글기능 역할
     facebookLogin: true,
-    selectUserImg: '',
-    showPopup: false,
-    submit_toggle_btn: {
-      login: 'submit',
-      signUp: 'button'
-    },
+    // 배경이미지 데이터
     random_background: {
       sunny: [
         'https://s-media-cache-ak0.pinimg.com/originals/cf/04/4c/cf044cd15b0ac8595e50bdf05e9e0842.jpg',
@@ -87,42 +93,74 @@ export const store = new Vuex.Store({
         'https://i.ytimg.com/vi/gHSeRfGhYS0/maxresdefault.jpg'
       ]
     },
+    // 로그인 후 보여지는 리스트 토글 기능 할당
+    login_after_list: false,
     // -----------------------------------------------------------로그인 데이터
+    // 로그인 창을 보이거나 안보이게 토글기능 할당
+    show_modal: false,
+    // username입력창에 입력된 값이 할당
     email: '',
+    // password입력창에 입력된 값이 할당
     password: '',
+    // password를 할당 (email, password, userName은 로그인, 회원가입 후 데이터가 사라진다)
     password_remember: '',
+    // nickname입력창에 입력된 값이 할당
     userName: '',
+    // 회원가입에 필요한 리스트를 보여주고 안보여주게 토글 기능
     sign_up_list: false,
+    // 이메일 검증이 통과되면 true로 바뀌는 토글기능
     login_check: false,
+    // 로그인 / 회원가입으로 전환될때 버튼 타입을 변경하는 객체
+    submit_toggle_btn: {
+      login: 'submit',
+      signUp: 'button'
+    },
+    // 로그인 모달창 트렌지션
+    login_transition: {},
     // -----------------------------------------------------------회원가입 데이터
     // 프로필수정 - 현재 비밀번호
     input_current_password: '',
+    // 비밀번호 확인 입력창에 값을 할당
     re_password: '',
-    // members: [],
+    // 회원가입 검증이 통과되면 true로 전환되는 토글기능
     sign_up_check: false,
+    // 로그인 후 사용자의 정보가 할당
     user_data: {
       userInfo:
       {
-        nickname: '유저닉네임',
+        nickname: '',
         img_profile: 'https://s3.ap-northeast-2.amazonaws.com/weather-sound-test-s3-bucket/media/member/basic_profile.png'
       }
     },
+    // 회원가입창으로 전환 시 로그인버튼의 스타일변경이 할당
+    change_login: {},
+    // 회원가입창으로 전환 시 회원가입버튼의 스타일변경이 할당
+    change_sign_up: {},
+    // 리스트 추가시 트렌지션
+    add_list: {},
+    // -----------------------------------------------------------개인정보 수정  데이터
+    // 개인정보 창을 보이거나 안보이게 하는 토글기능
+    showPopup: false,
+    // 새롭게 선택한 이미지의 정보를 할당
+    img_profile: null,
+    // 개인정보 수정창 트렌지션
+    edit_transition: {},
     // -----------------------------------------------------------뮤직플레이어 데이터
-    // 뮤직플레이어 곡 정보에서 곡 제목이 할당되는 속성
-    music_title: '',
-    // 뮤직플레이어 곡 정보에서 곡 아티스트가 할당되는 속성
-    music_artist: '',
-    music_img: '',
+    // 뮤직플레이어 정보(곡명, 가수, 이미지)를 할당
+    musicInfo: {},
     // 재생 버튼에 할당되는 클래스명 pause아이콘과 play아이콘이 토글로 할당
     toggle_play: 'fa-play',
     // 볼륨 버튼에 할당되는 클래스명 음소거 아이콘과 소리아이콘이 토글로 할당
     toggle_volume: 'fa-volume-up',
+    // 음소거 토글버튼이 현재 눌러져있는지를 확인
     volume_active_check: false,
     // 곡의 현재 플레이 시간이 할당되는 속성
     currentTime: '',
     // 곡의 현재 플레이 진행도가 보이도록 바의 움직임이 할당되는 속성 1 ~ 100
     prograss: 0,
+    // 분의 정보를 할당
     min: 0,
+    // 초의 정보를 할당
     sec: 0,
     // 볼륨의 크기가 할당되는 속성 1 ~ 100
     volume: 100,
@@ -139,6 +177,7 @@ export const store = new Vuex.Store({
       transition: 'all 0.2s ease-in-out',
       color: '#ffffff'
     },
+    // 음악 api로부터 받은 정보를 할당
     music_data: []
   },
   getters: {
@@ -180,6 +219,9 @@ export const store = new Vuex.Store({
     submitToggleBtn (state) {
       return state.submit_toggle_btn;
     },
+    loginTransition (state) {
+      return state.login_transition;
+    },
     // -----------------------------------------------------------회원가입 getters
     loginTab (state) {
       return state.loginTab;
@@ -193,18 +235,25 @@ export const store = new Vuex.Store({
     userName (state) {
       return state.userName;
     },
+    changeLogin (state) {
+      return state.change_login;
+    },
+    changeSignUp (state) {
+      return state.change_sign_up;
+    },
+    addList (state) {
+      return state.add_list;
+    },
+    // -----------------------------------------------------------개인정보 수정 getters
+    editTransition (state) {
+      return state.edit_transition;
+    },
     // -----------------------------------------------------------뮤직플레이어 getters
     getMusic (state) {
       return state.music_data;
     },
-    musicImg (state) {
-      return state.music_img;
-    },
-    musicTitle (state) {
-      return state.music_title;
-    },
-    musicArtist (state) {
-      return state.music_artist;
+    musicInfo (state) {
+      return state.musicInfo;
     },
     toggleVolume (state) {
       return state.toggle_volume;
@@ -245,8 +294,13 @@ export const store = new Vuex.Store({
     showModal (state) {
       state.show_modal = true;
       state.sign_up_list = false;
-      let select = document.querySelector('#email');
-      select.focus();
+      setTimeout(function () {
+        state.login_transition = {
+          top: 0,
+          opacity: 1
+        };
+        document.querySelector('#email').focus();
+      }, 1);
     },
     setBackgroundData (state, setValue) {
       let randomNumber = Math.floor(Math.random() * 3);
@@ -269,20 +323,25 @@ export const store = new Vuex.Store({
       }
       console.log(state.background_img);
     },
-    closePopup (state) {
-      state.showPopup = false;
+    changeEventIn (state, e) {
+      e.target.children[0].style = 'opacity: 1';
     },
-    showPopup (state) {
-      state.showPopup = true;
+    changeEventOut (state, e) {
+      e.target.children[0].style = 'opacity: 0';
+    },
+    focusPlayer () {
+      console.log('click');
+      document.querySelector('.album').focus();
+    },
+    focusMenu () {
+      document.querySelector('.logo').parentNode.focus();
     },
     // -----------------------------LoginAfterMain.vue------------------------------------
     loginAfterList (state) {
       state.login_after_list = true;
     },
     saveUserImage (state, e) {
-      state.img_profile = e.target.files['0'];
-      console.log(state.img_profile);
-      console.log(state.img_profile.name);
+      state.img_profile = e.target.files[0];
       let reader = new FileReader();
       reader.readAsDataURL(state.img_profile);
       reader.onload = (f) => {
@@ -294,7 +353,14 @@ export const store = new Vuex.Store({
     },
     // -----------------------------LoginModal.vue------------------------------------
     closeModal (state) {
-      state.show_modal = false;
+      state.login_transition = {};
+      state.change_login = {};
+      state.change_sign_up = {};
+      state.facebookLogin = true;
+      dataClear(state);
+      setTimeout(function () {
+        state.show_modal = false;
+      }, 500);
     },
     loginBtn (state, e) {
       stopAction(e);
@@ -315,15 +381,19 @@ export const store = new Vuex.Store({
           state.login_check = true;
         }
       } else {
-        state.email = '';
-        state.userName = '';
-        state.password = '';
-        state.re_password = '';
-        state.sign_up_list = false;
+        dataClear(state);
         state.submit_toggle_btn = {
           login: 'submit',
           signUp: 'button'
         };
+        state.add_list = {};
+        setTimeout(function () {
+          state.change_login = {};
+          state.change_sign_up = {};
+        }, 1);
+        setTimeout(function () {
+          state.sign_up_list = false;
+        }, 500);
         state.facebookLogin = true;
       }
     },
@@ -332,12 +402,28 @@ export const store = new Vuex.Store({
       let passwordCheck = /^.*(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/;
       if (state.sign_up_list === false) {
         state.sign_up_list = true;
-        state.email = '';
-        state.password = '';
+        dataClear(state);
         state.submit_toggle_btn = {
           login: 'button',
           signUp: 'submit'
         };
+        setTimeout(function () {
+          state.change_login = {
+            'margin-top': 60 + 'px',
+            'position': 'absolute',
+            'left': 50 + '%',
+            'transform': 'translateX(' + (-50) + '%)'
+          };
+          state.change_sign_up = {
+            'position': 'absolute',
+            'left': 50 + '%',
+            'transform': 'translateX(' + (-50) + '%)'
+          };
+          state.add_list = {
+            'opacity': 1,
+            'margin-top': 0
+          };
+        }, 1);
         state.facebookLogin = false;
       } else if (state.sign_up_list === true) {
         if (state.email.trim() === '') {
@@ -371,6 +457,25 @@ export const store = new Vuex.Store({
     },
     inputRePassword (state, e) {
       state.re_password = e.target.value;
+    },
+    // -----------------------------UserProfile.vue------------------------------------
+    closePopup (state) {
+      state.edit_transition = {};
+      dataClear(state);
+      state.input_current_password = '';
+      setTimeout(function () {
+        state.showPopup = false;
+      }, 1000);
+    },
+    showPopup (state) {
+      state.showPopup = true;
+      setTimeout(function () {
+        state.edit_transition = {
+          top: 0,
+          opacity: 1
+        };
+        document.querySelector('.user-img-change-btn').focus();
+      }, 1);
     },
     // -----------------------------MusicPlayer.vue------------------------------------
     init (state) {
@@ -529,16 +634,17 @@ export const store = new Vuex.Store({
       };
     },
     signAfterInit (state, login) {
-      state.email = '';
-      state.password = '';
-      state.userName = '';
-      state.re_password = '';
+      dataClear(state);
       state.input_current_password = '';
-      state.show_modal = false;
+      state.login_transition = {};
+      setTimeout(function () {
+        state.show_modal = false;
+      }, 1000);
       if (login) {
         state.login_after_list = true;
       } else {
         state.login_after_list = false;
+        state.token = '';
         state.user_data = {
           userInfo: {
             nickname: '유저닉네임',
@@ -550,10 +656,6 @@ export const store = new Vuex.Store({
     saveUserData (state, e) {
       state.user_data = e;
       store.state.password_remember = store.state.password;
-    },
-    putImg (state, e) {
-      e = e || state.img_profile;
-      return e;
     }
   },
   actions: {
@@ -619,8 +721,9 @@ export const store = new Vuex.Store({
           console.log(response);
           store.commit('saveUserData', response.data);
           store.commit('signAfterInit', true);
-        }).catch(() => {
-          alert('일치하는 회원이 없습니다. 다시 확인해 주세요.');
+        }).catch((error) => {
+          console.log(error);
+          alert('이메일 혹은 비밀번호가 틀렸습니다.');
         });
       }
     },
@@ -644,14 +747,7 @@ export const store = new Vuex.Store({
       let passwordCheck = /^.*(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/;
       if (store.state.input_current_password === '') {
         alert('현재 비밀번호를 입력해주세요.');
-      } else {
-        if (store.state.userName.trim() === '') {
-          store.state.userName = store.state.user_data.userInfo.nickname;
-        }
-        if (store.state.password.trim() === '') {
-          store.state.password = store.state.password_remember;
-          store.state.re_password = store.state.password_remember;
-        }
+      } else if (store.state.password.trim() !== '') {
         if (!passwordCheck.test(store.state.password)) {
           // 정규표현식을 활용하여 문자, 숫자, 특수문자 사용해야 함.
           alert('비밀번호는 문자, 숫자, 특수 문자를 조합하여 입력해주세요.');
@@ -662,13 +758,16 @@ export const store = new Vuex.Store({
           // 회원가입 모달에서 입력한 비밀번호와 비밀번호 확인란이 동일하면 패스하고 아니면 경고창 띄움.
           alert('새로운 비밀번호가와 비밀번호 확인이 일치하지 않습니다. 비밀번호를 확인해주세요');
         } else {
-          Vue.axios.put('https://weather-sound.com/api/member/profile/' + store.state.user_data.userInfo.pk + '/edit/', {
-            'nickname': store.state.userName,
-            'img_profile': store.commit('putImg', store.state.img_profile),
-            'password': store.state.input_current_password,
-            'new_password1': store.state.password,
-            'new_password2': store.state.re_password
-          }, {
+          let data = new FormData();
+          data.append('nickname', store.state.userName);
+          if (store.state.img_profile) {
+            data.append('img_profile', store.state.img_profile);
+          }
+          data.append('password', store.state.input_current_password);
+          data.append('new_password1', store.state.password);
+          data.append('new_password2', store.state.re_password);
+          console.log(data.img_profile);
+          Vue.axios.put('https://weather-sound.com/api/member/profile/' + store.state.user_data.userInfo.pk + '/edit/', data, {
             headers: {
               Authorization: 'Token ' + store.state.user_data.token
             }
@@ -679,13 +778,43 @@ export const store = new Vuex.Store({
             }).then((response) => {
               console.log(response);
               store.commit('saveUserData', response.data);
-              store.commit('signAfterInit', true);
             });
+            store.commit('signAfterInit', true);
             store.commit('closePopup');
           }).catch(() => {
-            alert('현재 비빌번호가 맞지 않습니다. 다시 확인해주세요.');
+            alert('현재 비밀번호가 맞지 않습니다. 다시 확인해주세요.');
           });
         }
+      } else {
+        let data = new FormData();
+        if (store.state.userName) {
+          data.append('nickname', store.state.userName);
+          store.state.user_data.userInfo.nickname = store.state.userName;
+        }
+        if (store.state.img_profile) {
+          data.append('img_profile', store.state.img_profile);
+        }
+        data.append('password', store.state.input_current_password);
+        data.append('new_password1', store.state.input_current_password);
+        data.append('new_password2', store.state.input_current_password);
+        console.log(data);
+        Vue.axios.put('https://weather-sound.com/api/member/profile/' + store.state.user_data.userInfo.pk + '/edit/', data, {
+          headers: {
+            Authorization: 'Token ' + store.state.user_data.token
+          }
+        }).then((response) => {
+          Vue.axios.post('https://weather-sound.com/api/member/login/', {
+            'username': store.state.user_data.userInfo.username,
+            'password': store.state.input_current_password
+          }).then((response) => {
+            console.log(response);
+            store.commit('saveUserData', response.data);
+          });
+          store.commit('signAfterInit', true);
+          store.commit('closePopup');
+        }).catch(() => {
+          alert('현재 비빌번호가 맞지 않습니다. 다시 확인해주세요.');
+        });
       }
     },
     logOut: (store) => {

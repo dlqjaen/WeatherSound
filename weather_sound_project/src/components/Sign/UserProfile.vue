@@ -1,20 +1,20 @@
 <template lang="pug">
 //- 팝업창
-section.user-profile.edit-popup(v-show="showPopup")
+section.user-profile.edit-popup(v-if="showPopup" role ="dialog" :style="editTransition")
   h2.a11y-hidden 로그인/회원가입 모달창
   .user-profile-edit-wrapper
     .userprofile-update
-      label.user-img-change-btn(for="user-img-change")
+      label.user-img-change-btn(for="user-img-change" tabindex="0")
         img.current-user-img(:src='userInfo.img_profile', alt='현재 사용자사진')
       input.user_img_input(id="user-img-change" type="file" @change="saveUserImage")
     .profile-edit-input-box
       form.input-box
         ul.edit-userinfo
           li
-            p.user-email Email : {{userInfo.username}}
+            p.user-email(tabindex="0") Email : {{userInfo.username}}
           li
             label.a11y-hidden(for='username-profile') 새로운 유저닉네임 입력창 기존 닉네임: {{userInfo.nickname}}
-            input.edit-input(:placeholder="'기존 닉네임: '+userInfo.username" type="username", :value="userName", @input="inputUserName" id="username-profile" title="새로운 닉네임")
+            input.edit-input(:placeholder="'기존 닉네임: '+userInfo.nickname" type="username", :value="userName", @input="inputUserName" id="username-profile" title="새로운 닉네임")
           li
             label.a11y-hidden(for='currentpassword-profile') 현재 비밀번호
             input.edit-input(placeholder="현재 비밀번호" type="password" title="현재 비밀번호" id="currentpassword-profile", :value="currentPassword" @input="inputCurrentPassword")
@@ -44,7 +44,8 @@ export default {
       'password',
       'rePassWord',
       'userName',
-      'currentPassword'
+      'currentPassword',
+      'editTransition'
     ])
   },
   methods: {
@@ -78,14 +79,17 @@ export default {
 
 <style lang="scss" scoped>
 .user-profile {
-  transition: all 0.5s ease-in-out;
-  background: rgba(0, 0, 0, 0.9);
-  margin: 0 auto;
+  overflow: hidden;
+  top: -100%;
   width: 100%;
-  height: 100vh;
-  position: absolute;
-  top: 0;
+  height: 100%;
+  z-index: 10000;
+  opacity: 0;
+  font-size: 1.6rem;
   text-align: center;
+  position: absolute;
+  background: rgba(0,0,0,0.8);
+  transition: all 0.5s ease-in-out;
 }
 .user-email{
   margin: 0;

@@ -1,7 +1,6 @@
 <template lang="pug">
-  section.main.recomend-song
-    h2.a11y-hidden(tabindex="0") {{getWeather}} 추천 음악들
-    input.a11y-hidden(type="button" aria-label="뮤직플레이어로 바로가기" @keyup.enter="focusPlayer")
+  section.my-music-list
+    h2.a11y-hidden(tabindex="0") My Music List
     transition-group.recomend-wrapper(name="settingMusic" appear tag="ul")
       li.music-recomend-list(v-for="(music, index) in getMusic" :key="'music'+index")
         label.a11y-hidden(:for='music.name_music')
@@ -16,11 +15,9 @@
 <script>
 import {mapGetters} from 'vuex';
 export default {
-  name: 'RecomendMusic',
+  name: 'MyList',
   computed: {
     ...mapGetters([
-      'getMusic',
-      'getWeather'
     ])
   },
   methods: {
@@ -46,7 +43,7 @@ export default {
 <style lang="scss" scoped>
 .recomend-music-btn:hover{
   opacity: 1;
-  transition: all 0.2s ease-in-out;
+  transition: all 0.5s ease-in-out;
 }
 .main{
   overflow: auto;
@@ -63,11 +60,6 @@ export default {
 .music-recomend-list{
   height: 200px;
 }
-.recomend-music-btn:hover{
-  animation: scaleAnimation 0.5s ease-in-out;
-  transform: scale(1.2);
-  z-index: 2;
-}
 .recomend-music-btn{
   padding: 5px;
   max-width: 200px;
@@ -80,7 +72,6 @@ export default {
   cursor: pointer;
   border: none;
   opacity: 0.8;
-  transition: all 0.5s ease-in-out;
 }
 .recomend-music-btn img{
   width: 100%;
@@ -134,18 +125,6 @@ export default {
   100%{
     transform: translateX(0);
     opacity: 1;
-  };
-}
-@keyframes scaleAnimation{
-  0%{
-    transform: scale(0.9);
-  };
-  50%{
-    transform: scale(1.3);
-  };
-  100%{
-    transform: scale(1.2);
-
   };
 }
 </style>

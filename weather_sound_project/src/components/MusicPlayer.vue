@@ -1,13 +1,14 @@
 <template lang="pug">
-  aside.music-player
-    //-  접근성을 고려한 타이틀
-    h2.a11y-hidden MusicPlayer
-    //- 곡 정보가 표시되는 영역
-    MusicInfo
-    //- 뮤직플레이어를 컨트롤하는 영역
-    MusicControlor
-    //- 뮤직플레이어 볼륨 바
-    MusicVolume
+  transition(name="settingMusicPlayer" appear)
+    aside.music-player
+      //-  접근성을 고려한 타이틀
+      h2.a11y-hidden MusicPlayer
+      //- 곡 정보가 표시되는 영역
+      MusicInfo
+      //- 뮤직플레이어를 컨트롤하는 영역
+      MusicControlor
+      //- 뮤직플레이어 볼륨 바
+      MusicVolume
 </template>
 
 <script>
@@ -82,5 +83,24 @@ input[type='range']::-webkit-slider-thumb::before {
   left: -502px; /* this should be -2px - width */
   top: 8px; /* don't change this */
   background: #777;
+}
+.settingMusicPlayer-enter-active{
+  animation: settingMusicPlayerIn 2s ease forwards;
+}
+.settingMusicPlayer-move{
+  transition: transform 2s;
+}
+@keyframes settingMusicPlayerIn{
+  0%{
+    transform: translateY(-5%);
+    opacity: 0;
+  };
+  50%{
+    transform: translateY(5%);
+  };
+  100%{
+    transform: translateY(0);
+    opacity: 1;
+  };
 }
 </style>

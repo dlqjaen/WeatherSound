@@ -1,9 +1,9 @@
 <template lang="pug">
   .music-info
-    img.album(:src='musicImg', :alt='musicTitle+"의 앨범커버"' tabindex="0")
+    img.album(:src='musicInfo.music_img', :alt='musicInfo.music_title+"의 앨범커버"' tabindex="0")
     p.album-text(tabindex="0")
-      span.music-title(:aria-label="'현재곡: '+musicTitle") {{musicTitle}}
-      span.music-singger(:aria-label="', 현재곡 가수: '+musicArtist") {{musicArtist}}
+      span.music-title(:aria-label="'현재곡: '+musicInfo.music_title") {{musicInfo.music_title}}
+      span.music-singger(:aria-label="', 현재곡 가수: '+musicInfo.music_artist") {{musicInfo.music_artist}}
 </template>
 
 <script>
@@ -12,9 +12,7 @@ export default {
   name: 'MusicInfo',
   computed: {
     ...mapGetters([
-      'musicTitle',
-      'musicArtist',
-      'musicImg'
+      'musicInfo'
     ])
   }
 };
