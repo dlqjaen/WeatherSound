@@ -5,7 +5,7 @@
     transition-group.recomend-wrapper(name="settingMusic" appear tag="ul")
       li.music-recomend-list(v-for="(music, index) in getMusic" :key="'music'+index")
         label.a11y-hidden(:for='music.name_music')
-        button.recomend-music-btn(type='button', :id="music.name_music" @click="selectMusic(index)" @mouseenter="changeEventIn" @mouseleave="changeEventOut")
+        button.recomend-music-btn(type='button', :id="music.name_music" @click="selectMusic(index)" @mouseenter="changeEventIn" @mouseleave="changeEventOut" @focus="changeEventIn" @blur="changeEventOut")
           p.recomend-music-info
             span.recomend-music-title {{music.name_music}}
             span.recomend-music-singger {{music.name_artist}}
@@ -63,7 +63,7 @@ export default {
 .music-recomend-list{
   height: 200px;
 }
-.recomend-music-btn:hover{
+.recomend-music-btn:hover, .recomend-music-btn:focus{
   animation: scaleAnimation 0.5s ease-in-out;
   transform: scale(1.1);
   z-index: 2;

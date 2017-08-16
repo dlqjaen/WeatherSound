@@ -17,19 +17,15 @@
         li.add-list(v-show='signUpList', :style="addList")
           input#password-check.sign-input(type='password',  title="비밀번호 확인", aria-label="비밀번호 확인" @input="inputRePassword" :value="rePassWord" placeholder='비밀번호 입력확인창')
         li.login-btn
-          input.sign-button(:type='submitToggleBtn.login', aria-label='로그인', :style="changeLogin" value='로그인' @click="signInPost")
+          input.sign-button(:type='submitToggleBtn.login', aria-label='로그인', :style="changeLogin" value='로그인' @click.prevent="signInPost")
         li.sign-up-btn
-          input.sign-button(:type='submitToggleBtn.signUp', aria-label='회원가입', :style="changeSignUp" value="회원가입" @click="signUpPost")
+          input.sign-button(:type='submitToggleBtn.signUp', aria-label='회원가입', :style="changeSignUp" value="회원가입" @click.prevent="signUpPost")
         li
-          .fb-login-button(data-max-rows="1" data-size="large" data-button-type="login_with" data-show-faces="false" data-auto-logout-link="false" onlogin="facebookLogin()" data-use-continue-as="false" aria-label="페이스북 로그인" v-show="facebookLogin")
-          //- <fb:login-button class="sign-button facebook" type='button' aria-label='페이북으로 로그인 버튼' scope="public_profile,email" onlogin="checkLoginState();">
-          //-   i.fa.fa-facebook-square.facebook-logo(aria-hidden='true')
-          //-   | Facebook
-          //- </fb:login-button>
+          button.sign-button.facebook-button(type="button" aria-label="페이스북 로그인" v-show="facebookLogin" @click="facebookToken")
+            <i class="fa fa-facebook-official" aria-hidden="true"></i> Facebook 로그인
       button#login-modal-close.close(type="button" @click="closeModal")
         i.fa.fa-times(aria-hidden='true')
 </template>
-
 
 <script>
 import {mapGetters} from 'vuex';
@@ -75,6 +71,9 @@ export default {
     },
     inputRePassword (e) {
       this.$store.commit('inputRePassword', e);
+    },
+    facebookToken () {
+      this.$store.dispatch('facebookToken');
     }
   }
 };
@@ -101,11 +100,11 @@ export default {
   font-size: 3rem;
   position: absolute;
   padding: 5px;
-  right: 0;
-  top: 0;
+  right: -50px;
+  top: -50px;
 }
 .sign-input{
-  width: 224px;
+  width: 100%;
   height: 40px;
   font-size: 1.4rem;
   border: 1px solid rgba(255,255,255, 0.2);
@@ -121,14 +120,16 @@ export default {
   border: none;
   font-size: 1.6rem;
   color: white;
-  width: 224px;
+  width: 100%;
   height: 40px;
   background: #e56b6b;
   transition: all 0.5s ease-in-out;
 }
+.facebook-button{
+  background: #3b5998;
+}
 .input-box{
-  width: 50%;
-  padding: 50px 50px;
+  width: 250px;
   position: relative;
   left: 50%;
   top: 50%;
@@ -141,5 +142,8 @@ export default {
   margin-top: -10%;
   opacity: 0;
   transition: all 0.5s ease-in-out;
+}
+.fa-facebook-official{
+  font-size: 2rem;
 }
 </style>

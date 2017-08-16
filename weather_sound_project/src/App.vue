@@ -45,6 +45,9 @@ export default {
 [v-cloak]{
   display: none;
 }
+// *{
+//   outline: none;
+// }
 html{
   font-size: 10px;
   box-sizing: border-box;

@@ -67,7 +67,7 @@ export default {
   right: 100%;
   transition: all 0.3s ease-in-out;
 }
-.link-list:hover::after{
+.link-list:hover::after, .link-list:focus::after{
   right: 0;
   background: rgba(59, 153, 252, 0.7);
 }

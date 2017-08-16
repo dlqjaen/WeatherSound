@@ -2,15 +2,15 @@
   .music-controlor
     //- 뮤직플레이어 버튼들
     .music-btn-box
-      button.music-controlor-btn(aria-label="마이리스트 추가" @click="addToMyList")
+      button.music-controlor-btn(aria-label="마이리스트 추가" @click="addToMyList" title="마이리스트 추가")
         i.fa.fa-plus(aria-hidden='true' :style="activeAddBtn")
-      button.music-controlor-btn(aria-label="이전 곡 재생" @click="prevMusic")
+      button.music-controlor-btn(aria-label="이전 곡 재생" @click="prevMusic" title="이전 곡 재생")
         i.fa.fa-step-backward(aria-hidden='true')
-      button.music-controlor-btn(aria-label="곡 재생버튼 곡이 재생중일 때는 정지" @click="play")
+      button.music-controlor-btn(aria-label="곡 재생버튼 곡이 재생중일 때는 정지" @click="play" title="곡 재생")
         i.fa(aria-hidden='true' :class="togglePlay")
-      button.music-controlor-btn(aria-label="다음 곡 재생" @click="nextMusic")
+      button.music-controlor-btn(aria-label="다음 곡 재생" @click="nextMusic" title="다음 곡 재생")
         i.fa.fa-step-forward(aria-hidden='true')
-      button.music-controlor-btn(aria-label="한 곡 반복재생" @click="repeat")
+      button.music-controlor-btn(aria-label="한 곡 반복재생" @click="repeat" title="한 곡 반복 재생")
         i.fa.fa-repeat(aria-hidden='true' :style="active")
     //- 뮤직플레이어 진행 바
     .music-time

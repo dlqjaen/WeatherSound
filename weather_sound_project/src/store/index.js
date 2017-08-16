@@ -362,8 +362,7 @@ export const store = new Vuex.Store({
         state.show_modal = false;
       }, 500);
     },
-    loginBtn (state, e) {
-      stopAction(e);
+    loginBtn (state) {
       if (state.sign_up_list === false) {
         let emailCheck = /[0-9a-zA-Z][_0-9a-zA-Z-]*@[_0-9a-zA-Z-]+(\.[_0-9a-zA-Z-]+){1,2}$/;
         let passwordCheck = /^.*(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/;
@@ -397,8 +396,7 @@ export const store = new Vuex.Store({
         state.facebookLogin = true;
       }
     },
-    signUpBtn (state, e) {
-      stopAction(e);
+    signUpBtn (state) {
       let passwordCheck = /^.*(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/;
       if (state.sign_up_list === false) {
         state.sign_up_list = true;
@@ -409,15 +407,13 @@ export const store = new Vuex.Store({
         };
         setTimeout(function () {
           state.change_login = {
-            'margin-top': 60 + 'px',
             'position': 'absolute',
-            'left': 50 + '%',
-            'transform': 'translateX(' + (-50) + '%)'
+            'margin-top': 60 + 'px',
+            'left': 0
           };
           state.change_sign_up = {
             'position': 'absolute',
-            'left': 50 + '%',
-            'transform': 'translateX(' + (-50) + '%)'
+            'left': 0
           };
           state.add_list = {
             'opacity': 1,
@@ -695,11 +691,15 @@ export const store = new Vuex.Store({
     signUpPost: (store, e) => {
       store.commit('signUpBtn', e);
       if (store.state.sign_up_check) {
-        Vue.axios.post('https://weather-sound.com/api/member/signup/', {
-          'username': store.state.email,
-          'nickname': store.state.userName,
-          'password1': store.state.password,
-          'password2': store.state.re_password
+        let data = new FormData();
+        data.append('username', store.state.email);
+        data.append('nickname', store.state.userName);
+        data.append('password1', store.state.password);
+        data.append('password2', store.state.re_password);
+        Vue.axios.post('https://weather-sound.com/api/member/signup/', data, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
         }).then((response) => {
           Vue.axios.post('https://weather-sound.com/api/member/login/', {
             'username': store.state.email,
@@ -731,13 +731,13 @@ export const store = new Vuex.Store({
       }
     },
     musicGet: (store) => {
-      Vue.axios.get('https://weather-sound.com/api/music/').then((response) => {
+      Vue.axios.get('https://weather-sound.com/api/music/?page=6').then((response) => {
         store.commit('pushMusic', response.data);
-        for (let e = 2; e < 10; e++) {
-          Vue.axios.get('https://weather-sound.com/api/music//?page=' + e).then((response) => {
-            store.commit('pushMusic', response.data);
-          });
-        };
+        // for (let e = 2; e < 10; e++) {
+        //   Vue.axios.get('https://weather-sound.com/api/music//?page=' + e).then((response) => {
+        //     store.commit('pushMusic', response.data);
+        //   });
+        // };
         musicSeting(store.state, 0, true);
       });
     },
@@ -843,6 +843,38 @@ export const store = new Vuex.Store({
         console.log(response);
       }).catch(() => {
         alert('마이리스트 불러오기 오류');
+      });
+    },
+    facebookToken: (store) => {
+      var FB = window.FB;
+      var scopes = 'email,public_profile';
+      FB.login(function (response) {
+        if (response.status === 'connected') {
+          console.log('The user has logged in!');
+          FB.api('/me', function (response) {
+            console.log(response);
+          });
+        }
+      }, { scope: scopes });
+      FB.getLoginStatus(function (response) {
+        if (response.status === 'connected') {
+          console.log('Logged in.');
+          console.log(response.authResponse.accessToken);
+          Vue.axios.post('https://weather-sound.com/api/member/facebook-login/', {
+            'token': response.authResponse.accessToken
+          }).then((response) => {
+            store.commit('closeModal');
+          }).catch(() => {
+
+          });
+          localStorage.setItem('facebook', response.authResponse.accessToken);
+        } else if (response.status === 'not_authorized') {
+          // 허가 받지 않은 사용자가 재접근 시 로그인페이지로 이동
+          window.location.replace('/login');
+          console.log('허가 받지 않음');
+        } else {
+          console.log('unknown');
+        }
       });
     }
   }
