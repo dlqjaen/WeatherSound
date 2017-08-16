@@ -35,16 +35,14 @@ export default {
   position: relative;
   width: 84%;
   margin-left: 8%;
-  border-bottom: 1px solid rgba(255,255,255,0.5);
 }
 .link-list::after{
   content: '';
   z-index: -1;
   border-radius: 0 5px 5px 0;
   position: absolute;
-  background: rgba(0,0,0,0.5);
   left: 0;
-  top: 0;
+  height: 2px;
   bottom: 0;
   right: 100%;
   transition: all 0.3s ease-in-out;

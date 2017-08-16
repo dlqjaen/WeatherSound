@@ -659,7 +659,7 @@ export const store = new Vuex.Store({
     }
   },
   actions: {
-    getCityAction: ({commit}) => {
+    getCityAction: ({commit, dispatch}) => {
       // 서버통신을 위한 axios 코드
       Vue.axios.get('http://ip-api.com/json')
       .then((response) => {
@@ -668,6 +668,9 @@ export const store = new Vuex.Store({
           lat: response.data.lat,
           lon: response.data.lon
         });
+      })
+      .then(() => {
+        dispatch('getWeatherAction');
       });
     },
     getWeatherAction: (store) => {
@@ -769,16 +772,18 @@ export const store = new Vuex.Store({
           console.log(data.img_profile);
           Vue.axios.put('https://weather-sound.com/api/member/profile/' + store.state.user_data.userInfo.pk + '/edit/', data, {
             headers: {
-              Authorization: 'Token ' + store.state.user_data.token
+              Authorization: 'Token ' + store.state.user_data.token,
+              'Content-Type': 'multipart/form-data'
             }
           }).then((response) => {
-            Vue.axios.post('https://weather-sound.com/api/member/login/', {
-              'username': store.state.user_data.userInfo.username,
-              'password': store.state.password
-            }).then((response) => {
-              console.log(response);
-              store.commit('saveUserData', response.data);
-            });
+            console.log(response);
+            // Vue.axios.post('https://weather-sound.com/api/member/login/', {
+            //   'username': store.state.user_data.userInfo.username,
+            //   'password': store.state.password
+            // }).then((response) => {
+            //   // console.log(response);
+            //   store.commit('saveUserData', response.data);
+            // });
             store.commit('signAfterInit', true);
             store.commit('closePopup');
           }).catch(() => {
@@ -800,16 +805,21 @@ export const store = new Vuex.Store({
         console.log(data);
         Vue.axios.put('https://weather-sound.com/api/member/profile/' + store.state.user_data.userInfo.pk + '/edit/', data, {
           headers: {
-            Authorization: 'Token ' + store.state.user_data.token
+            Authorization: 'Token ' + store.state.user_data.token,
+            'Content-Type': 'multipart/form-data'
           }
         }).then((response) => {
-          Vue.axios.post('https://weather-sound.com/api/member/login/', {
-            'username': store.state.user_data.userInfo.username,
-            'password': store.state.input_current_password
-          }).then((response) => {
-            console.log(response);
-            store.commit('saveUserData', response.data);
-          });
+          console.log(response);
+          // let changedImgProfile = response.data.userInfo.img_profile.replace(/media\//, 'media/member/');
+          // response.data.userInfo.img_profile = changedImgProfile;
+          // console.log(response.data.userInfo);
+          // Vue.axios.post('https://weather-sound.com/api/member/login/', {
+          //   'username': store.state.user_data.userInfo.username,
+          //   'password': store.state.input_current_password
+          // }).then((response) => {
+          //   // console.log(response);
+          //   store.commit('saveUserData', response.data);
+          // });
           store.commit('signAfterInit', true);
           store.commit('closePopup');
         }).catch(() => {
@@ -825,6 +835,14 @@ export const store = new Vuex.Store({
       }).then((response) => {
         store.commit('closePopup');
         store.commit('signAfterInit');
+      });
+    },
+    myListGet: (store) => {
+      Vue.axios.get('https://weather-sound.com/api/member/' + store.state.user_data.userInfo.pk + '/playlists/')
+      .then((response) => {
+        console.log(response);
+      }).catch(() => {
+        alert('마이리스트 불러오기 오류');
       });
     }
   }

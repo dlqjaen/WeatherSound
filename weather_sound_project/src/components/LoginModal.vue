@@ -21,7 +21,7 @@
         li.sign-up-btn
           input.sign-button(:type='submitToggleBtn.signUp', aria-label='회원가입', :style="changeSignUp" value="회원가입" @click="signUpPost")
         li
-          .fb-login-button(data-max-rows="1" data-size="large" data-button-type="login_with" data-show-faces="false" data-auto-logout-link="false" data-use-continue-as="false" aria-label="페이스북 로그인" v-show="facebookLogin")
+          .fb-login-button(data-max-rows="1" data-size="large" data-button-type="login_with" data-show-faces="false" data-auto-logout-link="false" onlogin="facebookLogin()" data-use-continue-as="false" aria-label="페이스북 로그인" v-show="facebookLogin")
           //- <fb:login-button class="sign-button facebook" type='button' aria-label='페이북으로 로그인 버튼' scope="public_profile,email" onlogin="checkLoginState();">
           //-   i.fa.fa-facebook-square.facebook-logo(aria-hidden='true')
           //-   | Facebook

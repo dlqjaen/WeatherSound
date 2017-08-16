@@ -2,6 +2,7 @@
   .wrapper(v-cloak, :style="backgroundImg")
     main-header
     recomend-music
+    my-list
     login-modal
     music-player
     UserProfile
@@ -13,6 +14,7 @@ import RecomendMusic from './components/RecomendMusic';
 import MusicPlayer from './components/MusicPlayer';
 import LoginModal from './components/LoginModal';
 import UserProfile from './components/Sign/UserProfile';
+import MyList from './components/MyList/MyList';
 // Vue 로드
 import Vue from 'vue';
 // axios 호출
@@ -26,7 +28,7 @@ Vue.use(VueAxios, axios);
 export default {
   name: 'app',
   components: {
-    MainHeader, RecomendMusic, MusicPlayer, LoginModal, UserProfile
+    MainHeader, RecomendMusic, MusicPlayer, LoginModal, UserProfile, MyList
   },
   computed: {
     ...mapGetters([

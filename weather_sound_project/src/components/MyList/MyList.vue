@@ -1,15 +1,15 @@
 <template lang="pug">
   section.my-music-list
     h2.a11y-hidden(tabindex="0") My Music List
-    transition-group.recomend-wrapper(name="settingMusic" appear tag="ul")
-      li.music-recomend-list(v-for="(music, index) in getMusic" :key="'music'+index")
-        label.a11y-hidden(:for='music.name_music')
-        button.recomend-music-btn(type='button', :id="music.name_music" @click="selectMusic(index)" @mouseenter="changeEventIn" @mouseleave="changeEventOut")
-          p.recomend-music-info
-            span.recomend-music-title {{music.name_music}}
-            span.recomend-music-singger {{music.name_artist}}
-          img(:src='music.img_music', alt='앨범커버')
-    input.a11y-hidden(type="button" aria-label="메인메뉴로 바로가기" @keyup.enter="focusMenu")
+    //- button(@click="myListGet") 클릭시 마이리스트 콘솔
+    //- transition-group.recomend-wrapper(name="settingMusic" appear tag="ul")
+    //-   li.music-recomend-list(v-for="(music, index) in getMusic" :key="'music'+index")
+    //-     label.a11y-hidden(:for='music.name_music')
+    //-     button.recomend-music-btn(type='button', :id="music.name_music" @click="selectMusic(index)" @mouseenter="changeEventIn" @mouseleave="changeEventOut")
+    //-       p.recomend-music-info
+    //-         span.recomend-music-title {{music.name_music}}
+    //-         span.recomend-music-singger {{music.name_artist}}
+    //-       img(:src='music.img_music', alt='앨범커버')
 </template>
   
 <script>
@@ -21,20 +21,23 @@ export default {
     ])
   },
   methods: {
-    selectMusic (index) {
-      this.$store.dispatch('selectMusic', index);
-    },
-    changeEventIn (e) {
-      this.$store.commit('changeEventIn', e);
-    },
-    changeEventOut (e) {
-      this.$store.commit('changeEventOut', e);
-    },
-    focusPlayer () {
-      this.$store.commit('focusPlayer');
-    },
-    focusMenu () {
-      this.$store.commit('focusMenu');
+    // selectMusic (index) {
+    //   this.$store.dispatch('selectMusic', index);
+    // },
+    // changeEventIn (e) {
+    //   this.$store.commit('changeEventIn', e);
+    // },
+    // changeEventOut (e) {
+    //   this.$store.commit('changeEventOut', e);
+    // },
+    // focusPlayer () {
+    //   this.$store.commit('focusPlayer');
+    // },
+    // focusMenu () {
+    //   this.$store.commit('focusMenu');
+    // }
+    myListGet () {
+      this.$store.dispatch('myListGet');
     }
   }
 };

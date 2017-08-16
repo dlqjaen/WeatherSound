@@ -36,23 +36,7 @@ export default {
   methods: {
     showModal () {
       this.$store.commit('showModal');
-    },
-    getCityAction () {
-      this.$store.dispatch('getCityAction');
-    },
-    getWeatherAction () {
-      this.$store.dispatch('getWeatherAction');
-    },
-    musicGet () {
-      this.$store.dispatch('musicGet');
     }
-  },
-  beforeMount () {
-    this.getCityAction();
-    this.musicGet();
-  },
-  beforeUpdate () {
-    this.getWeatherAction();
   }
 };
 </script>
@@ -70,7 +54,6 @@ export default {
   position: relative;
   width: 84%;
   margin-left: 8%;
-  border-bottom: 1px solid rgba(255,255,255,0.5);
   transition: all 0.5s ease-in-out;
 }
 .link-list::after{
@@ -78,10 +61,9 @@ export default {
   z-index: -1;
   border-radius: 0 5px 5px 0;
   position: absolute;
-  background: rgba(0,0,0,0.5);
   left: 0;
-  top: 0;
   bottom: 0;
+  height: 2px;
   right: 100%;
   transition: all 0.3s ease-in-out;
 }

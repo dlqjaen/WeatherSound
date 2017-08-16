@@ -13,6 +13,10 @@ import VueAxios from 'vue-axios';
 // store 로드
 import {store} from './store/index.js';
 
+// store 초기 실행
+store.dispatch('getCityAction');
+store.dispatch('musicGet');
+
 Vue.use(VueAxios, axios);
 
 // 환경설정: false로 설정할 경우, 배포에 대한 Tip을 출력하지 않습니다.

@@ -65,11 +65,11 @@ export default {
 }
 .recomend-music-btn:hover{
   animation: scaleAnimation 0.5s ease-in-out;
-  transform: scale(1.2);
+  transform: scale(1.1);
   z-index: 2;
 }
 .recomend-music-btn{
-  padding: 5px;
+  padding: 10px;
   max-width: 200px;
   max-height: 200px;
   position: relative;
@@ -91,10 +91,10 @@ export default {
   border-radius: 5px;
   content: '';
   position: absolute;
-  top: 5px;
-  left: 5px;
-  right: 5px;
-  bottom: 5px;
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  bottom: 10px;
   background: rgba(0,0,0,0.2);
 }
 .recomend-music-info{
@@ -141,10 +141,10 @@ export default {
     transform: scale(0.9);
   };
   50%{
-    transform: scale(1.3);
+    transform: scale(1.2);
   };
   100%{
-    transform: scale(1.2);
+    transform: scale(1.1);
 
   };
 }

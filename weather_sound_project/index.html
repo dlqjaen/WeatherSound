@@ -12,40 +12,50 @@
   <div id="app"></div>
   <!-- 빌드된 파일이 이 곳에 자동으로 삽입됩니다. -->
   <script>
-    window.fbAsyncInit = function() {
-      FB.init({
-        appId      : '796025130559107',
-        cookie     : true,
-        xfbml      : true,
-        version    : 'v2.8'
-      });
-      FB.AppEvents.logPageView();   
-    };
-    (function(d, s, id){
-      var js, fjs = d.getElementsByTagName(s)[0];
-      if (d.getElementById(id)) {return;}
+    (function (d, s, id) {
+      var js = d.getElementsByTagName(s)[0];
+      var fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) { return; }
       js = d.createElement(s); js.id = id;
-      js.src = "//connect.facebook.net/ko_KR/sdk.js#xfbml=1&version=v2.10&appId=796025130559107";
+      js.src = '//connect.facebook.net/ko_KR/sdk.js';
       fjs.parentNode.insertBefore(js, fjs);
     }(document, 'script', 'facebook-jssdk'));
-
-    // FB.getLoginStatus(function(response) {
-    //   statusChangeCallback(response);
-    // });
-  // {
-//     status: 'connected',
-//     authResponse: {
-//         accessToken: '...',
-//         expiresIn:'...',
-//         signedRequest:'...',
-//         userID:'...'
-//     }
-// }
-    function checkLoginState() {
-      FB.getLoginStatus(function(response) {
-        statusChangeCallback(response);
+    function facebookLogin () {
+      var FB = window.FB;
+      var scopes = 'email,public_profile';
+      FB.login(function (response) {
+        if (response.status === 'connected') {
+          console.log('The user has logged in!');
+          FB.api('/me', function (response) {
+            console.log(response);
+          });
+        }
+      }, { scope: scopes });
+      FB.getLoginStatus(function (response) {
+        if (response.status === 'connected') {
+          console.log('Logged in.');
+          console.log(response.authResponse);
+          document.facebookAccessToken = response.authResponse.accessToken;
+        } else if (response.status === 'not_authorized') {
+          // 허가 받지 않은 사용자가 재접근 시 로그인페이지로 이동
+          window.location.replace('/login');
+          console.log('허가 받지 않음');
+        } else {
+          console.log('unknown');
+        }
+        
       });
     }
+    window.fbAsyncInit = function () {
+      FB.init({
+        appId: '796025130559107',
+        cookie: true,
+        xfbml: true,
+        version: 'v2.10',
+        status: true
+      });
+      FB.AppEvents.logPageView();
+    };
   </script>
 </body>
 </html>
