@@ -1,8 +1,10 @@
 <template lang="pug">
   .wrapper(v-cloak, :style="backgroundImg")
     main-header
-    recomend-music
-    my-list
+    transition(name="settingAction" mode="out-in" appear)
+      component(:is="changeComponent")
+    //- recomend-music
+    //- my-list
     login-modal
     music-player
     UserProfile
@@ -32,7 +34,8 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'backgroundImg'
+      'backgroundImg',
+      'changeComponent'
     ])
   }
 };
@@ -93,5 +96,24 @@ i{
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
+}
+.settingAction-enter-active{
+  animation: settingAction 1s ease-in-out forwards;
+}
+.settingAction-move{
+  transition: transform 1s;
+}
+@keyframes settingAction{
+  0%{
+    transform: translateX(0);
+    opacity: 0;
+  };
+  50%{
+    transform: translateX(30%);
+  };
+  100%{
+    transform: translateX(0);
+    opacity: 1;
+  };
 }
 </style>

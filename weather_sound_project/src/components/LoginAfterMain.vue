@@ -2,10 +2,10 @@
   .login-after(v-show='loginAfterList')
     li.navigation(:style="checkNav")
     li.menu-list.link-list
-      a.recomend-btn(href='#' @click="recomendSelect")
+      a.recomend-btn.link-focus(href='#' @click.prevent="recomendSelect")
         | Recomend Music
     li.menu-list.link-list
-      a.mylist-btn(href='#' @click="mylistSelect")
+      a.mylist-btn.link-focus(href='#' @click.prevent="myListGet")
         | My List
     li.profile-list.login-affter-list
       label.a11y-hidden(for='user-profile')
@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import {mapGetters, mapMutations} from 'vuex';
+import {mapGetters, mapMutations, mapActions} from 'vuex';
 export default {
   name: 'LoginAfterMain',
   computed: {
@@ -28,8 +28,10 @@ export default {
   methods: {
     ...mapMutations([
       'showPopup',
-      'recomendSelect',
-      'mylistSelect'
+      'recomendSelect'
+    ]),
+    ...mapActions([
+      'myListGet'
     ])
   }
 };
@@ -40,7 +42,7 @@ export default {
   width: 84%;
   margin-left: 8%;
 }
-.link-list::after{
+.link-focus::after{
   content: '';
   z-index: -1;
   position: absolute;
@@ -50,7 +52,7 @@ export default {
   right: 100%;
   transition: all 0.3s ease-in-out;
 }
-.link-list:hover::after, .link-list:focus::after, .profile-list:hover::after, .profile-list:focus::after{
+.link-focus:hover::after, .link-focus:focus::after, #user-profile:hover::after, #user-profile:focus::after{
   right: 0;
   background: rgba(59, 153, 252, 0.7);
 }
@@ -99,7 +101,7 @@ export default {
   margin-left: 8%;
   height: 51px;
 }
-.profile-list::after{
+#user-profile::after{
   content: '';
   z-index: -1;
   position: absolute;

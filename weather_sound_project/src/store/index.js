@@ -96,6 +96,7 @@ export const store = new Vuex.Store({
     // 로그인 후 보여지는 리스트 토글 기능 할당
     login_after_list: false,
     check_nav: {},
+    change_component: 'recomend-music',
     // -----------------------------------------------------------로그인 데이터
     // 로그인 창을 보이거나 안보이게 토글기능 할당
     show_modal: false,
@@ -139,13 +140,15 @@ export const store = new Vuex.Store({
     change_sign_up: {},
     // 리스트 추가시 트렌지션
     add_list: {},
-    // -----------------------------------------------------------개인정보 수정  데이터
+    // -----------------------------------------------------------개인정보 수정 데이터
     // 개인정보 창을 보이거나 안보이게 하는 토글기능
     showPopup: false,
     // 새롭게 선택한 이미지의 정보를 할당
     img_profile: null,
     // 개인정보 수정창 트렌지션
     edit_transition: {},
+    // -----------------------------------------------------------마이리스트 데이터
+    my_list: [],
     // -----------------------------------------------------------뮤직플레이어 데이터
     // 뮤직플레이어 정보(곡명, 가수, 이미지)를 할당
     musicInfo: {},
@@ -207,6 +210,9 @@ export const store = new Vuex.Store({
     checkNav (state) {
       return state.check_nav;
     },
+    changeComponent (state) {
+      return state.change_component;
+    },
     // -----------------------------------------------------------로그인 getters
     email (state) {
       return state.email;
@@ -251,6 +257,10 @@ export const store = new Vuex.Store({
     // -----------------------------------------------------------개인정보 수정 getters
     editTransition (state) {
       return state.edit_transition;
+    },
+    // -----------------------------------------------------------마이리스트 getters
+    myList (state) {
+      return state.my_list;
     },
     // -----------------------------------------------------------뮤직플레이어 getters
     getMusic (state) {
@@ -354,16 +364,31 @@ export const store = new Vuex.Store({
       state.input_current_password = e.target.value;
     },
     recomendSelect (state) {
+      state.change_component = 'recomend-music';
       state.check_nav = {
         'top': 146 + 'px',
         'animation': 'changeUpNav 0.3s ease-in-out forwards'
       };
     },
     mylistSelect (state) {
+      state.change_component = 'my-list';
       state.check_nav = {
         'top': 197 + 'px',
         'animation': 'changeDownNav 0.3s ease-in-out forwards'
       };
+    },
+    mylistLoad (state) {
+      Vue.axios.get('https://weather-sound.com/api/member/' + localStorage.getItem('userPk') + '/playlists/', {
+        headers: {
+          'Authorization': 'Token ' + localStorage.getItem('userToken')
+        }
+      })
+      .then((response) => {
+        console.log(response.data.User.playlists);
+        state.my_list = response.data.User.playlists;
+      }).catch(() => {
+        alert('마이리스트 불러오기 오류');
+      });
     },
     // -----------------------------LoginModal.vue------------------------------------
     closeModal (state) {
@@ -371,6 +396,7 @@ export const store = new Vuex.Store({
       state.change_login = {};
       state.change_sign_up = {};
       state.facebookLogin = true;
+      document.querySelector('.logo-list a').focus();
       dataClear(state);
       setTimeout(function () {
         state.show_modal = false;
@@ -468,11 +494,25 @@ export const store = new Vuex.Store({
     inputRePassword (state, e) {
       state.re_password = e.target.value;
     },
+    prevFocusChange (state, e) {
+      if (e.keyCode === 9) {
+        document.querySelector('#login-modal-close').focus();
+      }
+    },
+    nextFocusChange () {
+      document.querySelector('.main-skip-btn').focus();
+    },
+    closePrevFocusChange (state, e) {
+      if (e.keyCode === 9) {
+        document.querySelector('#password').focus();
+      }
+    },
     // -----------------------------UserProfile.vue------------------------------------
     closePopup (state) {
       state.edit_transition = {};
       dataClear(state);
       state.input_current_password = '';
+      document.querySelector('.logo-list a').focus();
       setTimeout(function () {
         state.showPopup = false;
       }, 1000);
@@ -486,6 +526,16 @@ export const store = new Vuex.Store({
         };
         document.querySelector('.user-img-change-btn').focus();
       }, 1);
+    },
+    editShiftTab (state, e) {
+      console.log(e.keyCode);
+      if (e.keyCode === 9) {
+        document.querySelector('.edit-close').focus();
+      }
+    },
+    editNextTab (state, e) {
+      console.log(e.keyCode);
+      document.querySelector('.user-img-change-btn').focus();
     },
     // -----------------------------MusicPlayer.vue------------------------------------
     init (state) {
@@ -648,6 +698,7 @@ export const store = new Vuex.Store({
       setTimeout(function () {
         state.show_modal = false;
       }, 1000);
+      document.querySelector('.logo-list a').focus();
       if (login) {
         state.login_after_list = true;
       } else {
@@ -718,6 +769,9 @@ export const store = new Vuex.Store({
             'username': store.state.email,
             'password': store.state.password
           }).then((response) => {
+            localStorage.setItem('userPk', response.data.userInfo.pk);
+            store.commit('mylistLoad');
+            localStorage.setItem('userToken', response.data.token);
             store.commit('saveUserData', response.data);
           });
           store.commit('signAfterInit', true);
@@ -737,6 +791,7 @@ export const store = new Vuex.Store({
           console.log(response);
           localStorage.setItem('userPk', response.data.userInfo.pk);
           localStorage.setItem('userToken', response.data.token);
+          store.commit('mylistLoad');
           store.commit('saveUserData', response.data);
           store.commit('signAfterInit', true);
         }).catch((error) => {
@@ -746,18 +801,12 @@ export const store = new Vuex.Store({
       }
     },
     musicGet: (store, weather) => {
-      Vue.axios.get('https://weather-sound.com/api/music/').then((response) => {
-        console.log(response);
-        store.commit('pushMusic', response.data[2].playlist_musics);
+      Vue.axios.post('https://weather-sound.com/api/music/', {
+        'name': weather.toLowerCase()
+      }).then((response) => {
+        store.commit('pushMusic', response.data.listInfo.playlist_musics);
         musicSeting(store.state, 0, true);
       });
-      // console.log(weather.toLowerCase());
-      // Vue.axios.post('https://weather-sound.com/api/music/', {
-      //   'name_playlist': weather.toLowerCase()
-      // }).then((response) => {
-      //   store.commit('pushMusic', response.data.results);
-      //   musicSeting(store.state, 0, true);
-      // });
     },
     selectMusic: (store, index) => {
       musicSeting(store.state, index);
@@ -852,15 +901,11 @@ export const store = new Vuex.Store({
         store.commit('closePopup');
         store.commit('signAfterInit');
         localStorage.clear();
+        document.querySelector('.logo-list a').focus();
       });
     },
     myListGet: (store) => {
-      Vue.axios.get('https://weather-sound.com/api/member/' + localStorage.getItem('userPk') + '/playlists/')
-      .then((response) => {
-        console.log(response);
-      }).catch(() => {
-        alert('마이리스트 불러오기 오류');
-      });
+      store.commit('mylistSelect');
     },
     facebookToken: (store) => {
       var FB = window.FB;
@@ -900,6 +945,7 @@ export const store = new Vuex.Store({
           'Authorization': 'Token ' + userData.userToken
         }
       }).then((response) => {
+        store.commit('mylistLoad');
         store.commit('saveUserData', response.data);
         store.commit('signAfterInit', true);
       });

@@ -4,7 +4,7 @@ section.user-profile.edit-popup(v-if="showPopup" role ="dialog" :style="editTran
   h2.a11y-hidden 로그인/회원가입 모달창
   .user-profile-edit-wrapper
     .userprofile-update
-      label.user-img-change-btn(for="user-img-change" tabindex="0")
+      label.user-img-change-btn(for="user-img-change" tabindex="0" @keydown.shift.prevent="editShiftTab")
         img.current-user-img(:src='userInfo.img_profile', alt='현재 사용자사진')
       input.user_img_input(id="user-img-change" type="file" @change="saveUserImage")
     .profile-edit-input-box
@@ -28,12 +28,12 @@ section.user-profile.edit-popup(v-if="showPopup" role ="dialog" :style="editTran
             input.edit-input(placeholder="새 비밀번호 확인" type="password" @input="inputRePassword", :value="rePassWord" id="newpassword-confirm-profile" title="새 비밀번호 확인")
         button.profile-update-btn.complete(type="submit" aria-label='개인정보 수정완료 버튼' @click.prevent="editComplete") 수정완료
         button.profile-update-btn.logout-btn(type='submit' aria-label='로그아웃 버튼' @click.prevent="logOut") 로그아웃
-      button.close(type="button" @click="closePopup" aria-label="사용자정보 수정창 닫기")
+      button.close.edit-close(type="button" @click="closePopup" aria-label="사용자정보 수정창 닫기" @keydown.tab.prevent="editNextTab")
         i.fa.fa-times(aria-hidden="true")
 </template>
 
 <script>
-import {mapGetters} from 'vuex';
+import {mapGetters, mapMutations, mapActions} from 'vuex';
 
 export default {
   computed: {
@@ -49,9 +49,11 @@ export default {
     ])
   },
   methods: {
-    closePopup () {
-      this.$store.commit('closePopup');
-    },
+    ...mapMutations([
+      'editShiftTab',
+      'editNextTab',
+      'closePopup'
+    ]),
     logOut () {
       this.$store.dispatch('logOut');
     },

@@ -2,15 +2,15 @@
   section.main.recomend-song
     h2.a11y-hidden(tabindex="0") {{getWeather}} 추천 음악들
     input.a11y-hidden(type="button" aria-label="뮤직플레이어로 바로가기" @keyup.enter="focusPlayer")
-    transition-group.recomend-wrapper(name="settingMusic" appear tag="ul")
-      li.music-recomend-list(v-for="(music, index) in getMusic" :key="'music'+index")
+    transition.recomend-wrapper(name="createMusic" appear tag="ul")
+      li.music-recomend-list(v-for="(music, index) in getMusic" :key="index")
         label.a11y-hidden(:for='music.name_music')
         button.recomend-music-btn(type='button', :id="music.name_music" @click="selectMusic(index)" @mouseenter="changeEventIn" @mouseleave="changeEventOut" @focus="changeEventIn" @blur="changeEventOut")
           p.recomend-music-info
             span.recomend-music-title {{music.name_music}}
             span.recomend-music-singger {{music.name_artist}}
           img(:src='music.img_music', alt='앨범커버')
-    input.a11y-hidden(type="button" aria-label="메인메뉴로 바로가기" @keyup.enter="focusMenu")
+    input.a11y-hidden.main-skip-btn(type="button" aria-label="메인메뉴로 바로가기" @keyup.enter="focusMenu")
 </template>
   
 <script>
@@ -44,7 +44,6 @@ export default {
 <style lang="scss" scoped>
 .recomend-music-btn:hover{
   opacity: 1;
-  transition: all 0.2s ease-in-out;
 }
 .main{
   overflow: auto;
@@ -78,7 +77,6 @@ export default {
   cursor: pointer;
   border: none;
   opacity: 0.8;
-  transition: all 0.5s ease-in-out;
 }
 .recomend-music-btn img{
   width: 100%;
@@ -105,7 +103,7 @@ export default {
   margin: 0;
   padding: 0;
   opacity: 0;
-  transition: all 0.5s ease-in-out;
+  transition: opacity 0.5s ease-in-out;
 }
 .recomend-music-title, .recomend-music-singger{
   white-space: nowrap;
@@ -114,25 +112,6 @@ export default {
   display: block;
   color: white;
   margin-top: 2%;
-}
-.settingMusic-enter-active{
-  animation: settingMusicIn 2s ease forwards;
-}
-.settingMusic-move{
-  transition: transform 2s;
-}
-@keyframes settingMusicIn{
-  0%{
-    transform: translateX(-20%);
-  };
-  50%{
-    opacity: 0;
-    transform: translateX(50%);
-  };
-  100%{
-    transform: translateX(0);
-    opacity: 1;
-  };
 }
 @keyframes scaleAnimation{
   0%{
@@ -144,6 +123,19 @@ export default {
   100%{
     transform: scale(1.1);
 
+  };
+}
+@keyframes createMusic{
+  0%{
+    transform: translateX(0);
+    opacity: 0;
+  };
+  50%{
+    transform: translateX(30%);
+  };
+  100%{
+    transform: translateX(0);
+    opacity: 1;
   };
 }
 </style>

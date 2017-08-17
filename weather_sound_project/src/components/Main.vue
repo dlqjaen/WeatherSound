@@ -54,9 +54,8 @@ export default {
   position: relative;
   width: 84%;
   margin-left: 8%;
-  transition: all 0.5s ease-in-out;
 }
-.link-list::after{
+.login-btn::after{
   content: '';
   z-index: -1;
   border-radius: 0 5px 5px 0;
@@ -65,9 +64,9 @@ export default {
   bottom: 0;
   height: 2px;
   right: 100%;
-  transition: all 0.3s ease-in-out;
+  transition: right 0.3s ease-in-out;
 }
-.link-list:hover::after, .link-list:focus::after{
+.login-btn:hover::after, .login-btn:focus::after{
   right: 0;
   background: rgba(59, 153, 252, 0.7);
 }

@@ -1,7 +1,7 @@
 <template lang="pug">
   section.main.login-modal(v-show="showModal" role="dialog", :style="loginTransition")
     h2.a11y-hidden 로그인/회원가입 모달창
-    form.input-box
+    form.input-box(tabindex="0")
       label.a11y-hidden(for="login-modal-close") 로그인 / 회원가입창 닫기버튼
       ul
         li
@@ -23,7 +23,7 @@
         li
           button.sign-button.facebook-button(type="button" aria-label="페이스북 로그인" v-show="facebookLogin" @click="facebookToken")
             <i class="fa fa-facebook-official" aria-hidden="true"></i> Facebook 로그인
-      button#login-modal-close.close(type="button" @click="closeModal")
+      button#login-modal-close.close(type="button" @click="closeModal" @keydown.tab="nextFocusChange")
         i.fa.fa-times(aria-hidden='true')
 </template>
 
@@ -52,6 +52,9 @@ export default {
   methods: {
     ...mapMutations([
       'closeModal'
+      // 'prevFocusChange',
+      // 'nextFocusChange',
+      // 'closePrevFocusChange'
     ]),
     ...mapActions([
       'facebookToken'
@@ -91,7 +94,7 @@ export default {
   text-align: center;
   position: absolute;
   background: rgba(0,0,0,0.8);
-  transition: all 0.5s ease-in-out;
+  transition: top 0.5s ease-in-out, opacity 0.5s ease-in-out;
 }
 .close{
   background: none;
