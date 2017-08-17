@@ -52,6 +52,25 @@ export default {
   padding: 1%;
   margin-right: 2%;
 }
+.settingMusicPlayer-enter-active{
+  animation: settingMusicPlayerIn 2s ease forwards;
+}
+.settingMusicPlayer-move{
+  transition: transform 2s;
+}
+@keyframes settingMusicPlayerIn{
+  0%{
+    transform: translateY(-100%);
+    opacity: 0;
+  };
+  50%{
+    transform: translateY(5%);
+  };
+  100%{
+    transform: translateY(0);
+    opacity: 1;
+  };
+}
 // ----------------------- 곡 진행 바와 볼륨 바 스타일 적용
 input[type='range'] {
   border-radius: 5px 5px 5px 5px;
@@ -83,24 +102,5 @@ input[type='range']::-webkit-slider-thumb::before {
   left: -502px; /* this should be -2px - width */
   top: 8px; /* don't change this */
   background: #777;
-}
-.settingMusicPlayer-enter-active{
-  animation: settingMusicPlayerIn 2s ease forwards;
-}
-.settingMusicPlayer-move{
-  transition: transform 2s;
-}
-@keyframes settingMusicPlayerIn{
-  0%{
-    transform: translateY(-5%);
-    opacity: 0;
-  };
-  50%{
-    transform: translateY(5%);
-  };
-  100%{
-    transform: translateY(0);
-    opacity: 1;
-  };
 }
 </style>

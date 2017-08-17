@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import {mapGetters} from 'vuex';
+import {mapGetters, mapMutations} from 'vuex';
 
 export default {
   name: 'MusicControlor',
@@ -36,23 +36,15 @@ export default {
     ])
   },
   methods: {
-    addToMyList () {
-      this.$store.commit('addToMyList');
-    },
+    ...mapMutations([
+      'addToMyList',
+      'prevMusic',
+      'play',
+      'nextMusic',
+      'repeat'
+    ]),
     setVolume (e) {
       this.$store.commit('setVolume', e);
-    },
-    prevMusic () {
-      this.$store.commit('prevMusic');
-    },
-    play () {
-      this.$store.commit('play');
-    },
-    nextMusic () {
-      this.$store.commit('nextMusic');
-    },
-    repeat () {
-      this.$store.commit('repeat');
     },
     setTime (e) {
       this.$store.commit('setTime', e);

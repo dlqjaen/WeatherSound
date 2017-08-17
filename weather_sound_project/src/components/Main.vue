@@ -1,7 +1,7 @@
 <template lang="pug">
   transition(name="settingHeader" appear)
     header.header
-      h1.a11y-hidden(key="webTitle")
+      h1.a11y-hidden(key="webTitle" click)
         | WeatherSound
       nav.menu-bar(key="navigation")
         h2.a11y-hidden
@@ -84,6 +84,7 @@ export default {
   height: 90vh;
 }
 .link-list{
+  height: 51px;
   padding: 0;
 }
 .weather-info{
@@ -108,7 +109,7 @@ export default {
 }
 @keyframes settingHeaderIn{
   0%{
-    transform: translateX(-5%);
+    transform: translateX(-100%);
     opacity: 0;
   };
   50%{

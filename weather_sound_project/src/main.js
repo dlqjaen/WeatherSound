@@ -14,8 +14,13 @@ import VueAxios from 'vue-axios';
 import {store} from './store/index.js';
 
 // store 초기 실행
+if (localStorage.getItem('userToken')) {
+  store.dispatch('loging', {
+    userPk: localStorage.getItem('userPk'),
+    userToken: localStorage.getItem('userToken')
+  });
+}
 store.dispatch('getCityAction');
-store.dispatch('musicGet');
 
 Vue.use(VueAxios, axios);
 

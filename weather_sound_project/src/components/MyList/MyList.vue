@@ -1,5 +1,5 @@
 <template lang="pug">
-  section.my-music-list
+  section.my-music-list(v-show="")
     h2.a11y-hidden(tabindex="0") My Music List
     //- button(@click="myListGet") 클릭시 마이리스트 콘솔
     //- transition-group.recomend-wrapper(name="settingMusic" appear tag="ul")

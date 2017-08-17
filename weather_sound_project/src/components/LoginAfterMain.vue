@@ -1,10 +1,11 @@
 <template lang="pug">
   .login-after(v-show='loginAfterList')
+    li.navigation(:style="checkNav")
     li.menu-list.link-list
-      a.recomend-btn(href='#')
+      a.recomend-btn(href='#' @click="recomendSelect")
         | Recomend Music
     li.menu-list.link-list
-      a.mylist-btn(href='#')
+      a.mylist-btn(href='#' @click="mylistSelect")
         | My List
     li.profile-list.login-affter-list
       label.a11y-hidden(for='user-profile')
@@ -14,19 +15,22 @@
 </template>
 
 <script>
-import {mapGetters} from 'vuex';
+import {mapGetters, mapMutations} from 'vuex';
 export default {
   name: 'LoginAfterMain',
   computed: {
     ...mapGetters([
       'loginAfterList',
-      'userInfo'
+      'userInfo',
+      'checkNav'
     ])
   },
   methods: {
-    showPopup () {
-      this.$store.commit('showPopup');
-    }
+    ...mapMutations([
+      'showPopup',
+      'recomendSelect',
+      'mylistSelect'
+    ])
   }
 };
 </script>
@@ -39,7 +43,6 @@ export default {
 .link-list::after{
   content: '';
   z-index: -1;
-  border-radius: 0 5px 5px 0;
   position: absolute;
   left: 0;
   height: 2px;
@@ -47,12 +50,24 @@ export default {
   right: 100%;
   transition: all 0.3s ease-in-out;
 }
-.link-list:hover::after{
+.link-list:hover::after, .link-list:focus::after, .profile-list:hover::after, .profile-list:focus::after{
   right: 0;
   background: rgba(59, 153, 252, 0.7);
 }
 .link-list{
+  height: 51px;
   padding: 0;
+}
+.navigation{
+  border-radius: 0 10px 10px 0;
+  content: '';
+  position: absolute;
+  left: 0;
+  height: 51px;
+  width: 5px;
+  background: rgb(59, 153, 252);
+  top: 146px;
+  transition: all 0.3s ease-in-out;
 }
 /* 로그인 후 메인메뉴 */
 #user-profile{
@@ -82,9 +97,41 @@ export default {
   bottom: 0;
   width: 84%;
   margin-left: 8%;
-  border-top: 1px solid rgba(255,255,255,0.5);
+  height: 51px;
+}
+.profile-list::after{
+  content: '';
+  z-index: -1;
+  position: absolute;
+  left: 0;
+  height: 2px;
+  top: 0;
+  right: 100%;
+  transition: all 0.3s ease-in-out;
 }
 #user-profile{
   padding: 10% 0;
+}
+@keyframes changeDownNav{
+  0%{
+    top: 146px;
+  };
+  50%{
+    top: 210px;
+  };
+  100%{
+    top: 197px;
+  };
+}
+@keyframes changeUpNav{
+  0%{
+    top: 197px;
+  };
+  50%{
+    top: 130px;
+  };
+  100%{
+    top: 146px;
+  };
 }
 </style>

@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import {mapGetters} from 'vuex';
+import {mapGetters, mapMutations, mapActions} from 'vuex';
 
 export default {
   name: 'LoginModal',
@@ -50,9 +50,12 @@ export default {
     ])
   },
   methods: {
-    closeModal () {
-      this.$store.commit('closeModal');
-    },
+    ...mapMutations([
+      'closeModal'
+    ]),
+    ...mapActions([
+      'facebookToken'
+    ]),
     signUpPost (e) {
       this.$store.dispatch('signUpPost', e);
     },
@@ -71,9 +74,6 @@ export default {
     },
     inputRePassword (e) {
       this.$store.commit('inputRePassword', e);
-    },
-    facebookToken () {
-      this.$store.dispatch('facebookToken');
     }
   }
 };

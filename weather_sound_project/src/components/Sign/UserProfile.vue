@@ -26,8 +26,8 @@ section.user-profile.edit-popup(v-if="showPopup" role ="dialog" :style="editTran
           li
             label.a11y-hidden(for='newpassword-confirm-profile') 새 비밀번호 재확인 입력
             input.edit-input(placeholder="새 비밀번호 확인" type="password" @input="inputRePassword", :value="rePassWord" id="newpassword-confirm-profile" title="새 비밀번호 확인")
-        button.profile-update-btn.complete(type="submit" aria-label='개인정보 수정완료 버튼' @click="editComplete") 수정완료
-        button.profile-update-btn.logout-btn(type='submit' aria-label='로그아웃 버튼' @click="logOut") 로그아웃
+        button.profile-update-btn.complete(type="submit" aria-label='개인정보 수정완료 버튼' @click.prevent="editComplete") 수정완료
+        button.profile-update-btn.logout-btn(type='submit' aria-label='로그아웃 버튼' @click.prevent="logOut") 로그아웃
       button.close(type="button" @click="closePopup" aria-label="사용자정보 수정창 닫기")
         i.fa.fa-times(aria-hidden="true")
 </template>
