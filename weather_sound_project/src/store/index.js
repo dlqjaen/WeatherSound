@@ -746,13 +746,14 @@ export const store = new Vuex.Store({
       }
     },
     musicGet: (store, weather) => {
-      Vue.axios.get('https://weather-sound.com/api/music/?page=6').then((response) => {
-        console.log(response.data.results);
-        store.commit('pushMusic', response.data.results);
+      Vue.axios.get('https://weather-sound.com/api/music/').then((response) => {
+        console.log(response);
+        store.commit('pushMusic', response.data[2].playlist_musics);
         musicSeting(store.state, 0, true);
       });
+      // console.log(weather.toLowerCase());
       // Vue.axios.post('https://weather-sound.com/api/music/', {
-      //   'name': weather.toLowerCase()
+      //   'name_playlist': weather.toLowerCase()
       // }).then((response) => {
       //   store.commit('pushMusic', response.data.results);
       //   musicSeting(store.state, 0, true);
