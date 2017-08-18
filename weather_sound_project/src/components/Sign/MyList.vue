@@ -3,10 +3,12 @@
     h2(tabindex="0") My Music List
     ul.mylist-wrapper
       li.my-list(v-for="(list, index) in myList")
-        button.my-list-btn(type='button', id="" @mouseenter="changeEventIn" @mouseleave="changeEventOut")
+        button.my-list-btn(type='button', aria-label="list.name_playlist" @mouseenter="changeEventIn" @mouseleave="changeEventOut")
           p.my-list-info
-            span.my-list-title 마이리스트
-          img(src='#', alt='앨범커버')
+            span.my-list-title {{list.name_playlist}}
+          img(src='list.playlist_musics[0].img_music', :alt='list.name_playlist + "대표이미지"')
+        button.list-delete-btn(type='button', aria-label="리스트 삭제버튼" @click="listDeleteBtn(list.playlist_id)")
+          <i class="fa fa-times" aria-hidden="true"></i>
       li.my-list
         .add_list(id="add_list" aria-label="리스트 추가")
           button.plus-btn(type="button" @click="showMakeModal" v-if="!activeCreateBtn" title="리스트 추가 입력창으로 전환 버튼" aria-label="리스트 추가 입력창으로 전환 버튼")
@@ -14,7 +16,7 @@
           .create-box(v-if="activeCreateBtn")
             input.input-list-name(type="text" aria-label="새로만들 리스트이름 입력창" @input="inputListName" placeholder="생성할 리스트 이름" :value="getListName")
             .btn-box
-              button.agree-btn(type="button" title="리스트 추가 버튼" aria-label="리스트 추가 버튼")
+              button.agree-btn(type="button" title="리스트 추가 버튼" aria-label="리스트 추가 버튼" @click="myListGet")
                 <i class="fa fa-check" aria-hidden="true"></i>
               button.cancel-btn(type="button" title="리스트 추가를 취소하는 버튼" aria-label="리스트 추가를 취소하는 버튼" @click="showMakeModal")
                 <i class="fa fa-times" aria-hidden="true"></i>
@@ -37,7 +39,12 @@ export default {
       'changeEventIn',
       'changeEventOut',
       'showMakeModal',
-      'inputListName'
+      'inputListName',
+      'createList'
+    ]),
+    ...mapActions([
+      'myListGet',
+      'listDeleteBtn'
     ])
     // selectMusic (index) {
     //   this.$store.dispatch('selectMusic', index);
@@ -60,14 +67,17 @@ export default {
   display: flex;
   justify-content: space-around;
 }
+.my-list{
+  position: relative;
+}
 .my-list-btn:hover{
   opacity: 1;
   transition: opacity 0.5s ease-in-out;
 }
 .my-list-btn{
   padding: 5px;
-  max-width: 200px;
-  max-height: 200px;
+  width: 200px;
+  height: 200px;
   position: relative;
   overflow: hidden;
   background: none;
@@ -113,11 +123,13 @@ export default {
   margin-top: 2%;
 }
 .add_list{
+  box-sizing: border-box;
   border-radius: 5px;
-  width: 200px;
-  height: 200px;
+  width: 190px;
+  height: 190px;
   position: relative;
   background: rgba(0,0,0,0.5);
+  margin-top: 5px;
   padding: 5px;
   font-size: 1.6rem;
   text-align: center;
@@ -163,5 +175,20 @@ export default {
 }
 .agree-btn{
   margin-right: 40px;
+}
+.list-delete-btn{
+  padding: 5px;
+  background: none;
+  border: none;
+  font-size: 1.6rem;
+  position: absolute;
+  right: 10px;
+  top: 5px;
+  color: white;
+  transition: all 0.2s ease-in-out;
+}
+.list-delete-btn:hover {
+  transform: rotate(90deg);
+  color: rgb(0, 0, 0);
 }
 </style>

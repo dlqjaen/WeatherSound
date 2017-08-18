@@ -395,6 +395,8 @@ export const store = new Vuex.Store({
       .then((response) => {
         console.log(response.data.User.playlists);
         state.my_list = response.data.User.playlists;
+        state.input_list_name = '';
+        state.active_create_btn = false;
       }).catch(() => {
         alert('마이리스트 불러오기 오류');
       });
@@ -562,6 +564,7 @@ export const store = new Vuex.Store({
         }
       }).then((response) => {
         console.log(response);
+        state.my_list = response.data.data.playlists;
       }).catch((error) => {
         console.log(error);
       });
@@ -799,8 +802,8 @@ export const store = new Vuex.Store({
             'password': store.state.password
           }).then((response) => {
             localStorage.setItem('userPk', response.data.userInfo.pk);
-            store.commit('mylistLoad');
             localStorage.setItem('userToken', response.data.token);
+            store.commit('mylistLoad');
             store.commit('saveUserData', response.data);
           });
           store.commit('signAfterInit', true);
@@ -935,7 +938,8 @@ export const store = new Vuex.Store({
       });
     },
     myListGet: (store) => {
-      store.commit('mylistSelect');
+      store.commit('createList');
+      store.commit('mylistLoad');
     },
     facebookToken: (store) => {
       var FB = window.FB;
@@ -951,11 +955,15 @@ export const store = new Vuex.Store({
       FB.getLoginStatus(function (response) {
         if (response.status === 'connected') {
           console.log('Logged in.');
-          console.log(response.authResponse.accessToken);
           Vue.axios.post('https://weather-sound.com/api/member/facebook-login/', {
             'token': response.authResponse.accessToken
           }).then((response) => {
+            console.log(response);
             store.commit('closeModal');
+            // store.commit('mylistLoad');
+            localStorage.setItem('userPk', response.data.userInfo.pk);
+            localStorage.setItem('userToken', response.data.token);
+            store.commit('saveUserData', response.data);
           }).catch(() => {
 
           });
@@ -978,6 +986,18 @@ export const store = new Vuex.Store({
         store.commit('mylistLoad');
         store.commit('saveUserData', response.data);
         store.commit('signAfterInit', true);
+      });
+    },
+    listDeleteBtn: (store, listpk) => {
+      Vue.axios.delete('https://weather-sound.com/api/member/' + localStorage.getItem('userPk') + '/playlists/' + listpk + '/', {
+        headers: {
+          'Authorization': 'Token ' + localStorage.getItem('userToken')
+        }
+      }).then((response) => {
+        console.log(response);
+        store.commit('mylistLoad');
+      }).catch(() => {
+        console.log('마이리스트 삭제 오류');
       });
     }
   }

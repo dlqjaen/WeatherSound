@@ -5,7 +5,7 @@
       a.recomend-btn.link-focus(href='#' @click.prevent="recomendSelect")
         | Recomend Music
     li.menu-list.link-list
-      a.mylist-btn.link-focus(href='#' @click.prevent="myListGet")
+      a.mylist-btn.link-focus(href='#' @click.prevent="mylistSelect")
         | My List
     li.profile-list.login-affter-list
       label.a11y-hidden(for='user-profile')
@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import {mapGetters, mapMutations, mapActions} from 'vuex';
+import {mapGetters, mapMutations} from 'vuex';
 export default {
   name: 'LoginAfterMain',
   computed: {
@@ -28,10 +28,8 @@ export default {
   methods: {
     ...mapMutations([
       'showPopup',
-      'recomendSelect'
-    ]),
-    ...mapActions([
-      'myListGet'
+      'recomendSelect',
+      'mylistSelect'
     ])
   }
 };
