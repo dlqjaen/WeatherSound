@@ -959,11 +959,11 @@ export const store = new Vuex.Store({
             'token': response.authResponse.accessToken
           }).then((response) => {
             console.log(response);
-            store.commit('closeModal');
-            // store.commit('mylistLoad');
             localStorage.setItem('userPk', response.data.userInfo.pk);
             localStorage.setItem('userToken', response.data.token);
             store.commit('saveUserData', response.data);
+            store.commit('closeModal');
+            store.commit('mylistLoad');
           }).catch(() => {
 
           });
