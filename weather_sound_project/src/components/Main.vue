@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import {mapGetters} from 'vuex';
+import {mapGetters, mapMutations} from 'vuex';
 import LoginAfterMain from './LoginAfterMain';
 
 export default {
@@ -34,9 +34,9 @@ export default {
     ])
   },
   methods: {
-    showModal () {
-      this.$store.commit('showModal');
-    }
+    ...mapMutations([
+      'showModal'
+    ])
   }
 };
 </script>

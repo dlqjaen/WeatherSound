@@ -33,7 +33,7 @@ section.user-profile.edit-popup(v-if="showPopup" role ="dialog" :style="editTran
 </template>
 
 <script>
-import {mapGetters, mapMutations, mapActions} from 'vuex';
+import {mapGetters, mapMutations} from 'vuex';
 
 export default {
   computed: {

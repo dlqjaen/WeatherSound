@@ -3,8 +3,6 @@
     main-header
     transition(name="settingAction" mode="out-in" appear)
       component(:is="changeComponent")
-    //- recomend-music
-    //- my-list
     login-modal
     music-player
     UserProfile
@@ -16,7 +14,7 @@ import RecomendMusic from './components/RecomendMusic';
 import MusicPlayer from './components/MusicPlayer';
 import LoginModal from './components/LoginModal';
 import UserProfile from './components/Sign/UserProfile';
-import MyList from './components/MyList/MyList';
+import MyList from './components/Sign/MyList';
 // Vue 로드
 import Vue from 'vue';
 // axios 호출
@@ -109,7 +107,7 @@ i{
     opacity: 0;
   };
   50%{
-    transform: translateX(30%);
+    transform: translateX(100px);
   };
   100%{
     transform: translateX(0);

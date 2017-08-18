@@ -2,8 +2,8 @@
   section.main.recomend-song
     h2.a11y-hidden(tabindex="0") {{getWeather}} 추천 음악들
     input.a11y-hidden(type="button" aria-label="뮤직플레이어로 바로가기" @keyup.enter="focusPlayer")
-    transition.recomend-wrapper(name="createMusic" appear tag="ul")
-      li.music-recomend-list(v-for="(music, index) in getMusic" :key="index")
+    ul.recomend-wrapper
+      li.music-recomend-list(v-for="(music, index) in getMusic")
         label.a11y-hidden(:for='music.name_music')
         button.recomend-music-btn(type='button', :id="music.name_music" @click="selectMusic(index)" @mouseenter="changeEventIn" @mouseleave="changeEventOut" @focus="changeEventIn" @blur="changeEventOut")
           p.recomend-music-info
@@ -56,9 +56,6 @@ export default {
   flex-wrap: wrap;
   display: flex;
   justify-content: space-around;
-}
-.music-recomend-list{
-  height: 200px;
 }
 .recomend-music-btn:hover, .recomend-music-btn:focus{
   animation: scaleAnimation 0.5s ease-in-out;
@@ -123,19 +120,6 @@ export default {
   100%{
     transform: scale(1.1);
 
-  };
-}
-@keyframes createMusic{
-  0%{
-    transform: translateX(0);
-    opacity: 0;
-  };
-  50%{
-    transform: translateX(30%);
-  };
-  100%{
-    transform: translateX(0);
-    opacity: 1;
   };
 }
 </style>

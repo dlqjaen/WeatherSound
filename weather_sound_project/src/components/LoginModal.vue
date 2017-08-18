@@ -1,7 +1,7 @@
 <template lang="pug">
   section.main.login-modal(v-show="showModal" role="dialog", :style="loginTransition")
     h2.a11y-hidden 로그인/회원가입 모달창
-    form.input-box(tabindex="0")
+    form.input-box
       label.a11y-hidden(for="login-modal-close") 로그인 / 회원가입창 닫기버튼
       ul
         li
@@ -23,7 +23,7 @@
         li
           button.sign-button.facebook-button(type="button" aria-label="페이스북 로그인" v-show="facebookLogin" @click="facebookToken")
             <i class="fa fa-facebook-official" aria-hidden="true"></i> Facebook 로그인
-      button#login-modal-close.close(type="button" @click="closeModal" @keydown.tab="nextFocusChange")
+      button#login-modal-close.close(type="button" @click="closeModal")
         i.fa.fa-times(aria-hidden='true')
 </template>
 
@@ -51,33 +51,20 @@ export default {
   },
   methods: {
     ...mapMutations([
-      'closeModal'
+      'closeModal',
+      'inputUserName',
+      'inputText',
+      'inputPassword',
+      'inputRePassword'
       // 'prevFocusChange',
       // 'nextFocusChange',
       // 'closePrevFocusChange'
     ]),
     ...mapActions([
-      'facebookToken'
-    ]),
-    signUpPost (e) {
-      this.$store.dispatch('signUpPost', e);
-    },
-    signInPost (e) {
-      this.$store.dispatch('signInPost', e);
-    },
-    inputUserName (e) {
-      this.$store.commit('inputUserName', e);
-    },
-    // 이메일, 패스워드가 vue에 보여질 수 있게 작성한 메서드, 재사용 가능하므로 합쳐야 함
-    inputText (e) {
-      this.$store.commit('inputText', e);
-    },
-    inputPassword (e) {
-      this.$store.commit('inputPassword', e);
-    },
-    inputRePassword (e) {
-      this.$store.commit('inputRePassword', e);
-    }
+      'facebookToken',
+      'signUpPost',
+      'signInPost'
+    ])
   }
 };
 </script>

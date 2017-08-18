@@ -22,6 +22,7 @@ if (localStorage.getItem('userToken')) {
 }
 store.dispatch('getCityAction');
 
+store.commit('init');
 Vue.use(VueAxios, axios);
 
 // 환경설정: false로 설정할 경우, 배포에 대한 Tip을 출력하지 않습니다.

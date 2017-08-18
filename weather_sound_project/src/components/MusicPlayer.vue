@@ -22,9 +22,6 @@ export default {
   name: 'MusicPlayer',
   components: {
     MusicInfo, MusicVolume, MusicControlor
-  },
-  mounted () {
-    this.$store.commit('init');
   }
 };
 </script>

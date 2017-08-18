@@ -19,7 +19,7 @@ const showPrograss = (state) => {
   setInterval(() => {
     state.currentTime = readableDuration(state, musicPlayer.currentTime);
     state.prograss = (Math.floor(musicPlayer.currentTime) / Math.floor(musicPlayer.duration)) * 100;
-    state.runningTime = readableDuration(state, musicPlayer.duration);
+    readableDuration(state, musicPlayer.duration) === '0NaN:0NaN' ? state.runningTime = '로딩중...' : state.runningTime = readableDuration(state, musicPlayer.duration);
   }, 1000);
 };
 // 정수로된 숫자값을 넣으면 분, 초 단위로 나타내주는 함수
@@ -149,6 +149,8 @@ export const store = new Vuex.Store({
     edit_transition: {},
     // -----------------------------------------------------------마이리스트 데이터
     my_list: [],
+    input_list_name: '',
+    active_create_btn: false,
     // -----------------------------------------------------------뮤직플레이어 데이터
     // 뮤직플레이어 정보(곡명, 가수, 이미지)를 할당
     musicInfo: {},
@@ -262,6 +264,12 @@ export const store = new Vuex.Store({
     myList (state) {
       return state.my_list;
     },
+    activeCreateBtn (state) {
+      return state.active_create_btn;
+    },
+    getListName (state) {
+      return state.input_list_name;
+    },
     // -----------------------------------------------------------뮤직플레이어 getters
     getMusic (state) {
       return state.music_data;
@@ -364,6 +372,7 @@ export const store = new Vuex.Store({
       state.input_current_password = e.target.value;
     },
     recomendSelect (state) {
+      state.active_create_btn = false;
       state.change_component = 'recomend-music';
       state.check_nav = {
         'top': 146 + 'px',
@@ -536,6 +545,26 @@ export const store = new Vuex.Store({
     editNextTab (state, e) {
       console.log(e.keyCode);
       document.querySelector('.user-img-change-btn').focus();
+    },
+    // -----------------------------MyList.vue------------------------------------
+    showMakeModal (state) {
+      state.active_create_btn = !state.active_create_btn;
+    },
+    inputListName (state, e) {
+      state.input_list_name = e.target.value;
+    },
+    createList (state) {
+      Vue.axios.put('https://weather-sound.com/api/member/' + localStorage.getItem('userPk') + '/playlists/', {
+        'name_playlist': state.input_list_name
+      }, {
+        headers: {
+          Authorization: 'Token ' + localStorage.getItem('userToken')
+        }
+      }).then((response) => {
+        console.log(response);
+      }).catch((error) => {
+        console.log(error);
+      });
     },
     // -----------------------------MusicPlayer.vue------------------------------------
     init (state) {
@@ -804,6 +833,7 @@ export const store = new Vuex.Store({
       Vue.axios.post('https://weather-sound.com/api/music/', {
         'name': weather.toLowerCase()
       }).then((response) => {
+        console.log(response);
         store.commit('pushMusic', response.data.listInfo.playlist_musics);
         musicSeting(store.state, 0, true);
       });

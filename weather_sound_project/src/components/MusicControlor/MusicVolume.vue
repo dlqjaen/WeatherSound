@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import {mapGetters} from 'vuex';
+import {mapGetters, mapMutations} from 'vuex';
 export default {
   name: 'MusicVolume',
   computed: {
@@ -17,15 +17,11 @@ export default {
     ])
   },
   methods: {
-    volumeOff () {
-      this.$store.commit('volumeOff');
-    },
-    setVolume (e) {
-      this.$store.commit('setVolume', e);
-    },
-    volumeKeyValueControlor (e) {
-      this.$store.commit('volumeKeyValueControlor', e);
-    }
+    ...mapMutations([
+      'volumeOff',
+      'setVolume',
+      'volumeKeyValueControlor'
+    ])
   }
 };
 </script>
