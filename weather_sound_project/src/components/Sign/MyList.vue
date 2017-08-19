@@ -3,10 +3,10 @@
     h2(tabindex="0") My Music List
     ul.mylist-wrapper
       li.my-list(v-for="(list, index) in myList")
-        button.my-list-btn(type='button', aria-label="list.name_playlist" @mouseenter="changeEventIn" @mouseleave="changeEventOut")
+        button.my-list-btn(type='button', aria-label="list.name_playlist" @mouseenter="changeEventIn" @mouseleave="changeEventOut" @click="enterDetailMyList(list)")
           p.my-list-info
             span.my-list-title {{list.name_playlist}}
-          img(src='list.playlist_musics[0].img_music', :alt='list.name_playlist + "대표이미지"')
+          img(:src='"../../assets/music-album.png"', :alt='list.name_playlist + "대표이미지"')
         button.list-delete-btn(type='button', aria-label="리스트 삭제버튼" @click="listDeleteBtn(list.playlist_id)")
           <i class="fa fa-times" aria-hidden="true"></i>
       li.my-list
@@ -44,7 +44,8 @@ export default {
     ]),
     ...mapActions([
       'myListGet',
-      'listDeleteBtn'
+      'listDeleteBtn',
+      'enterDetailMyList'
     ])
     // selectMusic (index) {
     //   this.$store.dispatch('selectMusic', index);
@@ -69,6 +70,7 @@ export default {
 }
 .my-list{
   position: relative;
+  margin: 5px;
 }
 .my-list-btn:hover{
   opacity: 1;
@@ -180,7 +182,7 @@ export default {
   padding: 5px;
   background: none;
   border: none;
-  font-size: 1.6rem;
+  font-size: 2rem;
   position: absolute;
   right: 10px;
   top: 5px;

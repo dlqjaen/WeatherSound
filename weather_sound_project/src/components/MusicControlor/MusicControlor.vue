@@ -1,17 +1,25 @@
 <template lang="pug">
   .music-controlor
     //- 뮤직플레이어 버튼들
-    .music-btn-box
-      button.music-controlor-btn(aria-label="마이리스트 추가" @click="addToMyList" title="마이리스트 추가")
-        i.fa.fa-plus(aria-hidden='true' :style="activeAddBtn")
-      button.music-controlor-btn(aria-label="이전 곡 재생" @click="prevMusic" title="이전 곡 재생")
-        i.fa.fa-step-backward(aria-hidden='true')
-      button.music-controlor-btn(aria-label="곡 재생버튼 곡이 재생중일 때는 정지" @click="play" title="곡 재생")
-        i.fa(aria-hidden='true' :class="togglePlay")
-      button.music-controlor-btn(aria-label="다음 곡 재생" @click="nextMusic" title="다음 곡 재생")
-        i.fa.fa-step-forward(aria-hidden='true')
-      button.music-controlor-btn(aria-label="한 곡 반복재생" @click="repeat" title="한 곡 반복 재생")
-        i.fa.fa-repeat(aria-hidden='true' :style="active")
+    ul.music-btn-box
+      li.btn-list
+        button.music-controlor-btn(aria-label="마이리스트 추가" @click="addToMyList" title="마이리스트 추가")
+          i.fa.fa-plus(aria-hidden='true' :style="activeAddBtn")
+        ul.mini-music-list(v-show="showMiniMyList")
+          li(v-for="list in myList")
+            button.select-mylist(@click="myListAddToMusic(list.name_playlist)") {{list.name_playlist}}
+      li.btn-list
+        button.music-controlor-btn(aria-label="이전 곡 재생" @click="prevMusic" title="이전 곡 재생")
+          i.fa.fa-step-backward(aria-hidden='true')
+      li.btn-list
+        button.music-controlor-btn(aria-label="곡 재생버튼 곡이 재생중일 때는 정지" @click="play" title="곡 재생")
+          i.fa(aria-hidden='true' :class="togglePlay")
+      li.btn-list
+        button.music-controlor-btn(aria-label="다음 곡 재생" @click="nextMusic" title="다음 곡 재생")
+          i.fa.fa-step-forward(aria-hidden='true')
+      li.btn-list
+        button.music-controlor-btn(aria-label="한 곡 반복재생" @click="repeat" title="한 곡 반복 재생")
+          i.fa.fa-repeat(aria-hidden='true' :style="active")
     //- 뮤직플레이어 진행 바
     .music-time
       span.music-currnet-time {{currentTime}}
@@ -20,7 +28,7 @@
 </template>
 
 <script>
-import {mapGetters, mapMutations} from 'vuex';
+import {mapGetters, mapMutations, mapActions} from 'vuex';
 
 export default {
   name: 'MusicControlor',
@@ -32,7 +40,9 @@ export default {
       // 'repeatLabel',
       'currentTime',
       'prograss',
-      'runningTime'
+      'runningTime',
+      'myList',
+      'showMiniMyList'
     ])
   },
   methods: {
@@ -41,17 +51,14 @@ export default {
       'prevMusic',
       'play',
       'nextMusic',
-      'repeat'
+      'repeat',
+      'setVolume',
+      'setTime',
+      'musicRunningKeyControlor'
     ]),
-    setVolume (e) {
-      this.$store.commit('setVolume', e);
-    },
-    setTime (e) {
-      this.$store.commit('setTime', e);
-    },
-    musicRunningKeyControlor (e) {
-      this.$store.commit('musicRunningKeyControlor', e);
-    }
+    ...mapActions([
+      'myListAddToMusic'
+    ])
   }
 };
 </script>
@@ -65,10 +72,13 @@ export default {
 }
 // 뮤직플레이어 버튼 wrapper
 .music-btn-box{
+  margin: 0 auto;
   box-sizing: border-box;
   height: 50%;
+  max-width: 200px;
   padding-top: 1%;
-  line-height: 50px;
+  display: flex;
+  justify-content: space-around;
 }
 // 뮤직플레이어 진행 바 wrapper
 .music-time{
@@ -84,6 +94,24 @@ export default {
   vertical-align: middle;
 }
 .music-controlor-btn{
+  padding: 5px;
   cursor: pointer;
+}
+.mini-music-list{
+  position: absolute;
+  text-align: left;
+  left: -65px;
+  bottom: 40px;
+  width: 150px;
+  background: yellow;
+}
+.btn-list{
+  padding-top: 10px;
+  position: relative;
+}
+.select-mylist{
+  width: 100%;
+  background: none;
+  border: none;
 }
 </style>

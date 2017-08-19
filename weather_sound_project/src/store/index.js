@@ -35,6 +35,7 @@ const readableDuration = (state, seconds) => {
 const musicSeting = (state, index, init = false) => {
   musicPlayer.src = state.music_data[index].source_music;
   musicPlayer.index = index;
+  musicPlayer.pk = state.music_data[index].pk;
   state.musicInfo = {
     music_img: state.music_data[index].img_music,
     music_title: state.music_data[index].name_music,
@@ -60,7 +61,7 @@ export const store = new Vuex.Store({
     // 현재 위치의 날씨를 할당
     currentWeather: null,
     // 현재 위치의 위도, 경도를 객체로 할당
-    geo: null,
+    // geo: null,
     // 배경 이미지를 할당
     background_img: null,
     // 페이스북 로그인 버튼을 로그인에서 보이고 회원가입에서 안보이게 토글기능 역할
@@ -184,7 +185,8 @@ export const store = new Vuex.Store({
       color: '#ffffff'
     },
     // 음악 api로부터 받은 정보를 할당
-    music_data: []
+    music_data: [],
+    show_mini_my_list: false
   },
   getters: {
     // -----------------------------------------------------------메인페이지 getters
@@ -307,6 +309,9 @@ export const store = new Vuex.Store({
     runningTime (state) {
       return state.runningTime;
     },
+    showMiniMyList (state) {
+      return state.show_mini_my_list;
+    },
     showPopup (state) {
       return state.showPopup;
     }
@@ -327,19 +332,19 @@ export const store = new Vuex.Store({
     setBackgroundData (state, setValue) {
       let randomNumber = Math.floor(Math.random() * 3);
       switch (setValue) {
-      case 'Sunny':
+      case 'sunny':
         state.background_img = {'background-image': 'url("' + store.state.random_background.sunny[randomNumber] + '")'};
         break;
-      case 'Cloudy':
+      case 'cloudy':
         state.background_img = {'background-image': 'url("' + store.state.random_background.cloudy[randomNumber] + '")'};
         break;
-      case 'Rainy':
+      case 'rainy':
         state.background_img = {'background-image': 'url("' + store.state.random_background.rainy[randomNumber] + '")'};
         break;
-      case 'Snowy':
+      case 'snowy':
         state.background_img = {'background-image': 'url("' + store.state.random_background.snowy[randomNumber] + '")'};
         break;
-      case 'Foggy':
+      case 'foggy':
         state.background_img = {'background-image': 'url("' + store.state.random_background.foggy[randomNumber] + '")'};
         break;
       }
@@ -637,9 +642,11 @@ export const store = new Vuex.Store({
       if (state.active_add_btn.transform === 'rotate(0)') {
         state.active_add_btn.transform = 'rotate(45deg)';
         state.active_add_btn.color = '#3b99fc';
+        state.show_mini_my_list = true;
       } else {
         state.active_add_btn.transform = 'rotate(0)';
         state.active_add_btn.color = '#ffffff';
+        state.show_mini_my_list = false;
       }
     },
     // 뮤직플레이어를 재생/일시정지 하는 함수(재생/일시정지 아이콘도 변경)
@@ -717,9 +724,9 @@ export const store = new Vuex.Store({
     setWeather (state, e) {
       state.currentWeather = e;
     },
-    setGeo (state, e) {
-      state.geo = e;
-    },
+    // setGeo (state, e) {
+    //   state.geo = e;
+    // },
     pushMusic (state, e) {
       store.state.music_data = e;
     },
@@ -754,36 +761,39 @@ export const store = new Vuex.Store({
       // 서버통신을 위한 axios 코드
       Vue.axios.get('http://ip-api.com/json')
       .then((response) => {
-        commit('setCity', response.data.city);
-        commit('setGeo', {
+        commit('setCity', response.data.city.split('(').shift());
+        // commit('setGeo', {
+        //   lat: response.data.lat,
+        //   lon: response.data.lon
+        // });
+        dispatch('musicGet', {
           lat: response.data.lat,
           lon: response.data.lon
         });
-      })
-      .then(() => {
-        dispatch('getWeatherAction');
       });
+      // .then(() => {
+      //   dispatch('getWeatherAction');
+      // });
     },
-    getWeatherAction: (store) => {
-      let address = 'http://api.openweathermap.org/data/2.5/weather?lat=' + store.state.geo.lat + '&lon=' + store.state.geo.lon + '&units=metric&APPID=f63c992320644b675405158f284ba653';
-      Vue.axios.get(address).then((response) => {
-        let weather = response.data.weather[0].icon.slice(0, -1);
-        if (weather === '01') {
-          weather = 'Sunny';
-        } else if (weather === '02' || weather === '03' || weather === '04') {
-          weather = 'Cloudy';
-        } else if (weather === '09' || weather === '10' || weather === '11') {
-          weather = 'Rainy';
-        } else if (weather === '13') {
-          weather = 'Snowy';
-        } else if (weather === '50') {
-          weather = 'Foggy';
-        }
-        store.dispatch('musicGet', weather);
-        store.commit('setWeather', weather);
-        store.commit('setBackgroundData', weather);
-      });
-    },
+    // getWeatherAction: (store) => {
+    //   let address = 'http://api.openweathermap.org/data/2.5/weather?lat=' + store.state.geo.lat + '&lon=' + store.state.geo.lon + '&units=metric&APPID=f63c992320644b675405158f284ba653';
+    //   Vue.axios.get(address).then((response) => {
+    //     let weather = response.data.weather[0].icon.slice(0, -1);
+    //     if (weather === '01') {
+    //       weather = 'Sunny';
+    //     } else if (weather === '02' || weather === '03' || weather === '04') {
+    //       weather = 'Cloudy';
+    //     } else if (weather === '09' || weather === '10' || weather === '11') {
+    //       weather = 'Rainy';
+    //     } else if (weather === '13') {
+    //       weather = 'Snowy';
+    //     } else if (weather === '50') {
+    //       weather = 'Foggy';
+    //     }
+    //     store.commit('setWeather', weather);
+    //     store.commit('setBackgroundData', weather);
+    //   });
+    // },
     signUpPost: (store, e) => {
       store.commit('signUpBtn', e);
       if (store.state.sign_up_check) {
@@ -832,14 +842,23 @@ export const store = new Vuex.Store({
         });
       }
     },
-    musicGet: (store, weather) => {
+    musicGet: (store, location) => {
       Vue.axios.post('https://weather-sound.com/api/music/', {
-        'name': weather.toLowerCase()
+        'latitude': location.lat,
+        'longitude': location.lon
       }).then((response) => {
         console.log(response);
         store.commit('pushMusic', response.data.listInfo.playlist_musics);
+        store.commit('setWeather', response.data.listInfo.weather);
+        store.commit('setBackgroundData', response.data.listInfo.weather);
         musicSeting(store.state, 0, true);
       });
+      // Vue.axios.get('https://weather-sound.com/api/music/')
+      // .then((response) => {
+      //   console.log(response);
+      //   store.commit('pushMusic', response.data);
+      //   musicSeting(store.state, 0, true);
+      // });
     },
     selectMusic: (store, index) => {
       musicSeting(store.state, index);
@@ -962,6 +981,7 @@ export const store = new Vuex.Store({
             localStorage.setItem('userPk', response.data.userInfo.pk);
             localStorage.setItem('userToken', response.data.token);
             store.commit('saveUserData', response.data);
+            store.commit('signAfterInit', true);
             store.commit('closeModal');
             store.commit('mylistLoad');
           }).catch(() => {
@@ -989,6 +1009,7 @@ export const store = new Vuex.Store({
       });
     },
     listDeleteBtn: (store, listpk) => {
+      console.log(listpk);
       Vue.axios.delete('https://weather-sound.com/api/member/' + localStorage.getItem('userPk') + '/playlists/' + listpk + '/', {
         headers: {
           'Authorization': 'Token ' + localStorage.getItem('userToken')
@@ -999,6 +1020,25 @@ export const store = new Vuex.Store({
       }).catch(() => {
         console.log('마이리스트 삭제 오류');
       });
+    },
+    myListAddToMusic (store, data) {
+      console.log(data, musicPlayer.pk);
+      Vue.axios.put('https://weather-sound.com/api/member/' + localStorage.getItem('userPk') + '/playlists/', {
+        'name_playlist': data,
+        'music': musicPlayer.pk
+      }, {
+        headers: {
+          Authorization: 'Token ' + localStorage.getItem('userToken')
+        }
+      }).then((response) => {
+        store.commit('addToMyList');
+        console.log(response);
+      }).catch(() => {
+        console.log('곡 추가 실패');
+      });
+    },
+    enterDetailMyList (store, data) {
+      console.log(data);
     }
   }
 });
