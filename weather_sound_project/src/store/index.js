@@ -39,11 +39,7 @@ const musicSeting = (state, index, init = false, detail = false) => {
   musicPlayer.index = index;
   musicPlayer.pk = state.music_data[index].pk;
   if (detail) {
-    state.detail_select_music = {
-      img: state.music_data[index].img_music,
-      title: state.music_data[index].name_music,
-      singger: state.music_data[index].name_artist
-    };
+    state.detail_select_music_img = state.music_data[index].img_music;
   }
   let musicImg = state.music_data[index].img_music;
   musicImg ? musicImg = state.music_data[index].img_music : musicImg = '/static/img/music-album.e85c277.png';
@@ -167,11 +163,8 @@ export const store = new Vuex.Store({
     input_list_name: '',
     active_create_btn: false,
     detail_set_list_data: [],
-    detail_select_music: {
-      img: '/static/img/music-album.e85c277.png',
-      title: '',
-      singger: ''
-    },
+    detail_select_music_img: 'http://images.gofreedownload.net/sidebar-music-34404.jpg',
+    disabled_check: false,
     // -----------------------------------------------------------뮤직플레이어 데이터
     // 뮤직플레이어 정보(곡명, 가수, 이미지)를 할당
     musicInfo: {},
@@ -286,7 +279,7 @@ export const store = new Vuex.Store({
     myList (state) {
       for (let i = 0, l = state.my_list.length; i < l; i++) {
         if (!state.my_list[i].playlist_musics[0]) {
-          state.my_list[i].default = '/static/img/music-album.e85c277.png';
+          state.my_list[i].default = 'http://images.gofreedownload.net/sidebar-music-34404.jpg';
         } else {
           state.my_list[i].default = state.my_list[i].playlist_musics[0].img_music;
         }
@@ -304,7 +297,10 @@ export const store = new Vuex.Store({
       return state.detail_set_list_data;
     },
     detailSelectMusicImg (state) {
-      return state.detail_select_music;
+      return state.detail_select_music_img;
+    },
+    disabled (state) {
+      return state.disabled_check;
     },
     // -----------------------------------------------------------뮤직플레이어 getters
     getMusic (state) {
@@ -411,7 +407,7 @@ export const store = new Vuex.Store({
       state.input_current_password = e.target.value;
     },
     setRecomendSelect (state) {
-      state.detail_select_music.img = '/static/img/music-album.e85c277.png';
+      state.detail_select_music_img = 'http://images.gofreedownload.net/sidebar-music-34404.jpg';
       state.active_create_btn = false;
       state.change_component = 'recomend-music';
       state.check_nav = {
@@ -420,7 +416,7 @@ export const store = new Vuex.Store({
       };
     },
     setMylistSelect (state) {
-      state.detail_select_music.img = '/static/img/music-album.e85c277.png';
+      state.detail_select_music_img = 'http://images.gofreedownload.net/sidebar-music-34404.jpg';
       state.change_component = 'my-list';
       state.check_nav = {
         'top': 197 + 'px',
@@ -611,12 +607,16 @@ export const store = new Vuex.Store({
     // -----------------------------MyListDetail.vue------------------------------------
     detailSetMusicMyList (state, listData) {
       state.detail_set_list_data = listData;
+      if (!listData.playlist_musics[0]) {
+        state.disabled_check = 'disabled';
+      } else {
+        state.disabled_check = false;
+      }
       state.change_component = 'my-list-detail';
-      if (readableDuration(state, listData.playlist_musics[0].time_music) !== '0NaN:0NaN') {
+      if (!state.disabled_check) {
         for (let i = 0, l = listData.playlist_musics.length; i < l; i++) {
           listData.playlist_musics[i].time_music = readableDuration(store.state, listData.playlist_musics[i].time_music);
         }
-        store.state.detail_first_enter = 2;
       }
     },
     // -----------------------------MusicPlayer.vue------------------------------------
@@ -773,12 +773,7 @@ export const store = new Vuex.Store({
     //   state.geo = e;
     // },
     pushMusic (state, e) {
-      console.log('music', e);
-      if (!e[0]) {
-        store.state.music_data = [];
-      } else {
-        store.state.music_data = e;
-      }
+      store.state.music_data = e;
     },
     recomendPushMusic (state, e) {
       store.state.recomend_music = e;
@@ -1111,10 +1106,7 @@ export const store = new Vuex.Store({
       showPrograss(store.state);
     },
     detailMusicPlay: (store) => {
-      console.log('디테일 리스트', store.state.detail_set_list_data.playlist_musics);
-      if (store.state.detail_set_list_data.playlist_musics !== []) {
-        musicSeting(store.state, 0);
-      }
+      musicSeting(store.state, 0);
     },
     detailDelete: (store, data) => {
       let formData = new FormData();

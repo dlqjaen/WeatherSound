@@ -3,8 +3,10 @@
     h2(tabindex="0") {{detailGetMusicMyList.name_playlist}} ({{detailGetMusicMyList.weather}})
     .detail-my-list-wrapper
       .music-info
-        img.album(:src='detailSelectMusicImg.img', :alt='detailGetMusicMyList.music_title+"의 앨범커버"' tabindex="0")
-        button.detail-music-play(@click="detailMusicPlay(detailGetMusicMyList.playlist_id)") Play
+        img.album(:src='detailSelectMusicImg', :alt='detailGetMusicMyList.music_title+"의 앨범커버"' tabindex="0")
+        p {{detailSelectMusicImg.title}}
+        p {{detailSelectMusicImg.singger}}
+        button.detail-music-play(@click="detailMusicPlay(detailGetMusicMyList.playlist_id)" :disabled="disabled") Play
       table.music-list
         tr
           th.music-index 순번
@@ -29,7 +31,8 @@ export default {
     ...mapGetters([
       'detailGetMusicMyList',
       'mylist',
-      'detailSelectMusicImg'
+      'detailSelectMusicImg',
+      'disabled'
     ])
   },
   methods: {
