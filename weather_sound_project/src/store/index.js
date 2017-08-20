@@ -34,13 +34,19 @@ const readableDuration = (state, seconds) => {
   return min + ':' + sec;
 };
 // 재생될 곡의 주소, 순서, 곡명, 곡아티스트를 뮤직플레이어에 할당 하는 함수
-const musicSeting = (state, index, init = false) => {
+const musicSeting = (state, index, init = false, detail = false) => {
   musicPlayer.src = state.music_data[index].source_music;
   musicPlayer.index = index;
   musicPlayer.pk = state.music_data[index].pk;
+  if (detail) {
+    state.detail_select_music = {
+      img: state.music_data[index].img_music,
+      title: state.music_data[index].name_music,
+      singger: state.music_data[index].name_artist
+    };
+  }
   let musicImg = state.music_data[index].img_music;
   musicImg ? musicImg = state.music_data[index].img_music : musicImg = '/static/img/music-album.e85c277.png';
-  state.detail_select_music_img = state.music_data[index].img_music;
   state.musicInfo = {
     music_img: musicImg,
     music_title: state.music_data[index].name_music,
@@ -102,7 +108,9 @@ export const store = new Vuex.Store({
     // 로그인 후 보여지는 리스트 토글 기능 할당
     login_after_list: false,
     check_nav: {},
+    // 메인화면에 바뀔 컴포넌트 명을 할당
     change_component: 'recomend-music',
+    // 추천음악 목록을 할당
     recomend_music: [],
     // -----------------------------------------------------------로그인 데이터
     // 로그인 창을 보이거나 안보이게 토글기능 할당
@@ -159,7 +167,11 @@ export const store = new Vuex.Store({
     input_list_name: '',
     active_create_btn: false,
     detail_set_list_data: [],
-    detail_select_music_img: '/static/img/music-album.e85c277.png',
+    detail_select_music: {
+      img: '/static/img/music-album.e85c277.png',
+      title: '',
+      singger: ''
+    },
     // -----------------------------------------------------------뮤직플레이어 데이터
     // 뮤직플레이어 정보(곡명, 가수, 이미지)를 할당
     musicInfo: {},
@@ -272,6 +284,13 @@ export const store = new Vuex.Store({
     },
     // -----------------------------------------------------------마이리스트 getters
     myList (state) {
+      for (let i = 0, l = state.my_list.length; i < l; i++) {
+        if (!state.my_list[i].playlist_musics[0]) {
+          state.my_list[i].default = '/static/img/music-album.e85c277.png';
+        } else {
+          state.my_list[i].default = state.my_list[i].playlist_musics[0].img_music;
+        }
+      }
       return state.my_list;
     },
     activeCreateBtn (state) {
@@ -285,7 +304,7 @@ export const store = new Vuex.Store({
       return state.detail_set_list_data;
     },
     detailSelectMusicImg (state) {
-      return state.detail_select_music_img;
+      return state.detail_select_music;
     },
     // -----------------------------------------------------------뮤직플레이어 getters
     getMusic (state) {
@@ -392,6 +411,7 @@ export const store = new Vuex.Store({
       state.input_current_password = e.target.value;
     },
     setRecomendSelect (state) {
+      state.detail_select_music.img = '/static/img/music-album.e85c277.png';
       state.active_create_btn = false;
       state.change_component = 'recomend-music';
       state.check_nav = {
@@ -400,6 +420,7 @@ export const store = new Vuex.Store({
       };
     },
     setMylistSelect (state) {
+      state.detail_select_music.img = '/static/img/music-album.e85c277.png';
       state.change_component = 'my-list';
       state.check_nav = {
         'top': 197 + 'px',
@@ -591,6 +612,12 @@ export const store = new Vuex.Store({
     detailSetMusicMyList (state, listData) {
       state.detail_set_list_data = listData;
       state.change_component = 'my-list-detail';
+      if (readableDuration(state, listData.playlist_musics[0].time_music) !== '0NaN:0NaN') {
+        for (let i = 0, l = listData.playlist_musics.length; i < l; i++) {
+          listData.playlist_musics[i].time_music = readableDuration(store.state, listData.playlist_musics[i].time_music);
+        }
+        store.state.detail_first_enter = 2;
+      }
     },
     // -----------------------------MusicPlayer.vue------------------------------------
     init (state) {
@@ -746,7 +773,12 @@ export const store = new Vuex.Store({
     //   state.geo = e;
     // },
     pushMusic (state, e) {
-      store.state.music_data = e;
+      console.log('music', e);
+      if (!e[0]) {
+        store.state.music_data = [];
+      } else {
+        store.state.music_data = e;
+      }
     },
     recomendPushMusic (state, e) {
       store.state.recomend_music = e;
@@ -1060,9 +1092,6 @@ export const store = new Vuex.Store({
     },
     enterDetailMyList: (store, data) => {
       console.log('리스트 데이터', data);
-      for (let i = 0, l = data.playlist_musics.length; i < l; i++) {
-        data.playlist_musics[i].time_music = readableDuration(store.state, data.playlist_musics[i].time_music);
-      }
       store.commit('detailSetMusicMyList', data);
       store.commit('pushMusic', data.playlist_musics);
       console.log('현재 뮤직세팅', store.state.music_data);
@@ -1073,10 +1102,34 @@ export const store = new Vuex.Store({
       console.log('현재 뮤직세팅', store.state.music_data);
     },
     mylistSelect: (store) => {
+      store.commit('mylistLoad');
       store.commit('setMylistSelect');
+      showPrograss(store.state);
+    },
+    detailSelectMusic: (store, index) => {
+      musicSeting(store.state, index, false, true);
+      showPrograss(store.state);
     },
     detailMusicPlay: (store) => {
-      musicSeting(store.state, 0);
+      console.log('디테일 리스트', store.state.detail_set_list_data.playlist_musics);
+      if (store.state.detail_set_list_data.playlist_musics !== []) {
+        musicSeting(store.state, 0);
+      }
+    },
+    detailDelete: (store, data) => {
+      let formData = new FormData();
+      formData.append('music', data.pk);
+      console.log('list Pk', store.state.detail_set_list_data.pk, 'music', data.pk);
+      Vue.axios.put('https://weather-sound.com/api/member/' + localStorage.getItem('userPk') + '/playlists/' + store.state.detail_set_list_data.playlist_id + '/', formData, {
+        headers: {
+          Authorization: 'Token ' + localStorage.getItem('userToken')
+        }
+      }).then((response) => {
+        console.log('세부삭제 리스폰스', response);
+        store.commit('detailSetMusicMyList', response.data.playlist);
+      }).catch((error) => {
+        console.log('세부삭제 에러', error);
+      });
     }
   }
 });

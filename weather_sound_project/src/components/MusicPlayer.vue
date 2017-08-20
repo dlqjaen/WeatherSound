@@ -42,8 +42,6 @@ export default {
 }
 // 뮤직플레이어 버튼들
 .music-controlor-btn{
-  background: none;
-  border: none;
   color: white;
   font-size: 1.6rem;
   padding: 1%;

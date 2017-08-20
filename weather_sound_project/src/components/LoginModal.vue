@@ -84,9 +84,7 @@ export default {
   transition: top 0.5s ease-in-out, opacity 0.5s ease-in-out;
 }
 .close{
-  background: none;
   color: white;
-  border: none;
   font-size: 3rem;
   position: absolute;
   padding: 5px;
@@ -105,9 +103,7 @@ export default {
   transition: all 0.5s ease-in-out;
 }
 .sign-button{
-  cursor: pointer;
   border-radius: 5px;
-  border: none;
   font-size: 1.6rem;
   color: white;
   width: 100%;

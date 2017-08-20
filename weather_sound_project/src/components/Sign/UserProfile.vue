@@ -127,8 +127,6 @@ li {
 }
 .close{
   font-size: 3rem;
-  background: none;
-  border: none;
   color: white;
   position: absolute;
   padding: 5px;
@@ -142,9 +140,7 @@ li {
   width: 100px;
   height: 40px;
   background: #1a53ff;
-  cursor: pointer;
   border-radius: 3px;
-  border: none;
 }
 .complete{
   margin-right: 30px;
@@ -152,8 +148,6 @@ li {
 .user_img_input{
   display: none;
 }
-
-
 </style>
 
 

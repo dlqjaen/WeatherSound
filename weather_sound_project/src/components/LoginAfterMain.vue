@@ -74,9 +74,6 @@ export default {
 /* 로그인 후 메인메뉴 */
 #user-profile{
   padding: 0;
-  cursor: pointer;
-  background: none;
-  border: none;
   color: white;
   vertical-align: middle;
   font-size: 1.4rem;

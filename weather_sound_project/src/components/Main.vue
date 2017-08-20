@@ -92,10 +92,7 @@ export default {
 }
 .login-btn{
   font-size: 1.6rem;
-  cursor: pointer;
   text-align: left;
-  background: none;
-  border: none;
   color: white;
   padding: 10% 0;
   width: 100%;

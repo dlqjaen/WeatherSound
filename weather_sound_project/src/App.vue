@@ -76,6 +76,11 @@ progress{
 i{
   cursor: pointer
 }
+button{
+  background: none;
+  border:none;
+  cursor: pointer;
+}
 /* 숨긴영역 */
 .a11y-hidden{
   position: absolute;

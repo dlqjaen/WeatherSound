@@ -67,11 +67,8 @@ export default {
   max-height: 200px;
   position: relative;
   overflow: hidden;
-  background: none;
   font-size: 1.6rem;
   text-align: center;
-  cursor: pointer;
-  border: none;
   opacity: 0.8;
 }
 .recomend-music-btn img{

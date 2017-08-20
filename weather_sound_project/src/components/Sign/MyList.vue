@@ -1,12 +1,12 @@
 <template lang="pug">
   section.my-music-box
-    h2(tabindex="0") My Music List
+    h2.a11y-hidden(tabindex="0") My Music List
     ul.mylist-wrapper
       li.my-list(v-for="(list, index) in myList")
         button.my-list-btn(type='button', aria-label="list.name_playlist" @mouseenter="changeEventIn" @mouseleave="changeEventOut" @click="enterDetailMyList(list)")
           p.my-list-info
             span.my-list-title {{list.name_playlist}}
-          img(:src='"../../assets/music-album.png"', :alt='list.name_playlist + "대표이미지"')
+          img(:src='list.default', :alt='list.name_playlist + "대표이미지"')
         button.list-delete-btn(type='button', aria-label="리스트 삭제버튼" @click="listDeleteBtn(list.playlist_id)")
           <i class="fa fa-times" aria-hidden="true"></i>
       li.my-list
@@ -16,7 +16,7 @@
           .create-box(v-if="activeCreateBtn")
             input.input-list-name(type="text" aria-label="새로만들 리스트이름 입력창" @input="inputListName" placeholder="생성할 리스트 이름" :value="getListName")
             .btn-box
-              button.agree-btn(type="button" title="리스트 추가 버튼" aria-label="리스트 추가 버튼" @click="myListGet")
+              button.agree-btn(type="submit" title="리스트 추가 버튼" aria-label="리스트 추가 버튼" @click.prevent="myListGet")
                 <i class="fa fa-check" aria-hidden="true"></i>
               button.cancel-btn(type="button" title="리스트 추가를 취소하는 버튼" aria-label="리스트 추가를 취소하는 버튼" @click="showMakeModal")
                 <i class="fa fa-times" aria-hidden="true"></i>
