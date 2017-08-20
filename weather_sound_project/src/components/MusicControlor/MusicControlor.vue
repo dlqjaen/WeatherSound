@@ -80,6 +80,16 @@ export default {
   display: flex;
   justify-content: space-around;
 }
+.music-controlor-btn{
+  transform: scale(1);
+  transition: transform 0.2s ease-in-out;
+}
+.music-controlor-btn:hover, .music-controlor-btn:focus{
+  transition: transform 0.2s ease-in-out;
+  transform: scale(1.4);
+}
+
+
 // 뮤직플레이어 진행 바 wrapper
 .music-time{
   padding-top: 1%;
@@ -103,13 +113,16 @@ export default {
   left: -65px;
   bottom: 40px;
   width: 150px;
-  background: yellow;
+  background: rgba(0,0,0,0.5);
+  border-radius: 5px 5px 0 0;
 }
 .btn-list{
   padding-top: 10px;
   position: relative;
 }
 .select-mylist{
+  cursor: pointer;
+  color: white;
   width: 100%;
   background: none;
   border: none;

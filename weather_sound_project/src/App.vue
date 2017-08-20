@@ -15,6 +15,7 @@ import MusicPlayer from './components/MusicPlayer';
 import LoginModal from './components/LoginModal';
 import UserProfile from './components/Sign/UserProfile';
 import MyList from './components/Sign/MyList';
+import MyListDetail from './components/Sign/MyListDetail';
 // Vue 로드
 import Vue from 'vue';
 // axios 호출
@@ -28,7 +29,7 @@ Vue.use(VueAxios, axios);
 export default {
   name: 'app',
   components: {
-    MainHeader, RecomendMusic, MusicPlayer, LoginModal, UserProfile, MyList
+    MainHeader, RecomendMusic, MusicPlayer, LoginModal, UserProfile, MyList, MyListDetail
   },
   computed: {
     ...mapGetters([

@@ -14,7 +14,7 @@
 </template>
   
 <script>
-import {mapGetters, mapMutations} from 'vuex';
+import {mapGetters, mapMutations, mapActions} from 'vuex';
 export default {
   name: 'RecomendMusic',
   computed: {
@@ -26,17 +26,16 @@ export default {
   methods: {
     ...mapMutations([
       'focusPlayer',
-      'focusMenu'
+      'focusMenu',
+      'changeEventIn',
+      'changeEventOut'
     ]),
-    selectMusic (index) {
-      this.$store.dispatch('selectMusic', index);
-    },
-    changeEventIn (e) {
-      this.$store.commit('changeEventIn', e);
-    },
-    changeEventOut (e) {
-      this.$store.commit('changeEventOut', e);
-    }
+    ...mapActions([
+      'selectMusic'
+    ])
+    // selectMusic (index) {
+    //   this.$store.dispatch('selectMusic', index);
+    // }
   }
 };
 </script>
