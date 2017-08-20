@@ -24,12 +24,14 @@ const showPrograss = (state) => {
 };
 // 정수로된 숫자값을 넣으면 분, 초 단위로 나타내주는 함수
 const readableDuration = (state, seconds) => {
+  let min = '';
+  let sec = '';
   seconds = Math.floor(seconds);
-  state.min = Math.floor(seconds / 60);
-  state.min = state.min >= 10 ? state.min : '0' + state.min;
-  state.sec = Math.floor(seconds % 60);
-  state.sec = state.sec >= 10 ? state.sec : '0' + state.sec;
-  return state.min + ':' + state.sec;
+  min = Math.floor(seconds / 60);
+  min = min >= 10 ? min : '0' + min;
+  sec = Math.floor(seconds % 60);
+  sec = sec >= 10 ? sec : '0' + sec;
+  return min + ':' + sec;
 };
 // 재생될 곡의 주소, 순서, 곡명, 곡아티스트를 뮤직플레이어에 할당 하는 함수
 const musicSeting = (state, index, init = false) => {
@@ -37,7 +39,8 @@ const musicSeting = (state, index, init = false) => {
   musicPlayer.index = index;
   musicPlayer.pk = state.music_data[index].pk;
   let musicImg = state.music_data[index].img_music;
-  musicImg ? musicImg = state.music_data[index].img_music : musicImg = '../../assets/music-album.png';
+  musicImg ? musicImg = state.music_data[index].img_music : musicImg = '/static/img/music-album.e85c277.png';
+  state.detail_select_music_img = state.music_data[index].img_music;
   state.musicInfo = {
     music_img: musicImg,
     music_title: state.music_data[index].name_music,
@@ -156,6 +159,7 @@ export const store = new Vuex.Store({
     input_list_name: '',
     active_create_btn: false,
     detail_set_list_data: [],
+    detail_select_music_img: '/static/img/music-album.e85c277.png',
     // -----------------------------------------------------------뮤직플레이어 데이터
     // 뮤직플레이어 정보(곡명, 가수, 이미지)를 할당
     musicInfo: {},
@@ -279,6 +283,9 @@ export const store = new Vuex.Store({
     detailGetMusicMyList (state) {
       console.log('마이리스트 세부', state.detail_set_list_data);
       return state.detail_set_list_data;
+    },
+    detailSelectMusicImg (state) {
+      return state.detail_select_music_img;
     },
     // -----------------------------------------------------------뮤직플레이어 getters
     getMusic (state) {
@@ -875,7 +882,6 @@ export const store = new Vuex.Store({
       // });
     },
     selectMusic: (store, index) => {
-      console.log('마이리스트 전달 인덱스', index);
       musicSeting(store.state, index);
       showPrograss(store.state);
     },
@@ -1046,6 +1052,7 @@ export const store = new Vuex.Store({
         }
       }).then((response) => {
         store.commit('addToMyList');
+        store.commit('mylistLoad');
         console.log('마이리스트 곡 추가 리스폰스', response);
       }).catch(() => {
         console.log('곡 추가 실패');
@@ -1053,6 +1060,9 @@ export const store = new Vuex.Store({
     },
     enterDetailMyList: (store, data) => {
       console.log('리스트 데이터', data);
+      for (let i = 0, l = data.playlist_musics.length; i < l; i++) {
+        data.playlist_musics[i].time_music = readableDuration(store.state, data.playlist_musics[i].time_music);
+      }
       store.commit('detailSetMusicMyList', data);
       store.commit('pushMusic', data.playlist_musics);
       console.log('현재 뮤직세팅', store.state.music_data);
@@ -1064,6 +1074,9 @@ export const store = new Vuex.Store({
     },
     mylistSelect: (store) => {
       store.commit('setMylistSelect');
+    },
+    detailMusicPlay: (store) => {
+      musicSeting(store.state, 0);
     }
   }
 });

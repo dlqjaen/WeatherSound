@@ -3,21 +3,22 @@
     h2(tabindex="0") {{detailGetMusicMyList.name_playlist}}
     .detail-my-list-wrapper
       .music-info
-        img.album(:src='detailGetMusicMyList.playlist_musics[0].img_music', :alt='detailGetMusicMyList.music_title+"의 앨범커버"' tabindex="0")
-        p title
-        p singger
-        button Play
+        img.album(:src='detailSelectMusicImg', :alt='detailGetMusicMyList.music_title+"의 앨범커버"' tabindex="0")
+        button(@click="detailMusicPlay") Play
       table.music-list
         tr
           th.music-index 순번
           th.music-title 곡 제목
           th.music-singger 가수 명
           th.music-play-time 재생시간
+          td.delete-btn 삭제
         tr.my-list-music-info(v-for="(list, index) in detailGetMusicMyList.playlist_musics" tabindex="0" @click="selectMusic(index)")
           td {{index+1}}
           td {{list.name_music}}
           td {{list.name_artist}}
-          td 러닝타임
+          td {{list.time_music}}
+          td
+            button(@click.stop="") 삭제
 </template>
 
 <script>
@@ -27,17 +28,23 @@ export default {
   computed: {
     ...mapGetters([
       'detailGetMusicMyList',
-      'mylist'
+      'mylist',
+      'detailSelectMusicImg'
     ])
   },
   methods: {
     ...mapActions([
-      'selectMusic'
+      'selectMusic',
+      'detailMusicPlay'
     ])
   }
 };
 </script>
 <style lang="scss" scoped>
+h2{
+  margin-left: 5%;
+  text-align: left;
+}
 .detail-my-list{
   box-sizing: border-box;
   overflow: auto;
@@ -63,10 +70,14 @@ export default {
   width: 20%;
 }
 .music-list{
+  background: rgba(0,0,0,0.5);
   width: 65%;
 }
 .my-list-music-info{
   height: 30px;
   cursor: pointer;
+}
+.my-list-music-info:focus, .my-list-music-info:hover{
+  background: rgba(59, 153, 252, 0.7);
 }
 </style>
