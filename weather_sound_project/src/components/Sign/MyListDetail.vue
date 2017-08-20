@@ -82,6 +82,7 @@ h2{
 }
 .my-list-music-info{
   height: 30px;
+  cursor: pointer;
 }
 .my-list-music-info:focus, .my-list-music-info:hover{
   background: rgba(59, 153, 252, 0.7);
