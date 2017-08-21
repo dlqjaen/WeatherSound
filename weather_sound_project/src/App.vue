@@ -6,6 +6,7 @@
     login-modal
     music-player
     UserProfile
+    //- Spinner
 </template>
 
 <script>
@@ -16,6 +17,7 @@ import LoginModal from './components/LoginModal';
 import UserProfile from './components/Sign/UserProfile';
 import MyList from './components/Sign/MyList';
 import MyListDetail from './components/Sign/MyListDetail';
+import Spinner from './components/Spinner';
 // Vue 로드
 import Vue from 'vue';
 // axios 호출
@@ -29,7 +31,7 @@ Vue.use(VueAxios, axios);
 export default {
   name: 'app',
   components: {
-    MainHeader, RecomendMusic, MusicPlayer, LoginModal, UserProfile, MyList, MyListDetail
+    MainHeader, RecomendMusic, MusicPlayer, LoginModal, UserProfile, MyList, MyListDetail, Spinner
   },
   computed: {
     ...mapGetters([

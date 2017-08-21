@@ -110,6 +110,8 @@ export default {
   height: 40px;
   background: #e56b6b;
   transition: all 0.5s ease-in-out;
+  border: none;
+  cursor: pointer;
 }
 .facebook-button{
   background: #3b5998;

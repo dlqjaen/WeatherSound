@@ -28,12 +28,13 @@ section.user-profile.edit-popup(v-if="showPopup" role ="dialog" :style="editTran
             input.edit-input(placeholder="새 비밀번호 확인" type="password" @input="inputRePassword", :value="rePassWord" id="newpassword-confirm-profile" title="새 비밀번호 확인")
         button.profile-update-btn.complete(type="submit" aria-label='개인정보 수정완료 버튼' @click.prevent="editComplete") 수정완료
         button.profile-update-btn.logout-btn(type='submit' aria-label='로그아웃 버튼' @click.prevent="logOut") 로그아웃
+        button.profile-update-btn.delete-account-btn(type='submit' aria-label='회원탈퇴 버튼' @click.prevent="deleteAccount") 회원탈퇴
       button.close.edit-close(type="button" @click="closePopup" aria-label="사용자정보 수정창 닫기" @keydown.tab.prevent="editNextTab")
         i.fa.fa-times(aria-hidden="true")
 </template>
 
 <script>
-import {mapGetters, mapMutations} from 'vuex';
+import {mapGetters, mapMutations, mapActions} from 'vuex';
 
 export default {
   computed: {
@@ -52,29 +53,18 @@ export default {
     ...mapMutations([
       'editShiftTab',
       'editNextTab',
-      'closePopup'
+      'closePopup',
+      'saveUserImage',
+      'inputUserName',
+      'inputPassword',
+      'inputRePassword',
+      'inputCurrentPassword'
     ]),
-    logOut () {
-      this.$store.dispatch('logOut');
-    },
-    saveUserImage (e) {
-      this.$store.commit('saveUserImage', e);
-    },
-    inputUserName (e) {
-      this.$store.commit('inputUserName', e);
-    },
-    inputPassword (e) {
-      this.$store.commit('inputPassword', e);
-    },
-    inputRePassword (e) {
-      this.$store.commit('inputRePassword', e);
-    },
-    inputCurrentPassword (e) {
-      this.$store.commit('inputCurrentPassword', e);
-    },
-    editComplete (e) {
-      this.$store.dispatch('editComplete', e);
-    }
+    ...mapActions([
+      'logOut',
+      'editComplete',
+      'deleteAccount'
+    ])
   }
 };
 </script>
@@ -134,6 +124,7 @@ li {
   top: -50px;
 }
 .profile-update-btn {
+  padding: 0;
   margin-top: 10px;
   font-size: 1.6rem;
   color: white;
@@ -143,10 +134,18 @@ li {
   border-radius: 3px;
 }
 .complete{
-  margin-right: 30px;
+  width: 224px;
+  display: block;
+  margin: 10px auto;
 }
 .user_img_input{
   display: none;
+}
+.logout-btn{
+  margin-right: 23px;
+}
+.delete-account-btn{
+  background: #FD4063;
 }
 </style>
 

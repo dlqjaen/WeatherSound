@@ -451,7 +451,22 @@ export const store = new Vuex.Store({
       }, 500);
     },
     loginBtn (state) {
-      if (state.sign_up_list === false) {
+      if (state.sign_up_list === true) {
+        dataClear(state);
+        state.submit_toggle_btn = {
+          login: 'submit',
+          signUp: 'button'
+        };
+        state.add_list = {};
+        setTimeout(function () {
+          state.change_login = {};
+          state.change_sign_up = {};
+        }, 1);
+        setTimeout(function () {
+          state.sign_up_list = false;
+        }, 500);
+        state.facebookLogin = true;
+      } else {
         let emailCheck = /[0-9a-zA-Z][_0-9a-zA-Z-]*@[_0-9a-zA-Z-]+(\.[_0-9a-zA-Z-]+){1,2}$/;
         let passwordCheck = /^.*(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/;
         if (state.email.trim() === '') {
@@ -467,21 +482,6 @@ export const store = new Vuex.Store({
         } else {
           state.login_check = true;
         }
-      } else {
-        dataClear(state);
-        state.submit_toggle_btn = {
-          login: 'submit',
-          signUp: 'button'
-        };
-        state.add_list = {};
-        setTimeout(function () {
-          state.change_login = {};
-          state.change_sign_up = {};
-        }, 1);
-        setTimeout(function () {
-          state.sign_up_list = false;
-        }, 500);
-        state.facebookLogin = true;
       }
     },
     signUpBtn (state) {
@@ -1122,6 +1122,28 @@ export const store = new Vuex.Store({
       }).catch((error) => {
         console.log('세부삭제 에러', error);
       });
+    },
+    deleteAccount: (store) => {
+      if (store.state.input_current_password === '') {
+        alert('현재 비밀번호를 입력해주세요.');
+      } else {
+        let token = localStorage.getItem('userToken');
+        Vue.axios.delete('https://weather-sound.com/api/member/profile/' + localStorage.getItem('userPk') + '/edit/', {
+          'username': store.state.user_data.userInfo.username,
+          'password': store.state.input_current_password,
+          headers: {
+            'Authorization': 'token ' + token
+          }
+        }).then((response) => {
+          console.log(response);
+          localStorage.clear();
+          // store.commit('closeModal');
+          store.commit('signAfterInit');
+          store.commit('closePopup');
+        }).catch((error) => {
+          console.log(error.response);
+        });
+      }
     }
   }
 });
