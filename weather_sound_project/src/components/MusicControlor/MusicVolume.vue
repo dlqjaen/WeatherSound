@@ -45,4 +45,12 @@ export default {
   width: 75px;
   margin-right: 30px;
 }
+.music-controlor-btn{
+  transform: scale(1);
+  transition: transform 0.2s ease-in-out;
+}
+.music-controlor-btn:hover, .music-controlor-btn:focus{
+  transition: transform 0.2s ease-in-out;
+  transform: scale(1.4);
+}
 </style>

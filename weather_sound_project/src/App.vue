@@ -6,7 +6,7 @@
     login-modal
     music-player
     UserProfile
-    //- Spinner
+    Spinner
 </template>
 
 <script>

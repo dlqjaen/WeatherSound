@@ -8,10 +8,6 @@ import axios from 'axios';
 import VueAxios from 'vue-axios';
 // Vuex, VueAxios, axios 사용준비
 Vue.use(Vuex, VueAxios, axios);
-// 이벤트 기본동작을 중지시키는 함수
-const stopAction = (e) => {
-  e.preventDefault();
-};
 // Dom에서 Audio객체를 생성
 const musicPlayer = document.createElement('audio');
 // 현재 곡의 진행 시간, 정도, 런닝타임을 속성에 할당하는 함수
@@ -58,6 +54,13 @@ const dataClear = (state) => {
   state.userName = '';
   state.password = '';
   state.re_password = '';
+};
+const signModalAnimationOff = (state) => {
+  setTimeout(function () {
+    state.change_login = {};
+    state.change_sign_up = {};
+    state.add_list = {};
+  }, 1);
 };
 export const store = new Vuex.Store({
   // strict: process.env.NODE_ENV !== 'production',
@@ -108,6 +111,7 @@ export const store = new Vuex.Store({
     change_component: 'recomend-music',
     // 추천음악 목록을 할당
     recomend_music: [],
+    spinner: false,
     // -----------------------------------------------------------로그인 데이터
     // 로그인 창을 보이거나 안보이게 토글기능 할당
     show_modal: false,
@@ -230,6 +234,9 @@ export const store = new Vuex.Store({
     changeComponent (state) {
       return state.change_component;
     },
+    showSpinner (state) {
+      return state.spinner;
+    },
     // -----------------------------------------------------------로그인 getters
     email (state) {
       return state.email;
@@ -277,6 +284,7 @@ export const store = new Vuex.Store({
     },
     // -----------------------------------------------------------마이리스트 getters
     myList (state) {
+      console.log(state.my_list);
       for (let i = 0, l = state.my_list.length; i < l; i++) {
         if (!state.my_list[i].playlist_musics[0]) {
           state.my_list[i].default = 'http://images.gofreedownload.net/sidebar-music-34404.jpg';
@@ -293,7 +301,6 @@ export const store = new Vuex.Store({
       return state.input_list_name;
     },
     detailGetMusicMyList (state) {
-      console.log('마이리스트 세부', state.detail_set_list_data);
       return state.detail_set_list_data;
     },
     detailSelectMusicImg (state) {
@@ -347,6 +354,10 @@ export const store = new Vuex.Store({
     }
   },
   mutations: {
+    // -----------------------------Spinner.vue------------------------------------
+    spinnerChange (state) {
+      state.spinner = !state.spinner;
+    },
     // -----------------------------Main.vue------------------------------------
     showModal (state) {
       state.show_modal = true;
@@ -424,13 +435,14 @@ export const store = new Vuex.Store({
       };
     },
     mylistLoad (state) {
+      state.spinner = true;
       Vue.axios.get('https://weather-sound.com/api/member/' + localStorage.getItem('userPk') + '/playlists/', {
         headers: {
           'Authorization': 'Token ' + localStorage.getItem('userToken')
         }
       })
       .then((response) => {
-        console.log('마이리스트로드', response.data.User.playlists);
+        state.spinner = false;
         state.my_list = response.data.User.playlists;
         state.input_list_name = '';
         state.active_create_btn = false;
@@ -468,7 +480,7 @@ export const store = new Vuex.Store({
         state.facebookLogin = true;
       } else {
         let emailCheck = /[0-9a-zA-Z][_0-9a-zA-Z-]*@[_0-9a-zA-Z-]+(\.[_0-9a-zA-Z-]+){1,2}$/;
-        let passwordCheck = /^.*(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/;
+        let passwordCheck = /^.*(?=.*\d)(?=.*[a-zA-Z])(?=.*[~!@#$%^&+=*()-_]).*$/;
         if (state.email.trim() === '') {
           alert('이메일을 입력해 주세요.');
         } else if (!emailCheck.test(state.email)) {
@@ -485,7 +497,7 @@ export const store = new Vuex.Store({
       }
     },
     signUpBtn (state) {
-      let passwordCheck = /^.*(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/;
+      let passwordCheck = /^.*(?=.*\d)(?=.*[a-zA-Z])(?=.*[~!@#$%^&+=*()-_]).*$/;
       if (state.sign_up_list === false) {
         state.sign_up_list = true;
         dataClear(state);
@@ -591,6 +603,7 @@ export const store = new Vuex.Store({
       state.input_list_name = e.target.value;
     },
     createList (state) {
+      state.spinner = true;
       let data = new FormData();
       data.append('create_playlist', state.input_list_name);
       Vue.axios.post('https://weather-sound.com/api/member/' + localStorage.getItem('userPk') + '/playlists/', data, {
@@ -598,8 +611,9 @@ export const store = new Vuex.Store({
           Authorization: 'Token ' + localStorage.getItem('userToken')
         }
       }).then((response) => {
-        console.log('마이리스트 생성 리스폰스', response);
+        state.spinner = false;
         state.my_list = response.data.lists;
+        console.log(response.data.lists);
       }).catch((error) => {
         console.log('마이리스트 생성 에러', error);
       });
@@ -618,6 +632,9 @@ export const store = new Vuex.Store({
           listData.playlist_musics[i].time_music = readableDuration(store.state, listData.playlist_musics[i].time_music);
         }
       }
+    },
+    detailAddToMyMusic (state, newMusic) {
+      state.detail_set_list_data.playlist_musics.push(newMusic);
     },
     // -----------------------------MusicPlayer.vue------------------------------------
     init (state) {
@@ -780,8 +797,10 @@ export const store = new Vuex.Store({
     },
     signAfterInit (state, login) {
       dataClear(state);
+      state.facebookLogin = true;
       state.input_current_password = '';
       state.login_transition = {};
+      state.sign_up_check = false;
       setTimeout(function () {
         state.show_modal = false;
       }, 1000);
@@ -789,6 +808,7 @@ export const store = new Vuex.Store({
       if (login) {
         state.login_after_list = true;
       } else {
+        signModalAnimationOff(state);
         state.login_after_list = false;
         state.token = '';
         state.user_data = {
@@ -804,14 +824,16 @@ export const store = new Vuex.Store({
       store.state.password_remember = store.state.password;
     },
     resetMiniMyList (state) {
-      state.show_mini_my_list = '';
+      state.my_list = [];
     }
   },
   actions: {
     getCityAction: ({commit, dispatch}) => {
+      commit('spinnerChange');
       // 서버통신을 위한 axios 코드
       Vue.axios.get('http://ip-api.com/json')
       .then((response) => {
+        commit('spinnerChange');
         commit('setCity', response.data.city.split('(').shift());
         // commit('setGeo', {
         //   lat: response.data.lat,
@@ -845,8 +867,9 @@ export const store = new Vuex.Store({
     //     store.commit('setBackgroundData', weather);
     //   });
     // },
-    signUpPost: (store, e) => {
-      store.commit('signUpBtn', e);
+    signUpPost: (store) => {
+      store.commit('spinnerChange');
+      store.commit('signUpBtn');
       if (store.state.sign_up_check) {
         let data = new FormData();
         data.append('username', store.state.email);
@@ -862,47 +885,54 @@ export const store = new Vuex.Store({
             'username': store.state.email,
             'password': store.state.password
           }).then((response) => {
+            store.commit('spinnerChange');
             localStorage.setItem('userPk', response.data.userInfo.pk);
             localStorage.setItem('userToken', response.data.token);
             store.commit('mylistLoad');
             store.commit('saveUserData', response.data);
+            store.commit('signAfterInit', true);
           });
-          store.commit('signAfterInit', true);
         })
-        .catch(() => {
+        .catch((error) => {
           alert('이미 가입되어있는 회원입니다. 이메일과 닉네임을 변경해주세요.');
+          console.log('회원가입에러', error);
         });
       }
     },
     signInPost: (store, e) => {
+      store.commit('spinnerChange');
       store.commit('loginBtn', e);
       if (store.state.login_check) {
         Vue.axios.post('https://weather-sound.com/api/member/login/', {
           'username': store.state.email,
           'password': store.state.password
         }).then((response) => {
-          console.log('로그인 통신 리스폰스', response);
+          store.commit('spinnerChange');
           localStorage.setItem('userPk', response.data.userInfo.pk);
           localStorage.setItem('userToken', response.data.token);
           store.commit('mylistLoad');
           store.commit('saveUserData', response.data);
           store.commit('signAfterInit', true);
-        }).catch(() => {
+        }).catch((error) => {
           alert('이메일 혹은 비밀번호가 틀렸습니다.');
+          console.log('로그인에러', error);
         });
       }
     },
     musicGet: (store, location) => {
+      store.commit('spinnerChange');
       Vue.axios.post('https://weather-sound.com/api/music/', {
         'latitude': location.lat,
         'longitude': location.lon
       }).then((response) => {
-        console.log('음악 가져오기 리스폰스', response);
+        store.commit('spinnerChange');
         store.commit('pushMusic', response.data.listInfo.playlist_musics);
         store.commit('recomendPushMusic', response.data.listInfo.playlist_musics);
         store.commit('setWeather', response.data.listInfo.weather);
         store.commit('setBackgroundData', response.data.listInfo.weather);
         musicSeting(store.state, 0, true);
+      }).catch((error) => {
+        console.log('추천음악 불러오기 오류', error);
       });
       // Vue.axios.get('https://weather-sound.com/api/music/')
       // .then((response) => {
@@ -916,7 +946,7 @@ export const store = new Vuex.Store({
       showPrograss(store.state);
     },
     editComplete: (store, e) => {
-      stopAction(e);
+      store.commit('spinnerChange');
       let passwordCheck = /^.*(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/;
       if (store.state.input_current_password === '') {
         alert('현재 비밀번호를 입력해주세요.');
@@ -945,7 +975,7 @@ export const store = new Vuex.Store({
               'Content-Type': 'multipart/form-data'
             }
           }).then((response) => {
-            console.log('개인정보수정 리스폰스', response);
+            store.commit('spinnerChange');
             // Vue.axios.post('https://weather-sound.com/api/member/login/', {
             //   'username': store.state.user_data.userInfo.username,
             //   'password': store.state.password
@@ -955,8 +985,9 @@ export const store = new Vuex.Store({
             // });
             store.commit('signAfterInit', true);
             store.commit('closePopup');
-          }).catch(() => {
+          }).catch((error) => {
             alert('현재 비밀번호가 맞지 않습니다. 다시 확인해주세요.');
+            console.log('개인정보수정 에러', error);
           });
         }
       } else {
@@ -977,6 +1008,7 @@ export const store = new Vuex.Store({
             'Content-Type': 'multipart/form-data'
           }
         }).then((response) => {
+          store.commit('spinnerChange');
           // let changedImgProfile = response.data.userInfo.img_profile.replace(/media\//, 'media/member/');
           // response.data.userInfo.img_profile = changedImgProfile;
           // console.log(response.data.userInfo);
@@ -989,17 +1021,20 @@ export const store = new Vuex.Store({
           // });
           store.commit('signAfterInit', true);
           store.commit('closePopup');
-        }).catch(() => {
+        }).catch((error) => {
           alert('현재 비빌번호가 맞지 않습니다. 다시 확인해주세요.');
+          console.log('개인정보수정 에러', error);
         });
       }
     },
     logOut: (store) => {
+      store.commit('spinnerChange');
       Vue.axios.get('https://weather-sound.com/api/member/logout/', {
         headers: {
           Authorization: 'Token ' + localStorage.getItem('userToken')
         }
       }).then((response) => {
+        store.commit('spinnerChange');
         store.commit('closePopup');
         store.commit('signAfterInit');
         store.commit('setRecomendSelect');
@@ -1051,18 +1086,20 @@ export const store = new Vuex.Store({
       });
     },
     loging: (store, userData) => {
+      store.commit('spinnerChange');
       Vue.axios.get('https://weather-sound.com/api/member/' + userData.userPk + '/', {
         headers: {
           'Authorization': 'Token ' + userData.userToken
         }
       }).then((response) => {
+        store.commit('spinnerChange');
         store.commit('mylistLoad');
         store.commit('saveUserData', response.data);
         store.commit('signAfterInit', true);
       });
     },
     listDeleteBtn: (store, listpk) => {
-      console.log(listpk.toString());
+      store.commit('spinnerChange');
       Vue.axios.put('https://weather-sound.com/api/member/' + localStorage.getItem('userPk') + '/playlists/', {
         'delete_playlist': listpk.toString()
       }, {
@@ -1070,13 +1107,14 @@ export const store = new Vuex.Store({
           'Authorization': 'Token ' + localStorage.getItem('userToken')
         }
       }).then((response) => {
-        console.log('리스트 삭제 리스폰스', response);
+        store.commit('spinnerChange');
         store.commit('mylistLoad');
       }).catch((error) => {
         console.log('마이리스트 삭제 오류', error);
       });
     },
     myListAddToMusic (store, data) {
+      store.commit('spinnerChange');
       Vue.axios.post('https://weather-sound.com/api/member/' + localStorage.getItem('userPk') + '/playlists/', {
         'create_playlist': data,
         'music': musicPlayer.pk.toString()
@@ -1085,24 +1123,20 @@ export const store = new Vuex.Store({
           'Authorization': 'Token ' + localStorage.getItem('userToken')
         }
       }).then((response) => {
+        store.commit('spinnerChange');
         store.commit('addToMyList');
-        store.commit('mylistLoad');
-        console.log('마이리스트 곡 추가 리스폰스', response);
-      }).catch(() => {
-        console.log(data, musicPlayer.pk);
-        console.log('곡 추가 실패');
+        // store.commit('detailAddToMyMusic', response.data.lists.playlist_musics[response.data.lists.playlist_musics.length]);
+      }).catch((error) => {
+        console.log('곡 추가 실패', error);
       });
     },
     enterDetailMyList: (store, data) => {
-      console.log('리스트 데이터', data);
       store.commit('detailSetMusicMyList', data);
       store.commit('pushMusic', data.playlist_musics);
-      console.log('현재 뮤직세팅', store.state.music_data);
     },
     recomendSelect: (store) => {
       store.commit('setRecomendSelect');
       store.commit('pushMusic', store.state.recomend_music);
-      console.log('현재 뮤직세팅', store.state.music_data);
     },
     mylistSelect: (store) => {
       store.commit('mylistLoad');
@@ -1117,21 +1151,22 @@ export const store = new Vuex.Store({
       musicSeting(store.state, 0);
     },
     detailDelete: (store, data) => {
+      store.commit('spinnerChange');
       let formData = new FormData();
       formData.append('music', data.pk);
-      console.log('list Pk', store.state.detail_set_list_data.pk, 'music', data.pk);
       Vue.axios.put('https://weather-sound.com/api/member/' + localStorage.getItem('userPk') + '/playlists/' + store.state.detail_set_list_data.pk + '/', formData, {
         headers: {
           Authorization: 'Token ' + localStorage.getItem('userToken')
         }
       }).then((response) => {
-        console.log('세부삭제 리스폰스', response);
+        store.commit('spinnerChange');
         store.commit('detailSetMusicMyList', response.data.playlist);
       }).catch((error) => {
         console.log('세부삭제 에러', error);
       });
     },
     deleteAccount: (store) => {
+      store.commit('spinnerChange');
       if (store.state.input_current_password === '') {
         alert('현재 비밀번호를 입력해주세요.');
       } else {
@@ -1143,13 +1178,13 @@ export const store = new Vuex.Store({
             'Authorization': 'token ' + token
           }
         }).then((response) => {
-          console.log(response);
+          store.commit('spinnerChange');
           localStorage.clear();
           // store.commit('closeModal');
           store.commit('signAfterInit');
           store.commit('closePopup');
         }).catch((error) => {
-          console.log(error.response);
+          console.log('계정삭제 에러', error);
         });
       }
     }

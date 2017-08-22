@@ -6,15 +6,16 @@
       nav.menu-bar(key="navigation")
         h2.a11y-hidden
           | WeatherSound 메뉴바
-        li.menu-list.logo-list
-          a(href='#')
-            img.logo(src='../assets/logo.svg', alt='WeatherSound Home Link')
-        li.menu-list.weather-info(tabindex='0')
-          p {{getCity}} / {{getWeather}}
-        li.menu-list.link-list(v-show="!loginAfterList")
-          button.login-btn.login(type='bntton' id="login" aria-label="로그인" @click="showModal")
-            | Login
-        LoginAfterMain
+        ul
+          li.menu-list.logo-list
+            a(href='#')
+              img.logo(src='../assets/logo.svg', alt='WeatherSound Home Link')
+          li.menu-list.weather-info(tabindex='0')
+            p {{getCity}} / {{getWeather}}
+          li.menu-list.link-list(v-show="!loginAfterList")
+            button.login-btn.login(type='bntton' id="login" aria-label="로그인" @click="showModal")
+              | Login
+          LoginAfterMain
 </template>
 
 <script>

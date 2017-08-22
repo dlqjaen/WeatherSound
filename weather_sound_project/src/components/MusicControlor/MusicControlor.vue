@@ -88,8 +88,6 @@ export default {
   transition: transform 0.2s ease-in-out;
   transform: scale(1.4);
 }
-
-
 // 뮤직플레이어 진행 바 wrapper
 .music-time{
   padding-top: 1%;
