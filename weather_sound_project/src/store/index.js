@@ -591,17 +591,17 @@ export const store = new Vuex.Store({
       state.input_list_name = e.target.value;
     },
     createList (state) {
-      Vue.axios.put('https://weather-sound.com/api/member/' + localStorage.getItem('userPk') + '/playlists/', {
-        'name_playlist': state.input_list_name
-      }, {
+      let data = new FormData();
+      data.append('create_playlist', state.input_list_name);
+      Vue.axios.post('https://weather-sound.com/api/member/' + localStorage.getItem('userPk') + '/playlists/', data, {
         headers: {
           Authorization: 'Token ' + localStorage.getItem('userToken')
         }
       }).then((response) => {
         console.log('마이리스트 생성 리스폰스', response);
-        state.my_list = response.data.data.playlists;
-      }).catch(() => {
-        console.log('마이리스트 생성 에러');
+        state.my_list = response.data.lists;
+      }).catch((error) => {
+        console.log('마이리스트 생성 에러', error);
       });
     },
     // -----------------------------MyListDetail.vue------------------------------------
@@ -802,6 +802,9 @@ export const store = new Vuex.Store({
     saveUserData (state, e) {
       state.user_data = e;
       store.state.password_remember = store.state.password;
+    },
+    resetMiniMyList (state) {
+      state.show_mini_my_list = '';
     }
   },
   actions: {
@@ -1000,6 +1003,7 @@ export const store = new Vuex.Store({
         store.commit('closePopup');
         store.commit('signAfterInit');
         store.commit('setRecomendSelect');
+        store.commit('resetMiniMyList');
         store.commit('pushMusic', store.state.recomend_music);
         localStorage.clear();
         document.querySelector('.logo-list a').focus();
@@ -1058,30 +1062,34 @@ export const store = new Vuex.Store({
       });
     },
     listDeleteBtn: (store, listpk) => {
-      Vue.axios.delete('https://weather-sound.com/api/member/' + localStorage.getItem('userPk') + '/playlists/' + listpk + '/', {
+      console.log(listpk.toString());
+      Vue.axios.put('https://weather-sound.com/api/member/' + localStorage.getItem('userPk') + '/playlists/', {
+        'delete_playlist': listpk.toString()
+      }, {
         headers: {
           'Authorization': 'Token ' + localStorage.getItem('userToken')
         }
       }).then((response) => {
         console.log('리스트 삭제 리스폰스', response);
         store.commit('mylistLoad');
-      }).catch(() => {
-        console.log('마이리스트 삭제 오류');
+      }).catch((error) => {
+        console.log('마이리스트 삭제 오류', error);
       });
     },
     myListAddToMusic (store, data) {
-      Vue.axios.put('https://weather-sound.com/api/member/' + localStorage.getItem('userPk') + '/playlists/', {
-        'name_playlist': data,
-        'music': musicPlayer.pk
+      Vue.axios.post('https://weather-sound.com/api/member/' + localStorage.getItem('userPk') + '/playlists/', {
+        'create_playlist': data,
+        'music': musicPlayer.pk.toString()
       }, {
         headers: {
-          Authorization: 'Token ' + localStorage.getItem('userToken')
+          'Authorization': 'Token ' + localStorage.getItem('userToken')
         }
       }).then((response) => {
         store.commit('addToMyList');
         store.commit('mylistLoad');
         console.log('마이리스트 곡 추가 리스폰스', response);
       }).catch(() => {
+        console.log(data, musicPlayer.pk);
         console.log('곡 추가 실패');
       });
     },
@@ -1112,7 +1120,7 @@ export const store = new Vuex.Store({
       let formData = new FormData();
       formData.append('music', data.pk);
       console.log('list Pk', store.state.detail_set_list_data.pk, 'music', data.pk);
-      Vue.axios.put('https://weather-sound.com/api/member/' + localStorage.getItem('userPk') + '/playlists/' + store.state.detail_set_list_data.playlist_id + '/', formData, {
+      Vue.axios.put('https://weather-sound.com/api/member/' + localStorage.getItem('userPk') + '/playlists/' + store.state.detail_set_list_data.pk + '/', formData, {
         headers: {
           Authorization: 'Token ' + localStorage.getItem('userToken')
         }

@@ -110,9 +110,11 @@ export default {
 .mini-music-list{
   position: absolute;
   text-align: left;
+  z-index: 10000;
   left: -65px;
-  bottom: 40px;
+  bottom: 45px;
   width: 150px;
+  font-size: 2rem;
   background: rgba(0,0,0,0.5);
   border-radius: 5px 5px 0 0;
 }

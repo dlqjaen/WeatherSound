@@ -7,7 +7,7 @@
           p.my-list-info
             span.my-list-title {{list.name_playlist}}
           img(:src='list.default', :alt='list.name_playlist + "대표이미지"')
-        button.list-delete-btn(type='button', aria-label="리스트 삭제버튼" @click="listDeleteBtn(list.playlist_id)")
+        button.list-delete-btn(type='button', aria-label="리스트 삭제버튼" @click="listDeleteBtn(list.pk)")
           <i class="fa fa-times" aria-hidden="true"></i>
       li.my-list
         .add_list(id="add_list" aria-label="리스트 추가")
