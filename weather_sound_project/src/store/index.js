@@ -284,7 +284,6 @@ export const store = new Vuex.Store({
     },
     // -----------------------------------------------------------마이리스트 getters
     myList (state) {
-      console.log(state.my_list);
       for (let i = 0, l = state.my_list.length; i < l; i++) {
         if (!state.my_list[i].playlist_musics[0]) {
           state.my_list[i].default = 'http://images.gofreedownload.net/sidebar-music-34404.jpg';
@@ -614,7 +613,6 @@ export const store = new Vuex.Store({
       }).then((response) => {
         state.spinner = false;
         state.my_list = response.data.lists;
-        console.log(response.data.lists);
       }).catch((error) => {
         state.spinner = false;
         console.log('마이리스트 생성 에러', error);
@@ -1082,7 +1080,6 @@ export const store = new Vuex.Store({
           Vue.axios.post('https://weather-sound.com/api/member/facebook-login/', {
             'token': response.authResponse.accessToken
           }).then((response) => {
-            console.log('페이스북 토큰 리스폰스', response);
             localStorage.setItem('userPk', response.data.userInfo.pk);
             localStorage.setItem('userToken', response.data.token);
             store.commit('saveUserData', response.data);
