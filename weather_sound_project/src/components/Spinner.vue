@@ -2,7 +2,7 @@
   aside.spinner-background(v-show="showSpinner")
     h2.a11y-hidden 서버통신 중 페이지
     .spinner-wrapper
-      img(src="http://www.dpp30.com.tw/images/img_loading.gif" alt="페이지 로딩중")
+      img(src="https://www.wallies.com/filebin/images/loading_apple.gif" alt="페이지 로딩중")
 </template>
 
 <script>
@@ -29,5 +29,8 @@ export default {
   top: 50%;
   left: 50%;
   transform: translateX(-50%) translateY(-50%);
+}
+.spinner-wrapper img{
+  width: 150px;
 }
 </style>

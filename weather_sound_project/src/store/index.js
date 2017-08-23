@@ -86,12 +86,12 @@ export const store = new Vuex.Store({
       cloudy: [
         'https://orig05.deviantart.net/db62/f/2012/006/9/b/cloudy_mountains_no_3_by_neonen-d4lh2jx.jpg',
         'https://static.pexels.com/photos/2083/city-clouds-cloudy-ray-of-sunshine.jpg',
-        'http://awesomwallpaper.com/img2/4592802E83E6F2C9/full-nature.jpg'
+        'https://i.ytimg.com/vi/wkFtHbRW0dA/maxresdefault.jpg'
       ],
       rainy: [
         'https://s-media-cache-ak0.pinimg.com/originals/97/24/af/9724af499d514757aba41069eca633f9.jpg',
         'https://cdn.wallpapersafari.com/20/84/WOE1ok.jpg',
-        'http://www.wallpaperbetter.com/wallpaper/516/76/948/rainy-fall-day-1080P-wallpaper.jpg'
+        'https://www.wallpaperbetter.com/wallpaper/516/76/948/rainy-fall-day-1080P-wallpaper.jpg'
       ],
       snowy: [
         'https://s-media-cache-ak0.pinimg.com/originals/3d/8a/7f/3d8a7f3c9380cabe3847d6c2b4c115a9.jpg',
@@ -167,7 +167,7 @@ export const store = new Vuex.Store({
     input_list_name: '',
     active_create_btn: false,
     detail_set_list_data: [],
-    detail_select_music_img: 'http://images.gofreedownload.net/sidebar-music-34404.jpg',
+    detail_select_music_img: 'https://images.gofreedownload.net/sidebar-music-34404.jpg',
     disabled_check: false,
     // -----------------------------------------------------------뮤직플레이어 데이터
     // 뮤직플레이어 정보(곡명, 가수, 이미지)를 할당
@@ -286,7 +286,7 @@ export const store = new Vuex.Store({
     myList (state) {
       for (let i = 0, l = state.my_list.length; i < l; i++) {
         if (!state.my_list[i].playlist_musics[0]) {
-          state.my_list[i].default = 'http://images.gofreedownload.net/sidebar-music-34404.jpg';
+          state.my_list[i].default = 'https://images.gofreedownload.net/sidebar-music-34404.jpg';
         } else {
           state.my_list[i].default = state.my_list[i].playlist_musics[0].img_music;
         }
@@ -835,10 +835,6 @@ export const store = new Vuex.Store({
       .then((response) => {
         commit('spinnerChange', false);
         commit('setCity', response.data.city.split('(').shift());
-        // commit('setGeo', {
-        //   lat: response.data.lat,
-        //   lon: response.data.lon
-        // });
         dispatch('musicGet', {
           lat: response.data.lat,
           lon: response.data.lon
@@ -847,29 +843,7 @@ export const store = new Vuex.Store({
         console.log('위도경도 받아오기 에러', error);
         commit('spinnerChange', false);
       });
-      // .then(() => {
-      //   dispatch('getWeatherAction');
-      // });
     },
-    // getWeatherAction: (store) => {
-    //   let address = 'http://api.openweathermap.org/data/2.5/weather?lat=' + store.state.geo.lat + '&lon=' + store.state.geo.lon + '&units=metric&APPID=f63c992320644b675405158f284ba653';
-    //   Vue.axios.get(address).then((response) => {
-    //     let weather = response.data.weather[0].icon.slice(0, -1);
-    //     if (weather === '01') {
-    //       weather = 'Sunny';
-    //     } else if (weather === '02' || weather === '03' || weather === '04') {
-    //       weather = 'Cloudy';
-    //     } else if (weather === '09' || weather === '10' || weather === '11') {
-    //       weather = 'Rainy';
-    //     } else if (weather === '13') {
-    //       weather = 'Snowy';
-    //     } else if (weather === '50') {
-    //       weather = 'Foggy';
-    //     }
-    //     store.commit('setWeather', weather);
-    //     store.commit('setBackgroundData', weather);
-    //   });
-    // },
     signUpPost: (store) => {
       store.commit('signUpBtn');
       if (store.state.sign_up_check) {
