@@ -6,7 +6,7 @@
         button.music-controlor-btn(aria-label="마이리스트 추가" @click="addToMyList" title="마이리스트 추가")
           i.fa.fa-plus(aria-hidden='true' :style="activeAddBtn")
         ul.mini-music-list(v-show="showMiniMyList")
-          li(v-for="list in myList")
+          li.my-list-select-menu(v-for="list in myList")
             button.select-mylist(@click="myListAddToMusic(list.name_playlist)") {{list.name_playlist}}
       li.btn-list
         button.music-controlor-btn(aria-label="이전 곡 재생" @click="prevMusic" title="이전 곡 재생")
@@ -75,14 +75,10 @@ export default {
   margin: 0 auto;
   box-sizing: border-box;
   height: 50%;
-  max-width: 200px;
-  padding-top: 1%;
+  max-width: 250px;
+  padding-top: 2%;
   display: flex;
   justify-content: space-around;
-}
-.music-controlor-btn{
-  transform: scale(1);
-  transition: transform 0.2s ease-in-out;
 }
 .music-controlor-btn:hover, .music-controlor-btn:focus{
   transition: transform 0.2s ease-in-out;
@@ -102,25 +98,35 @@ export default {
   vertical-align: middle;
 }
 .music-controlor-btn{
+  font-size: 1.8rem;
+  transform: scale(1);
+  transition: transform 0.2s ease-in-out;
   padding: 5px;
   cursor: pointer;
 }
 .mini-music-list{
+  padding: 5px 0;
   position: absolute;
   text-align: left;
   z-index: 10000;
-  left: -65px;
+  left: -90px;
   bottom: 45px;
-  width: 150px;
-  font-size: 2rem;
+  width: 200px;
   background: rgba(0,0,0,0.5);
   border-radius: 5px 5px 0 0;
 }
+.my-list-select-menu{
+  padding: 3px 0;
+}
+.my-list-select-menu:hover, .my-list-select-menu:focus{
+  background: rgba(59, 153, 252, 0.8)
+}
 .btn-list{
-  padding-top: 10px;
   position: relative;
 }
 .select-mylist{
+  padding: 5px 0;
+  font-size: 1.6rem;
   cursor: pointer;
   color: white;
   width: 100%;

@@ -36,7 +36,7 @@ export default {
 }
 // 뮤직플레이어 볼륨 아이콘
 .music-volume i{
-  font-size: 1.8rem;
+  font-size: 2rem;
   padding: 1%;
   margin-right: 2%;
 }
