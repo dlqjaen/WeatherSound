@@ -908,9 +908,9 @@ export const store = new Vuex.Store({
       }
     },
     signInPost: (store, e) => {
-      store.commit('spinnerChange', true);
       store.commit('loginBtn', e);
       if (store.state.login_check) {
+        store.commit('spinnerChange', true);
         Vue.axios.post('https://weather-sound.com/api/member/login/', {
           'username': store.state.email,
           'password': store.state.password
@@ -1188,10 +1188,10 @@ export const store = new Vuex.Store({
       });
     },
     deleteAccount: (store) => {
-      store.commit('spinnerChange', true);
       if (store.state.input_current_password === '') {
         alert('현재 비밀번호를 입력해주세요.');
       } else {
+        store.commit('spinnerChange', true);
         let token = localStorage.getItem('userToken');
         Vue.axios.delete('https://weather-sound.com/api/member/profile/' + localStorage.getItem('userPk') + '/edit/', {
           'username': store.state.user_data.userInfo.username,
