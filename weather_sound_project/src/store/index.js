@@ -897,13 +897,13 @@ export const store = new Vuex.Store({
             store.commit('signAfterInit', true);
           }).catch((error) => {
             console.log('회원가입 후 로그인 에러', error);
-            commit('spinnerChange');
+            store.commit('spinnerChange');
           });
         })
         .catch((error) => {
           alert('이미 가입되어있는 회원입니다. 이메일과 닉네임을 변경해주세요.');
           console.log('회원가입에러', error);
-          commit('spinnerChange');
+          store.commit('spinnerChange');
         });
       }
     },
@@ -922,7 +922,7 @@ export const store = new Vuex.Store({
           store.commit('saveUserData', response.data);
           store.commit('signAfterInit', true);
         }).catch((error) => {
-          commit('spinnerChange');
+          store.commit('spinnerChange');
           alert('이메일 혹은 비밀번호가 틀렸습니다.');
           console.log('로그인에러', error);
         });
@@ -941,7 +941,7 @@ export const store = new Vuex.Store({
         store.commit('setBackgroundData', response.data.listInfo.weather);
         musicSeting(store.state, 0, true);
       }).catch((error) => {
-        commit('spinnerChange');
+        store.commit('spinnerChange');
         console.log('추천음악 불러오기 오류', error);
       });
       // Vue.axios.get('https://weather-sound.com/api/music/')
@@ -996,7 +996,7 @@ export const store = new Vuex.Store({
             store.commit('signAfterInit', true);
             store.commit('closePopup');
           }).catch((error) => {
-            commit('spinnerChange');
+            store.commit('spinnerChange');
             alert('현재 비밀번호가 맞지 않습니다. 다시 확인해주세요.');
             console.log('개인정보수정 에러', error);
           });
@@ -1033,7 +1033,7 @@ export const store = new Vuex.Store({
           store.commit('signAfterInit', true);
           store.commit('closePopup');
         }).catch((error) => {
-          commit('spinnerChange');
+          store.commit('spinnerChange');
           alert('현재 비빌번호가 맞지 않습니다. 다시 확인해주세요.');
           console.log('개인정보수정 에러', error);
         });
@@ -1054,6 +1054,9 @@ export const store = new Vuex.Store({
         store.commit('pushMusic', store.state.recomend_music);
         localStorage.clear();
         document.querySelector('.logo-list a').focus();
+      }).catch((error) => {
+        console.log('로그아웃 에러', error);
+        store.commit('spinnerChange');
       });
     },
     myListGet: (store) => {
@@ -1110,7 +1113,7 @@ export const store = new Vuex.Store({
         store.commit('signAfterInit', true);
       }).catch((error) => {
         console.log('새로고침 자동로그인 에러', error);
-        commit('spinnerChange');
+        store.commit('spinnerChange');
       });
     },
     listDeleteBtn: (store, listpk) => {
@@ -1125,7 +1128,7 @@ export const store = new Vuex.Store({
         store.commit('spinnerChange');
         store.commit('mylistLoad');
       }).catch((error) => {
-        commit('spinnerChange');
+        store.commit('spinnerChange');
         console.log('마이리스트 삭제 오류', error);
       });
     },
