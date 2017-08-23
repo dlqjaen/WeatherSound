@@ -447,7 +447,7 @@ export const store = new Vuex.Store({
         state.input_list_name = '';
         state.active_create_btn = false;
       }).catch(() => {
-        state.spinner = false;        
+        state.spinner = false;
         alert('마이리스트 불러오기 오류');
       });
     },
